@@ -1,4 +1,4 @@
-package com.instagram.global.config;
+package com.instagram.global.error;
 
 import lombok.Getter;
 
@@ -11,13 +11,13 @@ public enum BasicResponseStatus {
     /**
      * 요청 성공
      */
-    SUCCESS("SUCCESS", "200", "요청 성공"),
+    SUCCESS("SUCCESS", "NOT_ERROR", "요청 성공"),
 
     /**
-     * DB 오류
+     * DB 오류, 서버 오류
      */
-    DATABASE_ERROR("FAIL", "DATABASE_ERROR", "DB에서 데이터 조회 실패");
-
+    DATABASE_ERROR("FAIL", "DATABASE_ERROR", "DB에서 데이터 조회 실패"),
+    SERVER_ERRER("FAIL", "SERVER_ERROR", "서버에서 오류 발생");
 
 
 

@@ -1,16 +1,19 @@
 package com.instagram.test;
 
-import com.instagram.global.config.BasicResponse;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import com.instagram.global.error.BasicResponse;
+
+
+import io.swagger.annotations.*;
+
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.aspectj.weaver.ast.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import static com.instagram.global.config.BasicResponseStatus.*;
+import static com.instagram.global.error.BasicResponseStatus.*;
+
+
 
 
 @Api(tags = "테스트 API")
@@ -58,27 +61,25 @@ public class TestController {
      * API Response 테스트
      */
     @ResponseBody
-    @GetMapping("/response/{id}")
+    @PostMapping("/response/{id}")
     @ApiOperation(value = "API Response Test", notes = "API Response Test 입니다." )
-    public BasicResponse testResponse(@ApiParam(value = "유저 인덱스") @PathVariable int id) {
+    @ApiResponses(value = {
+            //@ApiResponse(code  = 200, message = "저장 성공"),
+            @ApiResponse(code = 201,  message = "1. 'status' : 'FAIL', 'code' : 'DATABASE_ERROR', 'message' = 'DB에서 데이터 조회 실패' \t\n" +
+                                                "2. 'status' : 'FAIL', 'code' : 'SERVER_ERROR', 'message' = '서버에서 오류 발생'", response = BasicResponse.class),
+    })
+    public BasicResponse testResponse(@ApiParam(name = "id", value = "유저 인덱스", example = "1") @PathVariable int id,
+                                      @RequestBody GetTestReq getTestReq) {
 
 
         if(id == 1){
-            return new BasicResponse("요청 성공");
+            return new BasicResponse(getTestReq);
         }
         else
             return new BasicResponse(DATABASE_ERROR);
 
-    }
 
-
-
-
-
-
-
-
-
+   }
 
 
 }

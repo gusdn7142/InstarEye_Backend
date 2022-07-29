@@ -1,6 +1,7 @@
-package com.instagram.global.config;
+package com.instagram.global.error;
 
 
+import com.instagram.global.error.BasicResponseStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
