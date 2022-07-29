@@ -54,13 +54,16 @@ public class User {
     private String Introduction;  //소개
 
     @Column (nullable=true, columnDefinition ="varchar(10) default 'OPEN'")
+    @Enumerated(EnumType.STRING)
     //private String hiddenState;  //계정 공개 유무
     private AccountHiddenState accountHiddenState;  //계정 공개 유무
 
     @Column (nullable=false, columnDefinition ="varchar(10)")
+    @Enumerated(EnumType.STRING)
     private PrivacyPolicyStatus privacyPolicyStatus;  //개인정보 처리방침 동의여부
 
     @Column (nullable=false, columnDefinition ="varchar(20) default 'LOCAL'")
+    @Enumerated(EnumType.STRING)
     private AccountType accountType;  //계정 타입
 
 
