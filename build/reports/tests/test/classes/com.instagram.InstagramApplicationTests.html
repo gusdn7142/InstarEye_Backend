@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.257s</div>
+<div class="counter">0.301s</div>
 <p>duration</p>
 </div>
 </td>
@@ -79,7 +79,7 @@
 </thead>
 <tr>
 <td class="success">contextLoads()</td>
-<td class="success">0.257s</td>
+<td class="success">0.301s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -87,21 +87,21 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>00:41:15.785 [Test worker] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating CacheAwareContextLoaderDelegate from class [org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate]
-00:41:15.798 [Test worker] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating BootstrapContext using constructor [public org.springframework.test.context.support.DefaultBootstrapContext(java.lang.Class,org.springframework.test.context.CacheAwareContextLoaderDelegate)]
-00:41:15.832 [Test worker] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating TestContextBootstrapper for test class [com.instagram.InstagramApplicationTests] from class [org.springframework.boot.test.context.SpringBootTestContextBootstrapper]
-00:41:15.854 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Neither @ContextConfiguration nor @ContextHierarchy found for test class [com.instagram.InstagramApplicationTests], using SpringBootContextLoader
-00:41:15.859 [Test worker] DEBUG org.springframework.test.context.support.AbstractContextLoader - Did not detect default resource location for test class [com.instagram.InstagramApplicationTests]: class path resource [com/instagram/InstagramApplicationTests-context.xml] does not exist
-00:41:15.860 [Test worker] DEBUG org.springframework.test.context.support.AbstractContextLoader - Did not detect default resource location for test class [com.instagram.InstagramApplicationTests]: class path resource [com/instagram/InstagramApplicationTestsContext.groovy] does not exist
-00:41:15.860 [Test worker] INFO org.springframework.test.context.support.AbstractContextLoader - Could not detect default resource locations for test class [com.instagram.InstagramApplicationTests]: no resource found for suffixes {-context.xml, Context.groovy}.
-00:41:15.861 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.instagram.InstagramApplicationTests]: InstagramApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-00:41:15.909 [Test worker] DEBUG org.springframework.test.context.support.ActiveProfilesUtils - Could not find an 'annotation declaring class' for annotation type [org.springframework.test.context.ActiveProfiles] and class [com.instagram.InstagramApplicationTests]
-00:41:15.980 [Test worker] DEBUG org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider - Identified candidate component class: file [D:\Project\IntelliJ\Instagram_Clone_Server\build\classes\java\main\com\instagram\InstagramApplication.class]
-00:41:15.982 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.instagram.InstagramApplication for test class com.instagram.InstagramApplicationTests
-00:41:16.116 [Test worker] DEBUG org.springframework.boot.test.context.SpringBootTestContextBootstrapper - @TestExecutionListeners is not present for class [com.instagram.InstagramApplicationTests]: using defaults.
-00:41:16.117 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener, org.springframework.security.test.context.support.ReactorContextTestExecutionListener, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.event.ApplicationEventsTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener, org.springframework.test.context.event.EventPublishingTestExecutionListener]
-00:41:16.140 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@27dc79f7, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@6b85300e, org.springframework.test.context.event.ApplicationEventsTestExecutionListener@3aaf4f07, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@5cbf9e9f, org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@18e8473e, org.springframework.test.context.support.DirtiesContextTestExecutionListener@5a2f016d, org.springframework.test.context.transaction.TransactionalTestExecutionListener@1a38ba58, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@3ad394e6, org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener@6058e535, org.springframework.test.context.event.EventPublishingTestExecutionListener@42deb43a, org.springframework.security.test.context.support.ReactorContextTestExecutionListener@1deb2c43, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@3bb9efbc, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@1cefc4b3, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@2b27cc70, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@6f6a7463, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener@1bdaa23d, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@79f227a9]
-00:41:16.144 [Test worker] DEBUG org.springframework.test.context.support.AbstractDirtiesContextTestExecutionListener - Before test class: context [DefaultTestContext@106faf11 testClass = InstagramApplicationTests, testInstance = [null], testMethod = [null], testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@70f43b45 testClass = InstagramApplicationTests, locations = '{}', classes = '{class com.instagram.InstagramApplication}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true}', contextCustomizers = set[org.springframework.boot.test.autoconfigure.actuate.metrics.MetricsExportContextCustomizerFactory$DisableMetricExportContextCustomizer@cb191ca, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizerFactory$Customizer@4b672daa, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@3fffff43, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@2e11485, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.web.client.TestRestTemplateContextCustomizer@6d304f9d, org.springframework.boot.test.context.SpringBootTestArgs@1, org.springframework.boot.test.context.SpringBootTestWebEnvironment@6dd7b5a3], resourceBasePath = 'src/main/webapp', contextLoader = 'org.springframework.boot.test.context.SpringBootContextLoader', parent = [null]], attributes = map['org.springframework.test.context.web.ServletTestExecutionListener.activateListener' -&gt; true]], class annotated with @DirtiesContext [false] with mode [null].
+<pre>22:49:04.726 [Test worker] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating CacheAwareContextLoaderDelegate from class [org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate]
+22:49:04.740 [Test worker] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating BootstrapContext using constructor [public org.springframework.test.context.support.DefaultBootstrapContext(java.lang.Class,org.springframework.test.context.CacheAwareContextLoaderDelegate)]
+22:49:04.776 [Test worker] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating TestContextBootstrapper for test class [com.instagram.InstagramApplicationTests] from class [org.springframework.boot.test.context.SpringBootTestContextBootstrapper]
+22:49:04.790 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Neither @ContextConfiguration nor @ContextHierarchy found for test class [com.instagram.InstagramApplicationTests], using SpringBootContextLoader
+22:49:04.794 [Test worker] DEBUG org.springframework.test.context.support.AbstractContextLoader - Did not detect default resource location for test class [com.instagram.InstagramApplicationTests]: class path resource [com/instagram/InstagramApplicationTests-context.xml] does not exist
+22:49:04.794 [Test worker] DEBUG org.springframework.test.context.support.AbstractContextLoader - Did not detect default resource location for test class [com.instagram.InstagramApplicationTests]: class path resource [com/instagram/InstagramApplicationTestsContext.groovy] does not exist
+22:49:04.794 [Test worker] INFO org.springframework.test.context.support.AbstractContextLoader - Could not detect default resource locations for test class [com.instagram.InstagramApplicationTests]: no resource found for suffixes {-context.xml, Context.groovy}.
+22:49:04.797 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.instagram.InstagramApplicationTests]: InstagramApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+22:49:04.856 [Test worker] DEBUG org.springframework.test.context.support.ActiveProfilesUtils - Could not find an 'annotation declaring class' for annotation type [org.springframework.test.context.ActiveProfiles] and class [com.instagram.InstagramApplicationTests]
+22:49:04.960 [Test worker] DEBUG org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider - Identified candidate component class: file [D:\Project\IntelliJ\Instagram_Clone_Server\build\classes\java\main\com\instagram\InstagramApplication.class]
+22:49:04.964 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.instagram.InstagramApplication for test class com.instagram.InstagramApplicationTests
+22:49:05.141 [Test worker] DEBUG org.springframework.boot.test.context.SpringBootTestContextBootstrapper - @TestExecutionListeners is not present for class [com.instagram.InstagramApplicationTests]: using defaults.
+22:49:05.142 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener, org.springframework.security.test.context.support.ReactorContextTestExecutionListener, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.event.ApplicationEventsTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener, org.springframework.test.context.event.EventPublishingTestExecutionListener]
+22:49:05.168 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@3aaf4f07, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@5cbf9e9f, org.springframework.test.context.event.ApplicationEventsTestExecutionListener@18e8473e, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@5a2f016d, org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@1a38ba58, org.springframework.test.context.support.DirtiesContextTestExecutionListener@3ad394e6, org.springframework.test.context.transaction.TransactionalTestExecutionListener@6058e535, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@42deb43a, org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener@1deb2c43, org.springframework.test.context.event.EventPublishingTestExecutionListener@3bb9efbc, org.springframework.security.test.context.support.ReactorContextTestExecutionListener@1cefc4b3, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@2b27cc70, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@6f6a7463, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@1bdaa23d, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@79f227a9, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener@6ca320ab, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@50d68830]
+22:49:05.172 [Test worker] DEBUG org.springframework.test.context.support.AbstractDirtiesContextTestExecutionListener - Before test class: context [DefaultTestContext@26d10f2e testClass = InstagramApplicationTests, testInstance = [null], testMethod = [null], testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@10ad20cb testClass = InstagramApplicationTests, locations = '{}', classes = '{class com.instagram.InstagramApplication}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true}', contextCustomizers = set[org.springframework.boot.test.autoconfigure.actuate.metrics.MetricsExportContextCustomizerFactory$DisableMetricExportContextCustomizer@a776e, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizerFactory$Customizer@e077866, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@1c7fd41f, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@662f5666, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.web.client.TestRestTemplateContextCustomizer@5c87bfe2, org.springframework.boot.test.context.SpringBootTestArgs@1, org.springframework.boot.test.context.SpringBootTestWebEnvironment@2663e964], resourceBasePath = 'src/main/webapp', contextLoader = 'org.springframework.boot.test.context.SpringBootContextLoader', parent = [null]], attributes = map['org.springframework.test.context.web.ServletTestExecutionListener.activateListener' -&gt; true]], class annotated with @DirtiesContext [false] with mode [null].
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -111,27 +111,51 @@
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v2.7.2)
 
-2022-07-29 00:41:16.524  INFO 9556 --- [    Test worker] com.instagram.InstagramApplicationTests  : Starting InstagramApplicationTests using Java 11.0.14 on DESKTOP-GG4TMOB with PID 9556 (started by User in D:\Project\IntelliJ\Instagram_Clone_Server)
-2022-07-29 00:41:16.525  INFO 9556 --- [    Test worker] com.instagram.InstagramApplicationTests  : No active profile set, falling back to 1 default profile: &quot;default&quot;
-2022-07-29 00:41:17.793  INFO 9556 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2022-07-29 00:41:17.807  INFO 9556 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 6 ms. Found 0 JPA repository interfaces.
-2022-07-29 00:41:18.523  INFO 9556 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2022-07-29 00:41:18.587  INFO 9556 --- [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.6.10.Final
-2022-07-29 00:41:18.814  INFO 9556 --- [    Test worker] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
-2022-07-29 00:41:18.944  INFO 9556 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2022-07-29 00:41:19.635  INFO 9556 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2022-07-29 00:41:19.667  INFO 9556 --- [    Test worker] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
-2022-07-29 00:41:19.886  INFO 9556 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
-2022-07-29 00:41:19.896  INFO 9556 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2022-07-29 00:41:20.013  WARN 9556 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2022-07-29 00:41:20.905  WARN 9556 --- [    Test worker] .s.s.UserDetailsServiceAutoConfiguration : 
+2022-07-30 22:49:05.815  INFO 820 --- [    Test worker] com.instagram.InstagramApplicationTests  : Starting InstagramApplicationTests using Java 11.0.14 on DESKTOP-GG4TMOB with PID 820 (started by User in D:\Project\IntelliJ\Instagram_Clone_Server)
+2022-07-30 22:49:05.816  INFO 820 --- [    Test worker] com.instagram.InstagramApplicationTests  : No active profile set, falling back to 1 default profile: &quot;default&quot;
+2022-07-30 22:49:08.117  INFO 820 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2022-07-30 22:49:08.235  INFO 820 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 97 ms. Found 1 JPA repository interfaces.
+2022-07-30 22:49:09.335  INFO 820 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2022-07-30 22:49:09.409  INFO 820 --- [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.6.10.Final
+2022-07-30 22:49:09.659  INFO 820 --- [    Test worker] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2022-07-30 22:49:09.808  INFO 820 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2022-07-30 22:49:10.424  INFO 820 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2022-07-30 22:49:10.464  INFO 820 --- [    Test worker] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+Hibernate: 
+    
+    drop table if exists user
+Hibernate: 
+    
+    create table user (
+       idx bigint not null auto_increment,
+        introduction varchar(100),
+        account_hidden_state varchar(10) default 'OPEN',
+        account_type varchar(20) default 'LOCAL' not null,
+        birth_day DATE default (CURRENT_DATE) not null,
+        created_at timestamp default CURRENT_TIMESTAMP,
+        email varchar(40) not null,
+        image varchar(200) default 'https://mblogthumb-phinf.pstatic.net/20150427_261/ninevincent_1430122791768m7oO1_JPEG/kakao_1.jpg?type=w2',
+        name varchar(61) not null,
+        nick_name varchar(61) not null,
+        password varchar(200) not null,
+        phone varchar(20) not null,
+        privacy_policy_status varchar(10) not null,
+        status varchar(10) default 'ACTIVE',
+        updated_at timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        web_site varchar(50),
+        primary key (idx)
+    ) engine=InnoDB
+2022-07-30 22:49:11.572  INFO 820 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-07-30 22:49:11.585  INFO 820 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2022-07-30 22:49:12.577  WARN 820 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2022-07-30 22:49:13.893  WARN 820 --- [    Test worker] .s.s.UserDetailsServiceAutoConfiguration : 
 
-Using generated security password: eda64ab4-d804-4edf-94cd-08798c52837b
+Using generated security password: c4480ffa-3ac2-4950-90ab-cedcd17b01a0
 
 This generated password is for development use only. Your security configuration must be updated before running your application in production.
 
-2022-07-29 00:41:21.136  INFO 9556 --- [    Test worker] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@1885905b, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@23e573e, org.springframework.security.web.context.SecurityContextPersistenceFilter@8ad6d29, org.springframework.security.web.header.HeaderWriterFilter@fa689db, org.springframework.security.web.authentication.logout.LogoutFilter@37d3e740, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@7772ec28, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@c79915a, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@46507dda, org.springframework.security.web.session.SessionManagementFilter@67372d20, org.springframework.security.web.access.ExceptionTranslationFilter@14ee143a]
-2022-07-29 00:41:22.497  INFO 9556 --- [    Test worker] com.instagram.InstagramApplicationTests  : Started InstagramApplicationTests in 6.319 seconds (JVM running for 8.321)
+2022-07-30 22:49:14.406  INFO 820 --- [    Test worker] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@299f9a81, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@4b19ee18, org.springframework.security.web.context.SecurityContextPersistenceFilter@63075ad1, org.springframework.security.web.header.HeaderWriterFilter@3359217d, org.springframework.security.web.authentication.logout.LogoutFilter@307eb95f, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3a3375d8, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@79fbcef4, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@2561d61, org.springframework.security.web.session.SessionManagementFilter@234dfc8e, org.springframework.security.web.access.ExceptionTranslationFilter@eccaf1b]
+2022-07-30 22:49:17.770  INFO 820 --- [    Test worker] com.instagram.InstagramApplicationTests  : Started InstagramApplicationTests in 12.556 seconds (JVM running for 15.625)
 </pre>
 </span>
 </div>
@@ -143,7 +167,7 @@ This generated password is for development use only. Your security configuration
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 7.5</a> at 2022. 7. 29. 오전 12:41:23</p>
+<a href="http://www.gradle.org">Gradle 7.5</a> at 2022. 7. 30. 오후 10:49:18</p>
 </div>
 </div>
 </body>

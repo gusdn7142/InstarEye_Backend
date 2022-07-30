@@ -9,8 +9,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-
-
+import java.util.Date;
 
 
 @Getter
@@ -41,8 +40,8 @@ public class User {
     @Column (nullable=false, columnDefinition ="varchar(200)")
     private String password;  //패스워드
 
-    @Column (nullable=false, columnDefinition ="varchar(200)")
-    private String birthDay;  //생일
+    @Column (nullable=false, columnDefinition ="DATE default (CURRENT_DATE)")
+    private Date birthDay;  //생일
 
     @Column (nullable=true, columnDefinition ="varchar(200) default 'https://mblogthumb-phinf.pstatic.net/20150427_261/ninevincent_1430122791768m7oO1_JPEG/kakao_1.jpg?type=w2'")
     private String image;   //이미지 URL
@@ -72,10 +71,10 @@ public class User {
     private DataStatus status; //데이터 상태 (INACTIVE or ACTIVE)
 
     @Column (columnDefinition = "timestamp default CURRENT_TIMESTAMP")
-    private LocalDateTime createAt;  //생성 시각
+    private LocalDateTime createdAt;  //생성 시각
 
     @Column (columnDefinition = "timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-    private LocalDateTime updateAt; //갱신 시각
+    private LocalDateTime updatedAt; //갱신 시각
 
 
 }
