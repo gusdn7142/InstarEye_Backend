@@ -2,11 +2,10 @@ package com.instagram.domain.user.service;
 
 
 import com.instagram.domain.user.dao.UserDao;
+import com.instagram.domain.user.domain.AccountHiddenState;
 import com.instagram.domain.user.domain.PrivacyPolicyStatus;
 import com.instagram.domain.user.domain.User;
-import com.instagram.domain.user.dto.PostLoginReq;
-import com.instagram.domain.user.dto.PostLoginRes;
-import com.instagram.domain.user.dto.PostUserReq;
+import com.instagram.domain.user.dto.*;
 import com.instagram.global.error.BasicException;
 import com.instagram.global.util.Security.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -34,12 +33,12 @@ public class UserService {
 
         //전화번호 중복 검사 ("ACTIVE"가 1일떄 포함)
         if (userDao.findByPhone(postUserReq.getPhone()) != null){
-            throw new BasicException(RES_ERROR_EXISTS_PHONE);
+            throw new BasicException(RES_ERROR_EXIST_PHONE);
         }
 
         //닉네임 중복 검사 ("ACTIVE"가 1일떄 포함)
         if (userDao.findByNickName(postUserReq.getNickName()) != null){
-            throw new BasicException(RES_ERROR_EXISTS_NICK_NAME);
+            throw new BasicException(RES_ERROR_EXIST_NICK_NAME);
         }
 
 
@@ -80,7 +79,7 @@ public class UserService {
 
 
 
-    /* 2. 로그인 -  login() */
+    /* 2. 로그인  API */
     public PostLoginRes login(PostLoginReq postLoginReq) throws BasicException {
 
 
@@ -133,6 +132,105 @@ public class UserService {
 
 
 
+    /* 3. 프로필 조회 API */
+    public GetUserRes getUser(Long userIdx) throws BasicException {
+
+        try {
+        //프로필 조회
+        GetUserRes getUserRes = userDao.getUser(userIdx);
+
+            return getUserRes;
+
+        }catch (Exception exception) {   //DB에서 받아온 객체가 null이면
+            throw new BasicException(DATABASE_ERROR_GET_USER);
+        }
+
+    }
+
+
+    /* 4. 프로필 수정 - 이름 */
+    public void modifyUserInfo(PatchUserReq patchUserReq) throws BasicException {    //UserController.java에서 객체 값( id, nickName)을 받아와서...
+
+        //닉네임 중복 검사 ("ACTIVE"가 1일떄 포함)
+        if (userDao.findByNickName(patchUserReq.getNickName()) != null){
+            throw new BasicException(RES_ERROR_EXIST_NICK_NAME);
+        }
+
+        try{
+            //이름 변경
+            if(patchUserReq.getName() != null){
+                userDao.modifyName(patchUserReq.getName(), patchUserReq.getUserIdx());
+            }
+        } catch(Exception exception){
+            throw new BasicException(DATABASE_ERROR_MODIFY_FAIL_USER_NAME);   //"이름 변경 오류"
+        }
+
+
+        try{
+            //닉네임 값 변경
+            if(patchUserReq.getNickName() != null){
+                userDao.modifyNickName(patchUserReq.getNickName(), patchUserReq.getUserIdx());
+            }
+        } catch(Exception exception){
+            throw new BasicException(DATABASE_ERROR_MODIFY_FAIL_USER_NICKNAME);   //"닉네임 변경 오류"
+        }
+
+
+
+        try{
+            //웹사이트 변경
+            if(patchUserReq.getWebSite() != null){
+                userDao.modifyWebSite(patchUserReq.getWebSite(), patchUserReq.getUserIdx());
+            }
+        } catch(Exception exception){
+            throw new BasicException(DATABASE_ERROR_MODIFY_FAIL_USER_WEBSITE);   //"웹사이트 변경 오류"
+        }
+
+
+        try{
+            //소개글 변경
+            if(patchUserReq.getIntroduction() != null){
+                userDao.modifyIntroduction(patchUserReq.getIntroduction(), patchUserReq.getUserIdx());
+            }
+        } catch(Exception exception){
+            throw new BasicException(DATABASE_ERROR_MODIFY_FAIL_USER_INTRODUCTION);   //"소개글 변경 오류."
+        }
+
+
+        try{
+            //계정공개 유무 변경
+            if(patchUserReq.getAccountHiddenState() != null){
+
+                //String형식인 accountHiddenState 변수를 Enum 타입으로 변환
+                AccountHiddenState accountHiddenState = AccountHiddenState.valueOf(patchUserReq.getAccountHiddenState());
+                userDao.modifyAccountHiddenState(accountHiddenState, patchUserReq.getUserIdx());
+            }
+        } catch(Exception exception){
+            throw new BasicException(DATABASE_ERROR_MODIFY_FAIL_USER_ACCOUNT_HIDDEN_STATE);   //"계정공개 유무 변경 오류."
+        }
+
+
+
+    }
+
+
+
+    /* 5. 회원 탈퇴   */
+    public void deleteUser(Long userIdx) throws BasicException {
+
+        //회원 탈퇴 여부 확인
+        if(userDao.findByIdx(userIdx) == null){
+            throw new BasicException(RES_ERROR_NOT_EXIST_USER);  //"존재하지 않는 사용자 계정"
+        }
+
+        try{
+            //회원 탈퇴
+            userDao.deleteUser(userIdx);
+        } catch(Exception exception){
+            throw new BasicException(DATABASE_ERROR_DELETE_USER);   //'회원 탈퇴 실패'
+        }
+
+    }
 
 
 

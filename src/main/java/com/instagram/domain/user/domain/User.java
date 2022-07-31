@@ -50,7 +50,7 @@ public class User {
     private String webSite;  //웹사이트
 
     @Column (nullable=true, columnDefinition ="varchar(100)")
-    private String Introduction;  //소개
+    private String introduction;  //소개
 
     @Column (nullable=true, columnDefinition ="varchar(10) default 'OPEN'")
     @Enumerated(EnumType.STRING)

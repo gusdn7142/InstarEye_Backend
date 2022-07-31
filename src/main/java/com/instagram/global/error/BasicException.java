@@ -11,4 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class BasicException extends Exception{
     private BasicResponseStatus status;
+
+
 }
