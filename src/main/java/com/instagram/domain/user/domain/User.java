@@ -13,7 +13,7 @@ import java.util.Date;
 
 
 @Getter
-@Setter  //Setter를 써야할까??
+@Setter
 
 @Entity
 @DynamicInsert   //jap 메서드 동작시 null인 필드 제외

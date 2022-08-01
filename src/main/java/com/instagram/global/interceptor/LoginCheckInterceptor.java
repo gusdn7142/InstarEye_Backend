@@ -37,10 +37,15 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
 
+
+
+
         Map<String, String> pathVariables = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);  //final
         log.info("pathVariables : {}", pathVariables);
 
         Long userIdx = Long.valueOf(pathVariables.get("userIdx"));   //final
+
+
         //유효성 검사 필요!!!!!!!!
         //log.info("userIdx : {}", userIdx);  //userIdx 출력
 
