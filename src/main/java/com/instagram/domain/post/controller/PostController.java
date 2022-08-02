@@ -140,18 +140,12 @@ public class PostController {
         if(imageNumber == null || imageNumber.size() > 10 ){
             return new BasicResponse(REQ_ERROR_INVALID_POSTS_IMAGE_NUMBER);
         }
-//        if(postImageIdxList == null || postImageIdxList.size() > 10 ){
-//            return new BasicResponse(REQ_ERROR_INVALID_POSTS_IMAGE_NUMBER);
-//        }
         if(multipartFile.isEmpty() || multipartFile.size() > 10) {
             return new BasicResponse(REQ_ERROR_INVALID_POSTS_IMAGE_FILE);
         }
         if(imageNumber.size() != multipartFile.size() ) {
             return new BasicResponse(REQ_ERROR_DIFFERENT_SIZE_IMAGE_FILE_AND_IMAGE_NUMBER);
         }
-//        if(postImageIdxList.size() != multipartFile.size() ) {
-//            return new BasicResponse(REQ_ERROR_DIFFERENT_SIZE_IMAGE_FILE_AND_IMAGE_NUMBER);
-//        }
 
 
 

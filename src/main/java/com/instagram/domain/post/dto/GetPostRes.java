@@ -15,7 +15,4 @@ public interface GetPostRes {
     String getPostimage();  //게시글 이미지
     String getPostImageNumber();  //게시글 이미지의 번호
 
-
-
-
 }

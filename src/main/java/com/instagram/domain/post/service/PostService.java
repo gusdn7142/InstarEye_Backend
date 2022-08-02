@@ -145,12 +145,6 @@ public class PostService {
                 String beforeS3_fileName = PostImageBeforeList.get(i).getImage().replace(Secret.AWS_S3_CONNECT_URL, "");
                 awsS3Service.deleteFile(beforeS3_fileName);
             }
-
-            //자동 Exception
-//            int i = 10;
-//            int j = 0;
-//            int k = i / j;
-
         }
         catch(Exception exception){    //이전 이미지 파일 삭제 실패시 업로드된 새로운 파일을 삭제
             for(int i=0; i<postImageIdxList.size(); i++) {
@@ -206,6 +200,11 @@ public class PostService {
     /* 10. 특정 게시글 조회 */
     public GetPostRes getPost(Long postIdx) throws BasicException {
 
+        //게시글 삭제 여부 조회
+        Post postDelete = postDao.findByIdx(postIdx);
+        if(postDelete == null){             //게시글이 삭제되었다면..
+            throw new BasicException(RES_ERROR_POSTS_DELETE_POST);    //"삭제된 게시글"
+        }
 
         try {
             GetPostRes getPostRes = postDao.getPost(postIdx);
@@ -215,8 +214,6 @@ public class PostService {
         } catch (Exception exception) {
             throw new BasicException(DATABASE_ERROR_FAIL_GET_POSTS);  //"DB에서 게시글 조회 실패"
         }
-
-
 
     }
 
