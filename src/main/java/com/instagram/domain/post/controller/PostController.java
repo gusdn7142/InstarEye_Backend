@@ -35,7 +35,7 @@ public class PostController {
      * @return BaseResponse(responseMessage)
      */
     @PostMapping("/{userIdx}")      //, consumes = {"multipart/form-data"}
-    public BasicResponse createProduct(@PathVariable("userIdx") Long userIdx,
+    public BasicResponse createPost(@PathVariable("userIdx") Long userIdx,
                                        @RequestPart(value = "content", required = false) String content,
                                        @RequestPart(value = "imageNumber", required = false) List<Integer> imageNumber,
                                        @RequestPart(value = "imageFile", required = false) List<MultipartFile> multipartFile) {
@@ -78,7 +78,7 @@ public class PostController {
 
         try {
             //DB에 게시글 등록
-            String responseMessage = postService.createProduct(userIdx, content, imageNumber, multipartFile);
+            String responseMessage = postService.createPost(userIdx, content, imageNumber, multipartFile);
 
             return new BasicResponse(responseMessage);
         } catch (BasicException exception) {
@@ -188,7 +188,7 @@ public class PostController {
      */
 
     @PatchMapping("/{userIdx}/{postIdx}/status")
-    public BasicResponse deleteProduct(@PathVariable("userIdx") Long userIdx, @PathVariable("postIdx") Long postIdx ) {
+    public BasicResponse deletePost(@PathVariable("userIdx") Long userIdx, @PathVariable("postIdx") Long postIdx ) {
 
 
         try {

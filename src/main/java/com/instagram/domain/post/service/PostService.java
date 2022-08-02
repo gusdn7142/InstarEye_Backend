@@ -41,7 +41,7 @@ public class PostService {
 
     /* 6. 게시글 작성 */
     @Transactional(rollbackFor = {Exception.class})
-    public String createProduct(Long userIdX, String content, List<Integer> imageNumber, List<MultipartFile> multipartFile ) throws BasicException {
+    public String createPost(Long userIdX, String content, List<Integer> imageNumber, List<MultipartFile> multipartFile ) throws BasicException {
 
 
         //DB에 게시글 등록 (내용 ,이미지, 이미지 번호)
