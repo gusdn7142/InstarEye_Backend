@@ -12,9 +12,9 @@ import java.util.List;
 public interface GetPostsRes {
 
 
-    Long getWriter();  //사용자 인덱스
+    Long getWriterIdx();  //사용자 인덱스
     String getWriterNickName();  //사용자 닉네임
-    String getImage();   //사용자 이미지
+    String getWriterImage();   //사용자 이미지
 
     Long getPostIdx();//게시글 인덱스
     String getPostContent(); //게시글 내용

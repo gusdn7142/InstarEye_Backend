@@ -14,8 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import static com.instagram.global.error.BasicResponseStatus.*;
@@ -46,7 +44,7 @@ public class AwsS3Service {
                 amazonS3.putObject(new PutObjectRequest(bucket, UUID_fileName, inputStream, objectMetadata)  //putObject("버킷이름", "파일 이름", inputStream객체, 파일에 대한 Header 정보)
                         .withCannedAcl(CannedAccessControlList.PublicRead));  //PublicRead 권한을 줌
         } catch (Exception exception) {
-            throw new BasicException(S3_ERROR_UPLOAD_FILE);  //"S3에 파일 업로드 실패"
+            throw new BasicException(S3_ERROR_FAIL_UPLOAD_FILE);  //"S3에 파일 업로드 실패"
         }
 
         //클라이언트에게 보내기 위해 S3에서 파일 uri 조회
@@ -64,6 +62,25 @@ public class AwsS3Service {
         String UUID_fileName = UUID.randomUUID().toString() + "-" + imageFile.getOriginalFilename(); //파일명을 불러와서 고유 식별자와 합친 문자열을 생성
         return UUID_fileName;  //UUID 파일명 리턴
     }
+
+
+
+
+    //Amazon S3에 업로드 된 파일을 삭제
+    public void deleteFile(String fileName) throws BasicException {
+        try {
+            amazonS3.deleteObject(bucket, fileName);   //S3에서 업로드된 해당 파일 삭제
+        } catch (Exception exception) {
+            throw new BasicException(S3_ERROR_FAIL_DELETE_FILE);  //"S3에서 파일 삭제 실패"
+        }
+
+    }
+
+
+
+
+
+
 
 
 
