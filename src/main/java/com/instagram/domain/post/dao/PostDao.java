@@ -1,5 +1,7 @@
 package com.instagram.domain.post.dao;
 
+import com.instagram.domain.comment.dto.GetCommentsRes;
+import com.instagram.domain.comment.dto.GetPostToCommentRes;
 import com.instagram.domain.post.domain.Post;
 import com.instagram.domain.post.dto.GetPostRes;
 import com.instagram.domain.post.dto.GetPostsRes;
@@ -93,6 +95,39 @@ public interface PostDao extends JpaRepository<Post, Long> {
             "    on p.user_idx = u.idx\n" +
             "where p.idx = :postIdx", nativeQuery = true)
     GetPostRes getPost(@Param("postIdx") Long postIdx);
+
+
+
+
+
+    /* 15. 특정 게시글 정보 조회 (전체 댓글 조회 API) */
+    @Query(value="select p.idx as postIdx,\n" +
+            "       u.idx as writerIdx,\n" +
+            "       u.image as writerImage,\n" +
+            "       u.nick_name as writerNickName,\n" +
+            "       p.content postContent,\n" +
+            "       case when timestampdiff(minute, p.updated_at, current_timestamp) < 60\n" +
+            "           then concat(timestampdiff(minute, p.updated_at, current_timestamp),'분')\n" +
+            "\n" +
+            "           when timestampdiff(hour , p.updated_at, current_timestamp) < 24\n" +
+            "           then concat(timestampdiff(hour, p.updated_at, current_timestamp),'시간')\n" +
+            "\n" +
+            "           when timestampdiff(day , p.updated_at, current_timestamp) < 30\n" +
+            "           then concat(timestampdiff(day, p.updated_at, current_timestamp),'일')\n" +
+            "\n" +
+            "           else DATE_FORMAT(p.updated_at, '%c월 %e일')\n" +
+            "       end postCreatedTime\n" +
+            "\n" +
+            "from (select idx, content , updated_at, user_idx from post where status ='ACTIVE') p\n" +
+            "    join (select idx, nick_name, image from user where status ='ACTIVE') u\n" +
+            "    on p.user_idx = u.idx\n" +
+            "where p.idx = :postIdx", nativeQuery = true)
+    GetPostToCommentRes getPostToComment(@Param("postIdx") Long postIdx);
+
+
+
+
+
 
 
 

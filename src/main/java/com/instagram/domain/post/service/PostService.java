@@ -103,7 +103,6 @@ public class PostService {
             return getPostsRes;
 
         } catch (Exception exception) {
-            System.out.println(exception);
             throw new BasicException(DATABASE_ERROR_FAIL_GET_POSTS);  //"DB에서 게시글 조회 실패"
         }
 

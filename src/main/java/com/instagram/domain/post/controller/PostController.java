@@ -93,16 +93,12 @@ public class PostController {
 
     /**
      * 7. 전체 게시글 조회 API
-     * [GET] /posts/all/:userId
+     * [GET] /posts/all/:userIdx
      * @return BaseResponse(getPostRes)
      */
 
     @GetMapping("/all/{userIdx}")
-    public BasicResponse getPosts(@PageableDefault(page = 0, size = 10)  Pageable pageable){  //, direction = Sort.Direction.DESC, sort = "p.idx" 굳이 안써도 될듯!!!
-
-        System.out.println(pageable.getPageNumber());
-        System.out.println(pageable.getPageSize());
-
+    public BasicResponse getPosts(@PageableDefault(page = 0, size = 10)  Pageable pageable){  //, direction = Sort.Direction.DESC, sort = "p.idx"  ??
 
         try {
 
