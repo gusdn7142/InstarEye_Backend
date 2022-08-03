@@ -22,6 +22,10 @@ public interface UserDao extends JpaRepository<User, Long> {
     @Query(value="select u from User u where u.nickName = :nickName and u.status = 'ACTIVE'")
     User findByNickName(@Param("nickName") String nickName);
 
+    /* 비밀번호를 통해 User 엔티티 조회  */
+    @Query(value="select u from User u where u.password = :password and u.status = 'ACTIVE'")
+    User findByPassword(@Param("password") String password);
+
     /* 2. userIdx 통해 User 엔티티 조회  */
     @Query(value="select u from User u where u.idx = :userIdx and u.status = 'ACTIVE'")
     User findByIdx(@Param("userIdx") Long userIdx);

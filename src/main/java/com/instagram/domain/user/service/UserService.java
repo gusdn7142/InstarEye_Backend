@@ -234,9 +234,87 @@ public class UserService {
 
 
 
+    /* 카카오 회원가입  */
+    public String createKakaoUser(PostKakaoUserReq postKakaoUserReq) throws BasicException {
+
+
+        //카카오 유저로 가입이 되어 있는지 확인 (카카오 ID 활용)
+        String userPassword = postKakaoUserReq.getPassword().toString();
+        User userkakaoLogin = userDao.findByPassword(userPassword);
+        if(userkakaoLogin != null){
+            throw new BasicException(RES_ERROR_EXIST_KAKAO_USER);  //이미 존재하는 카카오 계정
+        }
+
+        //전화번호 중복 검사 ("ACTIVE"가 1일떄 포함)
+        if (userDao.findByPhone(postKakaoUserReq.getPhone()) != null){
+            throw new BasicException(RES_ERROR_EXIST_PHONE);
+        }
+
+        //닉네임 중복 검사 ("ACTIVE"가 1일떄 포함)
+        if (userDao.findByNickName(postKakaoUserReq.getNickName()) != null){
+            throw new BasicException(RES_ERROR_EXIST_NICK_NAME);
+        }
+
+
+        //카카오 유저 계정 생성
+        try{
+
+            //PostUserReq 객체의 데이터를 담을 User 엔티티 생성
+            User userCreation = new User();
+
+            //String형식인 privacyPolicyStatus 변수를 Enum 타입으로 변환
+            PrivacyPolicyStatus privacyPolicyStatus = PrivacyPolicyStatus.valueOf(postKakaoUserReq.getPrivacyPolicyStatus());
+            userCreation.setPrivacyPolicyStatus(privacyPolicyStatus);
+
+            BeanUtils.copyProperties(postKakaoUserReq,userCreation);
+
+            userDao.save(userCreation);
+            return "카카오 회원가입 성공";
+
+        } catch (Exception exception) {
+            throw new BasicException(DATABASE_ERROR_CREATE_USER);  //"DB에 사용자 등록 실패""
+        }
+
+
+    }
 
 
 
+    /* 카카오 로그인  */
+    public PostLoginRes kakaoLogIn(String kakaoId) throws BasicException {
+
+
+        //카카오 유저로 가입이 되어 있는지 확인
+        User userkakaoLogin = userDao.findByPassword(kakaoId);
+        if(userkakaoLogin == null){
+            throw new BasicException(RES_ERROR_NOT_EXIST_KAKAO_USER);   //존재하지 않는 카카오 계정 (카카오 회원가입 필요)
+        }
+
+
+        //jwt 발급 (accessToken)
+        String accessToken = null;
+        try {
+            accessToken = jwtservice.createAccessToken(userkakaoLogin.getIdx());    //accessToken 발급 : 사용자 인가 절차 구현 (만료시간 3시간)
+        }
+        catch (Exception exceptio){
+            throw new BasicException(ERROR_FAIL_ISSUE_ACCESS_TOKEN);  //"Access Token 발급 실패"
+        }
+
+
+        try {
+            //postLoginRes 객체에 userIdx와 jwt를 담아 클라이언트에게 전송
+            PostLoginRes postLoginRes = PostLoginRes.builder()
+                    .userIdx(userkakaoLogin.getIdx())
+                    .accessToken(accessToken)
+                    .build();
+
+            return postLoginRes;
+        }catch (Exception exception) {
+            throw new BasicException(RES_ERROR_LOGIN_USER);  //"로그인 실패"
+        }
+
+
+    }
 
 
 

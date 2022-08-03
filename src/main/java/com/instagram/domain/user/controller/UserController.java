@@ -1,26 +1,33 @@
 package com.instagram.domain.user.controller;
 
 
-import com.instagram.domain.user.domain.PrivacyPolicyStatus;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.instagram.domain.user.domain.AccountType;
 import com.instagram.domain.user.dto.*;
 import com.instagram.domain.user.service.UserService;
 import com.instagram.global.error.BasicException;
 import com.instagram.global.error.BasicResponse;
-import com.instagram.global.util.Security.JwtService;
+import com.instagram.global.util.login.KakaoService;
+import com.instagram.global.util.login.KakaoUserProfile;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.logging.LogLevel;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 import static com.instagram.global.error.BasicResponseStatus.*;
 
@@ -31,7 +38,7 @@ import static com.instagram.global.error.BasicResponseStatus.*;
 public class UserController {
 
     private final UserService userService;
-
+    private final KakaoService kakaoService;
 
     /*
      * 1. 회원가입 API
@@ -239,6 +246,119 @@ public class UserController {
             return new BasicResponse((exception.getStatus()));
         }
     }
+
+
+
+
+    /**
+     * 카카오 회원가입 API
+     * [POST] /users/kakao
+     * @return BaseResponse(message)
+     */
+    @ResponseBody
+    @PostMapping("/kakao")
+    public BasicResponse createKakaoUser(@Valid @RequestBody PostKakaoUserReq postKakaoUserReq, BindingResult bindingResult) {   //@RequestHeader HttpHeaders header => header.get("accessToken")
+
+
+
+        /* 유효성 검사 구현부 */
+        if(bindingResult.hasErrors()) {   //에러가 있다면
+            List<ObjectError> errorlist = bindingResult.getAllErrors();
+            String errorCode = errorlist.get(0).getCodes()[0];
+
+            if (errorCode.equals("Pattern.postKakaoUserReq.phone")) {
+                return new BasicResponse(REQ_ERROR_INVALID_PHONE);
+            }
+            else if (errorCode.equals("Size.postKakaoUserReq.nickName")) {
+                return new BasicResponse(REQ_ERROR_INVALID_NICK_NAME);
+            }
+            else if (errorCode.equals("Pattern.postKakaoUserReq.birthDay")) {
+                return new BasicResponse(REQ_ERROR_INVALID_BIRTHDAY);
+            }
+            else if (errorCode.equals("Pattern.postKakaoUserReq.privacyPolicyStatus")) {
+                return new BasicResponse(REQ_ERROR_INVALID_PRIVACY_POLICY_STATUS);
+            }
+        }
+        /* 유효성 검사 구현 끝 */
+
+
+        /* accessToken을 통해 카카오 계정 정보를 조회  */
+        KakaoUserProfile kakaoUserProfile=null;
+        try {
+            kakaoUserProfile = kakaoService.findProfile();
+        }
+        catch(BasicException exception){
+            return new BasicResponse(ERROR_INVALID_ACCESS_TOKEN);
+        }
+
+
+        //카카오 계정 정보를 DTO 객체에 입력
+        String email = "";
+        if(kakaoUserProfile.getKakao_account().getEmail() != null){
+            email = kakaoUserProfile.getKakao_account().getEmail();
+        }
+
+        postKakaoUserReq.setEmail(email);
+        postKakaoUserReq.setName(kakaoUserProfile.getProperties().getNickname());
+        postKakaoUserReq.setImage(kakaoUserProfile.getProperties().getProfile_image());
+        postKakaoUserReq.setPassword(kakaoUserProfile.getId().toString());
+        postKakaoUserReq.setAccountType(AccountType.KAKAO);
+
+
+        //카카오 회원가입 진행
+        try{
+            String message = userService.createKakaoUser(postKakaoUserReq);
+
+
+            return new BasicResponse(message);
+        } catch(BasicException exception){
+            return new BasicResponse((exception.getStatus()));
+        }
+
+    }
+
+
+
+
+
+
+    /**
+     * 카카오 로그인 API
+     * [POST] /users/kakao-logIn
+     * @return BaseResponse<>
+     */
+    @ResponseBody
+    @PostMapping("/kakao-login")
+    public BasicResponse logInKakao (@RequestHeader HttpHeaders header) {
+
+
+        /* accessToken을 통해 카카오 계정 정보를 조회  */
+        KakaoUserProfile kakaoUserProfile=null;
+        try {
+            kakaoUserProfile = kakaoService.findProfile();
+        }
+        catch(BasicException exception){
+            return new BasicResponse(ERROR_INVALID_ACCESS_TOKEN);
+        }
+
+
+        /* 로그인 진행   */
+        try {
+            PostLoginRes postLoginRes = userService.kakaoLogIn(kakaoUserProfile.getId().toString());
+
+            //userIdx와 jwt 응답
+            return new BasicResponse(postLoginRes);
+        }
+        catch (BasicException exception){
+            return new BasicResponse(exception.getStatus());
+        }
+
+    }
+
+
+
+
+
 
 
 

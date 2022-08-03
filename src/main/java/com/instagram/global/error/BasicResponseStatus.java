@@ -35,8 +35,6 @@ public enum BasicResponseStatus {
 
 
 
-
-
     DATABASE_ERROR_CREATE_USER("FAIL", "DATABASE_ERROR_CREATE_USER", "DB에 사용자 등록 실패"),
     RES_ERROR_LOGIN_USER("FAIL", "RES_ERROR_LOGIN_USER", "로그인 실패"),
 
@@ -44,6 +42,12 @@ public enum BasicResponseStatus {
     DATABASE_ERROR_DELETE_USER("FAIL", "DATABASE_ERROR_DELETE_USER", "회원 탈퇴 실패"),
 
 
+    /**
+     *  Oauth 관련
+     */
+    RES_ERROR_NOT_EXIST_KAKAO_USER("FAIL","RES_ERROR_NOT_EXIST_KAKAO_USER","존재하지 않는 카카오 계정 (카카오 회원가입 필요)"),
+    RES_ERROR_EXIST_KAKAO_USER("FAIL","RES_ERROR_EXIST_KAKAO_USER","이미 존재하는 카카오 계정"),
+    REQ_ERROR_INVALID_KAKAOID("FAIL","REQ_ERROR_INVALID_KAKAOID","카카오 ID 입력 필요"),
 
 
     /**
@@ -61,6 +65,7 @@ public enum BasicResponseStatus {
 
     DATABASE_ERROR_FAIL_GET_POSTS("FAIL","DATABASE_ERROR_FAIL_GET_POSTS","DB에서 게시글 조회 실패"),
     DATABASE_ERROR_DELETE_POSTS("FAIL","DATABASE_ERROR_DELETE_POSTS","DB에서 게시글 삭제 실패"),
+    DATABASE_ERROR_CREATE_POST("FAIL","DATABASE_ERROR_CREATE_POST","DB에 게시글 등록 실패"),
 
 
     /**
@@ -97,7 +102,6 @@ public enum BasicResponseStatus {
     ERROR_INVALID_USER_ACCESS_TOKEN("FAIL","ERROR_INVALID_USER_ACCESS_TOKEN","권한이 없는 유저의 접근"),
 
 
-    DATABASE_ERROR_CREATE_POST("FAIL","DATABASE_ERROR_CREATE_POST","DB에 게시글 등록 실패"),
 
 
     /**
