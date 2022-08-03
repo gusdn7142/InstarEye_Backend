@@ -44,7 +44,7 @@ public interface ChatDao extends JpaRepository<Chat, Long> {
             "from chat c left join (select idx, image from user where status = 'ACTIVE') u\n" +
             "    on c.receiver_idx = u.idx\n" +
             "\n" +
-            "where (c.sender_idx = :senderIdx and c.receiver_idx = :receiverIdx) or (c.sender_idx = :receiverIdx and c.receiver_idx = :senderIdx) and status = 'ACTIVE'\n" +
+            "where ((c.sender_idx = :senderIdx and c.receiver_idx = :receiverIdx) or (c.sender_idx = :receiverIdx and c.receiver_idx = :senderIdx)) and c.status = 'ACTIVE'\n" +
             "group by c.idx\n" +
             "order by c.idx DESC", nativeQuery = true)
     List<GetChatRes> getChats(@Param("senderIdx") Long senderIdx, @Param("receiverIdx") Long receiverIdx, Pageable pageable);
