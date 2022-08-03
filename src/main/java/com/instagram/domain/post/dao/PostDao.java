@@ -51,7 +51,7 @@ public interface PostDao extends JpaRepository<Post, Long> {
             "       group_concat(pi.image_number) postImageNumber\n" +
             "\n" +
             "from (select idx, content, updated_at ,user_idx from post where status ='ACTIVE') p\n" +
-            "    join (select idx, image,image_number, post_idx from post_image where status ='ACTIVE') pi\n" +
+            "    left join (select idx, image,image_number, post_idx from post_image where status ='ACTIVE') pi\n" +
             "    on p.idx = pi.post_idx\n" +
             "    join (select idx, nick_name, image from user where status ='ACTIVE') u\n" +
             "    on p.user_idx = u.idx\n" +
@@ -89,7 +89,7 @@ public interface PostDao extends JpaRepository<Post, Long> {
             "       group_concat(pi.image_number) postImageNumber\n" +
             "\n" +
             "from (select idx, content ,user_idx from post where status ='ACTIVE') p\n" +
-            "    join (select idx, image,image_number, post_idx from post_image where status ='ACTIVE') pi\n" +
+            "    left join (select idx, image,image_number, post_idx from post_image where status ='ACTIVE') pi\n" +
             "    on p.idx = pi.post_idx\n" +
             "    join (select idx, nick_name, image from user where status ='ACTIVE') u\n" +
             "    on p.user_idx = u.idx\n" +
