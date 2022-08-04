@@ -104,7 +104,7 @@ public class CommentService {
 
         //댓글 삭제 여부 조회 (유저가 계속 클릭시..)
         Comment commentDelete = commentDao.findByIdx(commentIdx);
-        if(commentDelete == null){             //게시글이 삭제되었다면..
+        if(commentDelete == null){
             throw new BasicException(RES_ERROR_COMMENTS_DELETE_COMMENT);    //"삭제된 댓글"
         }
 
