@@ -41,18 +41,26 @@ public interface CommentDao extends JpaRepository<Comment, Long> {
             "           then concat(timestampdiff(day, c.updated_at, current_timestamp),'일')\n" +
             "\n" +
             "           else DATE_FORMAT(c.updated_at, '%c월 %e일')\n" +
-            "       end commentCreatedTime\n" +
+            "       end commentCreatedTime,\n" +
+            "       CONCAT(IFNULL(FORMAT(cl.commentLikeCount,0),0),'개') as commentLikeCount,\n" +
+            "       IFNULL(cl2.likeClickStatus,'INACTIVE') as likeClickStatus\n" +
             "\n" +
             "\n" +
             "from comment c join user u\n" +
             "    on c.user_idx = u.idx\n" +
             "join post p\n" +
             "    on c.post_idx = p.idx\n" +
+            "left join (select comment_idx, count(comment_idx) as commentLikeCount from comment_like where status = 'ACTIVE' group by comment_idx) cl\n" +
+            "    on c.idx = cl.comment_idx\n" +
+            "left join (select comment_idx, 'ACTIVE' as likeClickStatus from comment_like where user_idx = :userIdx) cl2\n" +
+            "    on c.idx = cl2.comment_idx\n" +
             "\n" +
             "where c.status = 'ACTIVE' and u.status = 'ACTIVE' and p.idx = :postIdx\n" +
             "group by c.idx\n" +
             "order by c.idx DESC", nativeQuery = true)
-    List<GetCommentsRes> getComments(Pageable pageable, @Param("postIdx") Long postIdx);
+    List<GetCommentsRes> getComments(Pageable pageable,
+                                     @Param("postIdx") Long postIdx,
+                                     @Param("userIdx") Long userIdx);
 
 
 

@@ -24,7 +24,9 @@ public interface GetPostsRes {
     String getPostimage();  //게시글 이미지
     String getPostImageNumber();  //게시글 이미지의 번호
 
-
+    String getPostLikeCount();  //게시글 좋아요 수
+    String getCommentCount();  //댓글 수
+    String getLikeClickStatus();  //좋아요 클릭 여부
 
 
 }

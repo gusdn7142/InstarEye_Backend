@@ -68,7 +68,7 @@ public class CommentService {
 
 
     /* 15. 전체 댓글 조회  */
-    public GetCommentAndPostRes getComments(Pageable pageable, Long postIdx) throws BasicException {
+    public GetCommentAndPostRes getComments(Pageable pageable, Long postIdx, Long userIdx ) throws BasicException {
 
         //게시글 삭제 여부 조회 (유저가 계속 클릭시..)
         Post post = postDao.findByIdx(postIdx);
@@ -81,7 +81,7 @@ public class CommentService {
             GetPostToCommentRes getPostToCommentRes = postDao.getPostToComment(postIdx);
 
             //전체 댓글 조회
-            List<GetCommentsRes> getCommentsRes = commentDao.getComments(pageable, postIdx);
+            List<GetCommentsRes> getCommentsRes = commentDao.getComments(pageable, postIdx, userIdx);
 
             //Response DTO
             GetCommentAndPostRes getCommentAndPostRes = new GetCommentAndPostRes(getPostToCommentRes,getCommentsRes);

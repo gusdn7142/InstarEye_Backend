@@ -7,6 +7,8 @@ import com.instagram.domain.post.service.PostService;
 import com.instagram.global.error.BasicException;
 import com.instagram.global.error.BasicResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -98,12 +100,24 @@ public class PostController {
      */
 
     @GetMapping("/all/{userIdx}")
-    public BasicResponse getPosts(@PageableDefault(page = 0, size = 10)  Pageable pageable){  //, direction = Sort.Direction.DESC, sort = "p.idx"  ??
+    public BasicResponse getPosts(@RequestParam(required = false) Integer pageIndex ,
+                                  @RequestParam(required = false) Integer size,
+                                  @PathVariable("userIdx") Long userIdx){  //, direction = Sort.Direction.DESC, sort = "p.idx"  ??
+
+        if(pageIndex == null){
+            return new BasicResponse(REQ_ERROR_NOT_EXIST_PAGING_PAGEINDEX);
+        }
+        if(size == null){
+            return new BasicResponse(REQ_ERROR_NOT_EXIST_PAGING_SIZE);
+        }
+        PageRequest pageable = PageRequest.of(pageIndex , size);
+
+
 
         try {
 
             //전체 게시글 조회
-            List<GetPostsRes> getPostsRes = postService.getPosts(pageable);
+            List<GetPostsRes> getPostsRes = postService.getPosts(pageable, userIdx);
 
             return new BasicResponse(getPostsRes);
         } catch (BasicException exception) {

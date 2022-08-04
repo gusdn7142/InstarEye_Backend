@@ -48,16 +48,25 @@ public interface PostDao extends JpaRepository<Post, Long> {
             "       end postCreatedDate,\n" +
             "       group_concat(pi.idx) postImageIdx,\n" +
             "       group_concat(pi.image) postimage,\n" +
-            "       group_concat(pi.image_number) postImageNumber\n" +
+            "       group_concat(pi.image_number) postImageNumber,\n" +
+            "       CONCAT(IFNULL(FORMAT(pl.postLikeCount,0),0),'개') as postLikeCount,\n" +
+            "       CONCAT(IFNULL(FORMAT(c.commentCount,0),0),'개') as commentCount,\n" +
+            "       IFNULL(pl2.likeClickStatus,'INACTIVE') as likeClickStatus\n" +
             "\n" +
             "from (select idx, content, updated_at ,user_idx from post where status ='ACTIVE') p\n" +
             "    left join (select idx, image,image_number, post_idx from post_image where status ='ACTIVE') pi\n" +
             "    on p.idx = pi.post_idx\n" +
             "    join (select idx, nick_name, image from user where status ='ACTIVE') u\n" +
             "    on p.user_idx = u.idx\n" +
+            "    left join (select post_idx, count(post_idx) as postLikeCount from post_like where status = 'ACTIVE' group by post_idx) pl\n" +
+            "    on p.idx = pl.post_idx\n" +
+            "    left join(select post_idx, count(post_idx) as commentCount from comment where status='ACTIVE' group by post_idx) c\n" +
+            "    on p.idx = c.post_idx\n" +
+            "    left join (select post_idx, 'ACTIVE' as likeClickStatus from post_like where user_idx = :userIdx) pl2\n" +
+            "    on p.idx = pl2.post_idx\n" +
             "group by p.idx\n" +
             "order by p.idx DESC", nativeQuery = true)
-    List<GetPostsRes> getPosts(Pageable pageable);
+    List<GetPostsRes> getPosts(Pageable pageable, @Param("userIdx") Long userIdx);
 
 
 

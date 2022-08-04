@@ -121,6 +121,13 @@ public enum BasicResponseStatus {
     ERROR_INVALID_USER_ACCESS_TOKEN("FAIL","ERROR_INVALID_USER_ACCESS_TOKEN","권한이 없는 유저의 접근"),
 
 
+    /**
+     * Paging 관련
+     */
+    REQ_ERROR_NOT_EXIST_PAGING_PAGEINDEX("FAIL","REQ_ERROR_NOT_EXIST_PAGING_PAGEINDEX","pageIndex 파라미터 미입력"),
+    REQ_ERROR_NOT_EXIST_PAGING_SIZE("FAIL","REQ_ERROR_NOT_EXIST_PAGING_SIZE","size 파라미터 미입력"),
+
+
 
 
     /**

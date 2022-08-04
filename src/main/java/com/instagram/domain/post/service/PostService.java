@@ -94,11 +94,11 @@ public class PostService {
 
 
     /* 7. 전체 게시글 조회 */
-    public List<GetPostsRes> getPosts(Pageable pageable) throws BasicException {
+    public List<GetPostsRes> getPosts(Pageable pageable, Long userIdx) throws BasicException {
 
 
         try {
-            List<GetPostsRes> getPostsRes = postDao.getPosts(pageable);
+            List<GetPostsRes> getPostsRes = postDao.getPosts(pageable, userIdx);
 
             return getPostsRes;
 

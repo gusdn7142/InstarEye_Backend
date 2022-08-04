@@ -10,6 +10,7 @@ import com.instagram.domain.user.dto.PatchUserReq;
 import com.instagram.global.error.BasicException;
 import com.instagram.global.error.BasicResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.BindingResult;
@@ -74,14 +75,23 @@ public class CommentController {
      */
 
     @GetMapping("/all/{postIdx}/{userIdx}")
-    public BasicResponse getComments(@PageableDefault(page = 0, size = 10)  Pageable pageable,
-                                     @PathVariable("postIdx") Long postIdx){  //, direction = Sort.Direction.DESC, sort = "p.idx" ??
+    public BasicResponse getComments(@RequestParam(required = false) Integer pageIndex ,
+                                     @RequestParam(required = false) Integer size,
+                                     @PathVariable("postIdx") Long postIdx,
+                                     @PathVariable("userIdx") Long userIdx){  //, direction = Sort.Direction.DESC, sort = "p.idx" ??
 
+        if(pageIndex ==null){
+            return new BasicResponse(REQ_ERROR_NOT_EXIST_PAGING_PAGEINDEX);
+        }
+        if(size == null){
+            return new BasicResponse(REQ_ERROR_NOT_EXIST_PAGING_SIZE);
+        }
+        PageRequest pageable = PageRequest.of(pageIndex , size);
 
         try {
 
             //전체 댓글 조회
-            GetCommentAndPostRes getCommentAndPostRes = commentService.getComments(pageable, postIdx);
+            GetCommentAndPostRes getCommentAndPostRes = commentService.getComments(pageable, postIdx, userIdx);
 
             return new BasicResponse(getCommentAndPostRes);
         } catch (BasicException exception) {

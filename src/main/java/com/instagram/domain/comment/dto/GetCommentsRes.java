@@ -11,5 +11,7 @@ public interface GetCommentsRes {
     String getCommenterNickName();
     String getCommentContent();
     String getCommentCreatedTime();
+    String getCommentLikeCount();
+    String getLikeClickStatus();
 
 }
