@@ -48,8 +48,12 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         else if(pathVariables.get("senderIdx") != null){   //userIdx가 없으면 sender_idx를 찾아본다..
             userIdx = Long.valueOf(pathVariables.get("senderIdx"));
         }
-
-
+        else if(pathVariables.get("followerReqIdx") != null){   //userIdx가 없으면 followerReqIdx 찾아본다..
+            userIdx = Long.valueOf(pathVariables.get("followerReqIdx"));
+        }
+        else if(pathVariables.get("followerIdx") != null){   //userIdx가 없으면 followerIdx 찾아본다..
+            userIdx = Long.valueOf(pathVariables.get("followerIdx"));
+        }
 
         //유효성 검사 필요!!!!!!!!
         //log.info("userIdx : {}", userIdx);  //userIdx 출력
