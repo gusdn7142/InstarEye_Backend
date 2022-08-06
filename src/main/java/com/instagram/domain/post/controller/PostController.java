@@ -131,12 +131,12 @@ public class PostController {
 
     /**
      * 8. 게시글 수정 API
-     * [PATCH] /post/:userId/:postId
+     * [PATCH] /post/:userIdx/:postIdx
      * @return BaseResponse()
      */
     // Body
     @PatchMapping("/{userIdx}/{postIdx}")
-    public BasicResponse modifyPost(@PathVariable("userIdx") Long userIdx  ,
+    public BasicResponse modifyPost(@PathVariable("userIdx") Long userIdx,
                                     @PathVariable("postIdx") Long postIdx,
                                     @RequestPart(value = "postImageIdx", required = false) List<Long> postImageIdxList,
                                     @RequestPart(value = "content", required = false) String content,

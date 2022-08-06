@@ -21,12 +21,14 @@ public class FollowController {
 
     /**
      * 24. 팔로우 API
-     * [POST] /follows/:followerIdx/:followeeIdx?followReqIdx=
+     * [POST] /follows/:followerIdx/:followeeIdx
      * @return BaseResponse(postFollowRes)
      */
     @PostMapping("/{followerIdx}/{followeeIdx}")
     public BasicResponse createfollowToOpen(@PathVariable("followerIdx") Long followerIdx,
                                             @PathVariable("followeeIdx") Long followeeIdx){
+
+
 
         try {
             //DB에 팔로우 정보 등록

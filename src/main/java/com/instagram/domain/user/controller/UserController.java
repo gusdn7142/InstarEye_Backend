@@ -149,12 +149,12 @@ public class UserController {
 
     /**
      * 3. 프로필 조회 API
-     * [POST] /users/:userId/profile
+     * [GET] /users/:userId/profile
      * @return BaseResponse(GetUserRes)
      * @return getUserRes
      */
     @GetMapping("/{userIdx}/profile")
-    public BasicResponse getUser(@PathVariable("userIdx" ) Long userIdx) {
+    public BasicResponse getUser(@PathVariable("userIdx") Long userIdx) {
 
 
 
@@ -183,7 +183,7 @@ public class UserController {
 
     @PatchMapping("/{userIdx}/profile")
     public BasicResponse modifyUserInfo(@PathVariable("userIdx") Long userIdx,
-                                    @Valid @RequestBody PatchUserReq patchUserReq, BindingResult bindingResult){
+                                        @Valid @RequestBody PatchUserReq patchUserReq, BindingResult bindingResult){
 
 
         /* 유효성 검사 구현부 */
@@ -366,7 +366,7 @@ public class UserController {
      * @return BaseResponse(message)
      */
     @PatchMapping("/{userIdx}/privacy-policy-reagree")
-    public BasicResponse reagreePrivacyPolicy(@PathVariable("userIdx") Long userIdx) {
+    public BasicResponse reagreePrivacyPolicy(@PathVariable(value = "userIdx") Long userIdx) {
 
 
 

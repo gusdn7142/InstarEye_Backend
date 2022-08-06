@@ -43,17 +43,36 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 
         Long userIdx = null;
         if(pathVariables.get("userIdx") != null) {
-            userIdx = Long.valueOf(pathVariables.get("userIdx"));
+            try {
+                userIdx = Long.valueOf(pathVariables.get("userIdx"));
+            } catch (Exception exception){
+                throw new BasicException(REQ_ERROR_INVALID_USERIDX);  //userIdx 형식 오류"
+            }
         }
         else if(pathVariables.get("senderIdx") != null){   //userIdx가 없으면 sender_idx를 찾아본다..
-            userIdx = Long.valueOf(pathVariables.get("senderIdx"));
+            try {
+                userIdx = Long.valueOf(pathVariables.get("senderIdx"));
+            } catch (Exception exception){
+                throw new BasicException(REQ_ERROR_INVALID_SENDERIDX);  //senderIdx 형식 오류"
+            }
         }
         else if(pathVariables.get("followerReqIdx") != null){   //userIdx가 없으면 followerReqIdx 찾아본다..
-            userIdx = Long.valueOf(pathVariables.get("followerReqIdx"));
+            try {
+                userIdx = Long.valueOf(pathVariables.get("followerReqIdx"));
+            } catch (Exception exception){
+                throw new BasicException(REQ_ERROR_INVALID_FOLLOWERREQIDX);  //followerReqIdx 형식 오류"
+            }
         }
         else if(pathVariables.get("followerIdx") != null){   //userIdx가 없으면 followerIdx 찾아본다..
-            userIdx = Long.valueOf(pathVariables.get("followerIdx"));
+            try {
+                userIdx = Long.valueOf(pathVariables.get("followerIdx"));
+                log.info("{}",userIdx);
+                log.info("{}",pathVariables.get("followeeIdx"));
+            } catch (Exception exception){
+                throw new BasicException(REQ_ERROR_INVALID_FOLLOWERIDX);  //followerIdx 형식 오류"
+            }
         }
+
 
         //유효성 검사 필요!!!!!!!!
         //log.info("userIdx : {}", userIdx);  //userIdx 출력
@@ -63,6 +82,10 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         if(userIdx != userIdByAccessToken){               //AccessToken 안의 userId와 직접 입력받은 userId가 같지 않다면
             throw new BasicException(ERROR_INVALID_USER_ACCESS_TOKEN);  //권한이 없는 유저의 접근
         }
+
+
+
+
 
 
         return true;   //true이면 다음 인터셉터 혹은 컨트롤러 호출
