@@ -1,25 +1,24 @@
 package com.instagram.domain.user.dto;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-
-@Getter
-@Setter
-@AllArgsConstructor
-public class GetUserRes {
 
 
-    private Long idx;
-    private String name;
-    private String image;
-    private String nickName;
+public interface GetUserRes {
 
-    private String webSite;
-    private String Introduction;
+    Long getUserIdx();
+    String getUserName();
+    String getUserImage();
+    String getUserNickName();
+    String getUserWebSite();
+    String getUserIntroduction();
+
+    Long getPostCount();
+    Long getFollowerCount();
+    Long getFolloweeCount();
+    String getPostIdx();
+    String getPostImage();
+
+
+
 
 }
