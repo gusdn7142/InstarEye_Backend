@@ -98,8 +98,35 @@ public interface UserDao extends JpaRepository<User, Long> {
     /* 5. 회원 탈퇴 API */
     @Modifying
     @Transactional
-    @Query(value="update User set status = 'INACTIVE' where idx = :userIdx and status = 'ACTIVE'\n")
-    void deleteUser(@Param("userIdx") Long userIdx );
+    @Query(value="update user u left join post p\n" +
+            "    on u.idx = p.user_idx\n" +
+            "join post_image pi\n" +
+            "    on p.idx = pi.post_idx\n" +
+            "join chat c\n" +
+            "    on u.idx = c.sender_idx or u.idx = c.receiver_idx\n" +
+            "join comment cm\n" +
+            "    on p.idx = cm.post_idx or u.idx = cm.user_idx\n" +
+            "join comment_like cl\n" +
+            "    on cm.idx = cl.comment_idx or u.idx = cl.user_idx\n" +
+            "join post_like pl\n" +
+            "    on p.idx = pl.post_idx or u.idx = pl.user_idx\n" +
+            "join follow f\n" +
+            "    on u.idx = f.follower_idx or u.idx = f.followee_idx\n" +
+            "join follow_req fr\n" +
+            "    on u.idx = fr.follower_req_idx or u.idx = fr.followee_req_idx\n" +
+            "\n" +
+            "set u.status = 'INACTIVE',\n" +
+            "    p.status = 'INACTIVE',\n" +
+            "    pi.status = 'INACTIVE',\n" +
+            "    c.status = 'INACTIVE',\n" +
+            "    cm.status = 'INACTIVE',\n" +
+            "    cl.status = 'INACTIVE',\n" +
+            "    pl.status = 'INACTIVE',\n" +
+            "    f.status = 'INACTIVE',\n" +
+            "    fr.status = 'INACTIVE'\n" +
+            "\n" +
+            "where u.idx = :userIdx", nativeQuery = true)
+    void deleteUser(@Param("userIdx") Long userIdx);
 
 
 
