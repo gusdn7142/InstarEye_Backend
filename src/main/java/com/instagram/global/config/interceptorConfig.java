@@ -18,7 +18,8 @@ public class interceptorConfig implements WebMvcConfigurer {
     private List<String> whiteList = new ArrayList<>(Arrays.asList( "/users",
                                                                     "/users/login",
                                                                     "/users/kakao",
-                                                                    "/users/kakao-login"
+                                                                    "/users/kakao-login",
+                                                                    "/users/*/privacy-policy-reagree"
     ));
 
 

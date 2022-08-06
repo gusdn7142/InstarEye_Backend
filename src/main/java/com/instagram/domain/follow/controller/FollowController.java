@@ -42,7 +42,7 @@ public class FollowController {
     }
 
     /**
-     * 25. 팔로우 승인 API
+     * 25. 팔로우 요청 승인 API
      * [POST] /follows/:userIdx/:followReqIdx
      * @return BaseResponse(postFollowRes)
      */

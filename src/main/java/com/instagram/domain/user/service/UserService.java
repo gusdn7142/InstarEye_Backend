@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -100,6 +101,10 @@ public class UserService {
             throw new BasicException(RES_ERROR_MATCH_FAIL_PASSWORD);    //"잘못된 비밀번호"
         }
 
+        //개인정보 처리방침 동의 만료 확인
+        if(userLogin.getPrivacyPolicyStatus() == PrivacyPolicyStatus.DISAGREE) {
+            throw new BasicException(RES_ERROR_INVALID_PRIVACY_POLICY_STATUS);    //"개인정보 처리방침 재동의 필요"
+        }
 
 
         //jwt 발급 (accessToken)
@@ -315,6 +320,52 @@ public class UserService {
 
 
     }
+
+
+
+
+    /* 개인정보 처리방침 재동의 API */
+    @Transactional(rollbackFor = {Exception.class})
+    public String reagreePrivacyPolicy(Long userIdx) throws BasicException {
+
+
+        //가입된 유저인지 확인
+        User user = userDao.findByIdx(userIdx);
+        if(user == null){
+            throw new BasicException(RES_ERROR_JOIN_CHECK);                 //"가입되지 않은 유저"
+        }
+
+
+        //개인정보 처리방침 동의 만료 확인
+        if(user.getPrivacyPolicyStatus() != PrivacyPolicyStatus.DISAGREE) {
+            throw new BasicException(RES_ERROR_VALID_PRIVACY_POLICY_STATUS);    //"개인정보 처리방침에 이미 동의한 상태"
+        }
+
+
+
+        try {
+            //개인정보 처리방침 동의 DB에 반영
+            userDao.reagreePrivacyPolicy(userIdx);
+
+            //createdAt에 1년 추가 (스케줄러 동작에 맞추기 위함)
+            userDao.addOneYeartoCreatedAt(userIdx);
+
+            return "개인정보 처리방침 동의 완료! 로그인을 진행해 주세요.";
+
+        }catch (Exception exception) {
+            throw new BasicException(DATABASE_ERROR_FAIL_AGREE_PRIVACY_POLICY_STATUS);  //"개인정보 처리방침 재동의 실패"
+        }
+
+
+
+
+    }
+
+
+
+
+
+
 
 
 

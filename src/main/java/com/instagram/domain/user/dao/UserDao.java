@@ -76,6 +76,27 @@ public interface UserDao extends JpaRepository<User, Long> {
 
 
 
+    /* 개인정보 처리방침 동의 상태 1년마다 갱신 (스케줄러) */
+    @Modifying
+    @Transactional
+    @Query(value="update user u set u.privacy_policy_status='DISAGREE' where (date_add(u.created_at, interval +1 year) < now())", nativeQuery = true)
+    void modifyPrivacyPolicyStatus();
+
+
+    /* 개인정보 처리방침 재동의 API */
+    @Modifying
+    @Transactional
+    @Query(value="update User u set u.privacyPolicyStatus='AGREE' where u.privacyPolicyStatus = 'DISAGREE' and u.status = 'ACTIVE' and u.idx = :userIdx")
+    void reagreePrivacyPolicy(@Param("userIdx") Long userIdx );
+
+
+
+    /* createdAt에 1년 추가 (스케줄러 동작에 맞추기 위함) */
+    @Modifying
+    @Transactional
+    @Query(value="update user u set u.created_at= (date_add(u.created_at, interval +1 year)) where u.status = 'ACTIVE' and u.idx = :userIdx", nativeQuery = true)
+    void addOneYeartoCreatedAt(@Param("userIdx") Long userIdx );
+
 
 
 }

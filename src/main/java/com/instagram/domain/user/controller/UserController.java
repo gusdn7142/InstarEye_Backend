@@ -360,6 +360,29 @@ public class UserController {
 
 
 
+    /*
+     * 개인정보 처리방침 재동의 API
+     * [PATCH] /users/:userIdx/privacy-policy-reagree
+     * @return BaseResponse(message)
+     */
+    @PatchMapping("/{userIdx}/privacy-policy-reagree")
+    public BasicResponse reagreePrivacyPolicy(@PathVariable("userIdx") Long userIdx) {
+
+
+
+        try{
+            //개인정보 처리방침 재동의
+            String message = userService.reagreePrivacyPolicy(userIdx);
+
+            return new BasicResponse(message);
+        } catch(BasicException exception){
+            return new BasicResponse(exception.getStatus());
+        }
+
+
+    }
+
+
 
 
 
