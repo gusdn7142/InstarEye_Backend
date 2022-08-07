@@ -41,7 +41,7 @@
 </br>
 
 ## 📦 ERD 설계도
-![Instagram_ERD](https://user-images.githubusercontent.com/62496215/183281668-488bfbbb-4cf9-42c7-866e-f4ab7cf6752f.png)
+![Instagram_ERD](https://user-images.githubusercontent.com/62496215/183288506-76da300b-f533-4cfd-ae43-70c8a07cbfbf.png)
 
 
 
