@@ -25,11 +25,11 @@ public class FollowReqService {
 
 
     /* 22. 팔로우 요청  */
-    public PostFollowReqRes createfollowReq(Long followerReqIdx, Long followee_req_idx) throws BasicException {
+    public PostFollowReqRes createfollowReq(Long followerReqIdx, Long followeeReqIdx) throws BasicException {
 
 
         User reqFollower = userDao.findByIdx(followerReqIdx);
-        User reqFollowee = userDao.findByIdx(followee_req_idx);
+        User reqFollowee = userDao.findByIdx(followeeReqIdx);
 
 
         //팔로위 계정 삭제 여부 조회

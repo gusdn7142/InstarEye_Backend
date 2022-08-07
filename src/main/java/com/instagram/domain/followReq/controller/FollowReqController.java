@@ -8,6 +8,8 @@ import com.instagram.global.error.BasicResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import static com.instagram.global.error.BasicResponseStatus.REQ_ERROR_FOLLOWREQ_SAME_FOLLOWERREQIDX_FOLLOWEEREQIDX;
+
 
 @RestController
 @RequestMapping("follow-reqs")
@@ -27,6 +29,9 @@ public class FollowReqController {
     public BasicResponse createfollowReq(@PathVariable("followerReqIdx") Long followerReqIdx,
                                         @PathVariable("followeeReqIdx") Long followeeReqIdx){
 
+        if(followerReqIdx == followeeReqIdx){
+            return new BasicResponse(REQ_ERROR_FOLLOWREQ_SAME_FOLLOWERREQIDX_FOLLOWEEREQIDX); //"followerReqIdx와 followeeReqIdx 값 동일 오류"
+        }
 
         try {
             //DB에 팔로우 요청 정보 등록

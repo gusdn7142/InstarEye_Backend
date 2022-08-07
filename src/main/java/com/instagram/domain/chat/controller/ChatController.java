@@ -8,6 +8,7 @@ import com.instagram.domain.post.dto.GetPostsRes;
 import com.instagram.global.error.BasicException;
 import com.instagram.global.error.BasicResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +37,9 @@ public class ChatController {
                                        @PathVariable("receiverIdx") Long receiverIdx,
                                        @RequestBody(required = false) String content){
 
-
+        if(senderIdx == receiverIdx){
+            return new BasicResponse(REQ_ERROR_CHATS_SAME_SENDERIDX_RECEIVERIDX); //"senderIdx와 receiverIdx 값 동일 오류"
+        }
 
         /* 유효성 검사 구현부 */
         if(content == null || content.length() > 200){
@@ -70,7 +73,18 @@ public class ChatController {
     @GetMapping("/all/{senderIdx}/{receiverIdx}")
     public BasicResponse getChats(@PathVariable("senderIdx") Long senderIdx,
                                   @PathVariable("receiverIdx") Long receiverIdx,
-                                  @PageableDefault(page = 0, size = 10)  Pageable pageable){  //, direction = Sort.Direction.DESC, sort = "p.idx" 굳이 안써도 될듯!!!
+                                  @RequestParam(required = false) Integer pageIndex ,
+                                  @RequestParam(required = false) Integer size){  //, direction = Sort.Direction.DESC, sort = "p.idx" 굳이 안써도 될듯!!!
+
+
+        if(pageIndex == null){
+            return new BasicResponse(REQ_ERROR_NOT_EXIST_PAGING_PAGEINDEX);
+        }
+        if(size == null){
+            return new BasicResponse(REQ_ERROR_NOT_EXIST_PAGING_SIZE);
+        }
+        PageRequest pageable = PageRequest.of(pageIndex , size);
+
 
         try {
 
