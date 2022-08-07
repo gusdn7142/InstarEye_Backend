@@ -85,7 +85,7 @@ public class PostService {
 
 
         } catch (Exception exception) {
-            throw new BasicException(DATABASE_ERROR_CREATE_POST);  //게시글 등록 실패
+            throw new BasicException(DATABASE_ERROR_CREATE_POST);  //DB에 게시글 등록 실패
         }
 
 

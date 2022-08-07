@@ -71,7 +71,7 @@ public enum BasicResponseStatus {
     DATABASE_ERROR_FAIL_GET_POSTS("FAIL","DATABASE_ERROR_FAIL_GET_POSTS","DB에서 게시글 조회 실패"),
     DATABASE_ERROR_DELETE_POSTS("FAIL","DATABASE_ERROR_DELETE_POSTS","DB에서 게시글 삭제 실패"),
     DATABASE_ERROR_CREATE_POST("FAIL","DATABASE_ERROR_CREATE_POST","DB에 게시글 등록 실패"),
-
+    //DATABASE_ERROR_MODIFY_POSTS("FAIL","DATABASE_ERROR_MODIFY_POSTS","DB에서 게시글 수정 실패"),
 
     /**
      * chat 도메인
@@ -127,6 +127,12 @@ public enum BasicResponseStatus {
     ERROR_EMPTY_ACCESS_TOKEN("FAIL", "ERROR_EMPTY_ACCESS_TOKEN", "accessToken 미입력 오류"),
     ERROR_INVALID_ACCESS_TOKEN("FAIL", "ERROR_INVALID_ACCESS_TOKEN", "accessToken 변조 혹은 만료"),
     ERROR_INVALID_USER_ACCESS_TOKEN("FAIL","ERROR_INVALID_USER_ACCESS_TOKEN","권한이 없는 유저의 접근"),
+
+
+    /**
+     * kakao 로그인 관련
+     */
+    ERROR_INVALID_KAKAO_ACCESS_TOKEN("FAIL", "ERROR_INVALID_KAKAO_ACCESS_TOKEN", "kakaoAccessToken 변조 혹은 만료"),
 
 
     /**

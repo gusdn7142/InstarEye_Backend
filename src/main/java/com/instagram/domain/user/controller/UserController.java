@@ -282,13 +282,13 @@ public class UserController {
         /* 유효성 검사 구현 끝 */
 
 
-        /* accessToken을 통해 카카오 계정 정보를 조회  */
+        /* kakaoAccessToken을 통해 카카오 계정 정보를 조회  */
         KakaoUserProfile kakaoUserProfile=null;
         try {
             kakaoUserProfile = kakaoService.findProfile();
         }
         catch(BasicException exception){
-            return new BasicResponse(ERROR_INVALID_ACCESS_TOKEN);
+            return new BasicResponse(ERROR_INVALID_KAKAO_ACCESS_TOKEN);
         }
 
 
@@ -332,13 +332,13 @@ public class UserController {
     public BasicResponse logInKakao (@RequestHeader HttpHeaders header) {
 
 
-        /* accessToken을 통해 카카오 계정 정보를 조회  */
+        /* kakaoaccessToken을 통해 카카오 계정 정보를 조회  */
         KakaoUserProfile kakaoUserProfile=null;
         try {
             kakaoUserProfile = kakaoService.findProfile();
         }
         catch(BasicException exception){
-            return new BasicResponse(ERROR_INVALID_ACCESS_TOKEN);
+            return new BasicResponse(ERROR_INVALID_KAKAO_ACCESS_TOKEN);
         }
 
 
