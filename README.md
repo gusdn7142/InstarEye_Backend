@@ -8,11 +8,11 @@
 </br>
 
 ## 💁‍♂️ Wiki
-- ✍ [개발일지](추가예정)
+- ✍ [개발일지](https://fir-lancer-6bb.notion.site/API-1d79c1f4fe524863a63ebfc4287dce9a)
 - 📰 [API 명세서](https://www.notion.so/API-1d94156d9f984832ba21b023aa5716f1)
 - 📦 [ERD 설계도](https://aquerytool.com/aquerymain/index/?rurl=b0f4f366-b187-4bed-b854-ea1b30aec38b)    
     - 비밀번호 : ws3x7t   
-- 📁 [디렉토리 구조](https://github.com/gusdn7142/TodayFruit_Clone_Server/wiki/%F0%9F%93%81-Directory-Structure)
+- 📁 [디렉토리 구조](https://github.com/gusdn7142/Instagram_Clone_Server/wiki/%F0%9F%93%81-Directory-Structure)
 - 📽 시연 영상 : 추가예정
 
 
