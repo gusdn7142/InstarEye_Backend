@@ -1,6 +1,6 @@
 
 # 📝 프로젝트 소개
-> 백엔드 개발자 1명이서 진행한 [인스타그램 서비스](https://www.instagram.com/) 서버 클론 프로젝트입니다.  
+> 백엔드 개발자 1명이서 진행한 [인스타그램 서비스](https://www.instagram.com/) API 서버 클론 프로젝트입니다.  
 - 프로젝트 목적 : 외주 실력을 확인하는 소프트스퀘어드 주관 그릿지 테스트 챌린지(GTC)
 - 제작 기간 : 2022년 7월 25일 ~ 8월 7일 
 - 서버 개발자 : 뎁스(본인)
@@ -36,7 +36,7 @@
 
 #### `Etc`  
   - JWT
-  - postman
+  - Postman
 
 </br>
 
@@ -51,14 +51,44 @@
 
 
 ## 🔎 시스템 구성도
-- 서비스 구조  
+### 전체 서비스 구조  
 ![그림1](https://user-images.githubusercontent.com/62496215/183283405-5d94529a-8531-4041-bcf2-1c489c3142a0.png)
 
-- 전체 동작 흐름  
+### 서버 동작 흐름  
 ![그림2](https://user-images.githubusercontent.com/62496215/183283787-7269efa6-aba1-455a-8945-315955fe3928.png)
-1️⃣Interceptor : 
+#### 1️⃣ Client
+- https://in-stagram.site/ 주소를 가진 Server에 resource 요청
+- Post / Patch / Get 메서드 활용  
+#### 2️⃣ Interceptor
+- 로그인 인가 확인 절차
+    - accessToken을 헤더로 입력받고 User의 idx 값을 파라미터로 입력받음.
+    - User의 idx와 accessToken에서 추출한 userIdx와 일치하는지 확인
+    - 일치한다면 컨트롤러로 이동, 일치하지 않다면 예외메시지 응답
+- 로그인 인가 절차에서 제외되는 URI 
+    - 로그인 API (/users), 회원가입(/users/login), 카카오 회원가입(/users/kakao) 카카오 로그인(/users/kakao-login), 개인정보 처리방침 재동의 API (/users/*/privacy-policy-reagree)
 
+#### 3️⃣ Controller
+- 형식적 Validation 처리
+    - 요청받은 데이터(ex,DTO 객체)를 Bean Validation(@Valid)혹은 조건문을 통해 타입과 형식 검증 수행
+    - 오류 발생시 예외 메시지(+코드)를 정상 응답("200")으로 BasicResponse 객체에 담아 응답
+- 결과 응답
+    - Service 계층에서 넘어온 로직 처리 결과(자원 or 예외메시지)를 BasicResponse 객체에 담아 클라이언트에게 응답 
 
+#### 4️⃣ Service
+- 의미적 Validation 처리
+    - DB 서버의 CRUD 혹은 AWS S3의 파일 업로드∘삭제 로직 수행시에 발생할 수 있는 예외를 처리
+    - 오류 발생시 예외 메시지(+코드)를 정상 응답("200")으로 BasicException 객체에 담아 Controller 계층에 응답 
+- 트랜잭션 처리
+    - @Transactional 어노테이션 적용 : 하나의 Service 로직에서 2개 이상의 쿼리 로직을 수행시 발생할 수 있는 에러에 대한 롤백 처리
+- 결과 응답
+    - 주로 DB 서버의 CRUD 명령을 수행한 결과를 다양한 타입으로 Controller 계층에 응답
+
+#### 5️⃣ Dao
+- 쿼리 수행 
+    - JPA (@Query) 활용 : 주로 Native Query(SQL) 혹은 UnNative Query(jpql)을 활용해 DB 쿼리 로직 수행 
+    - Join, SubQuery, group_concat, IFNULL, FORMAT, Concat 등의 Mysql 문법 활용
+- 결과 응답
+    - 주로 DTO 객체, Entity, void 등의 형식으로 Service 계층에 응답
 
 </br>
 
