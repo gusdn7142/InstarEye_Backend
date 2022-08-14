@@ -153,6 +153,8 @@
 <div markdown="1">
 
 - **Issue** : 아래의 페이징 쿼리 실행시 "Could not locate named parameter [size]" 오류 발생
+    
+- **Problem** : @Query(Native SQL)로 쿼리문 작성시 마지막에 입력받은 size 변수를 매핑하는 과정에서 세미콜론(;)으로 인해 오류가 발생하였습니다.
 ```sql
     @Query(value="select u.idx writerIdx,\n" +
             "       u.nick_name writerNickName,\n" +
@@ -188,12 +190,53 @@
             "group by p.idx having p.idx < :pageIndex\n" +
             "order by p.idx DESC limit :size;", nativeQuery = true)   //size 바로 뒤의 세미콜론으로 인해 쿼리문 오류발생
     List<GetPostsRes> getPosts(@Param("pageIndex") Long pageIndex, @Param("size") int size);
+```        
+- **Solution** : 세미콜론(;)을 제거하면 해결이 되지만, jpa에서 Pageable 인터페이스를 지원해 주기 때문에 이를 활용해 페이징 기능을 구현하였습니다. (쿼리문 마지막에 limit (pageIndex)*size, size 형식으로 pageIndex와 size가 자동 매핑됩니다.)
+```sql
+    @Query(value="select u.idx writerIdx,\n" +
+            "       u.nick_name writerNickName,\n" +
+            "       u.image writerImage,\n" +
+            "       p.idx postIdx,\n" +
+            "       p.content postContent,\n" +
+            "       case when timestampdiff(second , p.updated_at, current_timestamp) <60\n" +
+            "           then concat(timestampdiff(second, p.updated_at, current_timestamp),'초 전')\n" +
+            "\n" +
+            "           when timestampdiff(minute , p.updated_at, current_timestamp) <60\n" +
+            "           then concat(timestampdiff(minute, p.updated_at, current_timestamp),'분 전')\n" +
+            "\n" +
+            "           when timestampdiff(hour , p.updated_at, current_timestamp) <24\n" +
+            "           then concat(timestampdiff(hour, p.updated_at, current_timestamp),'시간 전')\n" +
+            "\n" +
+            "           when timestampdiff(day , p.updated_at, current_timestamp) < 30\n" +
+            "           then concat(timestampdiff(day, p.updated_at, current_timestamp),'일 전')\n" +
+            "\n" +
+            "           when timestampdiff(month , p.updated_at, current_timestamp) < 12\n" +
+            "           then concat(timestampdiff(month, p.updated_at, current_timestamp),'개월 전')\n" +
+            "\n" +
+            "           else concat(timestampdiff(year , p.updated_at, current_timestamp), '년 전')\n" +
+            "       end postCreatedDate,\n" +
+            "       group_concat(pi.idx) postImageIdx,\n" +
+            "       group_concat(pi.image) postimage,\n" +
+            "       group_concat(pi.image_number) postImageNumber,\n" +
+            "       CONCAT(IFNULL(FORMAT(pl.postLikeCount,0),0),'개') as postLikeCount,\n" +
+            "       CONCAT(IFNULL(FORMAT(c.commentCount,0),0),'개') as commentCount,\n" +
+            "       IFNULL(pl2.likeClickStatus,'INACTIVE') as likeClickStatus\n" +
+            "\n" +
+            "from (select idx, content, updated_at ,user_idx from post where status ='ACTIVE') p\n" +
+            "    left join (select idx, image,image_number, post_idx from post_image where status ='ACTIVE') pi\n" +
+            "    on p.idx = pi.post_idx\n" +
+            "    join (select idx, nick_name, image from user where status ='ACTIVE') u\n" +
+            "    on p.user_idx = u.idx\n" +
+            "    left join (select post_idx, count(post_idx) as postLikeCount from post_like where status = 'ACTIVE' group by post_idx) pl\n" +
+            "    on p.idx = pl.post_idx\n" +
+            "    left join(select post_idx, count(post_idx) as commentCount from comment where status='ACTIVE' group by post_idx) c\n" +
+            "    on p.idx = c.post_idx\n" +
+            "    left join (select post_idx, 'ACTIVE' as likeClickStatus from post_like where user_idx = :userIdx) pl2\n" +
+            "    on p.idx = pl2.post_idx\n" +
+            "group by p.idx\n" +
+            "order by p.idx DESC", nativeQuery = true)
+    List<GetPostsRes> getPosts(Pageable pageable, @Param("userIdx") Long userIdx);
 ```    
-    
-- **Problem** : @Query(Native SQL)로 쿼리문 작성시 마지막에 입력받은 size 변수를 매핑하는 과정에서 세미콜론(;)으로 인해 오류가 발생하였습니다.
-    
-- **Solution** : 세미콜론(;)을 제거하면 해결이 되지만, jpa에서 Pageable 인터페이스를 지원해 주기 때문에 이를 활용해 페이징 기능을 구현하였습니다. (쿼리문 마지막에 limit page, size 형식으로 page와 size가 자동 매핑됩니다.)
-
 </div>
 </details>
 
@@ -204,6 +247,9 @@
 ## ❕ 회고 / 느낀점
 추가예정
 
+                
+                
+                
 </br>
 
 ## 👩‍💻 리팩토링 계획
