@@ -127,7 +127,7 @@
 <summary> 스웨거 UI에 반영할 오류코드 설명 관련 이슈 </summary>
 <div markdown="1">
 
-- **Issue & Problem** : Status Code가 200일때 정상응답과 에러응답 설명이 같이 표기해야 하기 때문에 스웨거로 클라이언트와 협업시 불편을 겪을것을 예상되었습니다. 
+- **Issue & Problem** : Status Code가 200일때 정상응답과 에러응답 설명을 같이 표기해야 하기 때문에 스웨거로 클라이언트와 협업시 불편을 겪을것을 예상되었습니다. 
 ![Swegger Error UI](https://user-images.githubusercontent.com/62496215/184532374-17cebd34-13b4-48f0-8693-160cad58673e.png)
 - **Solution** : 이 프로젝트에서는 스웨거 대신 노션을 API 명세서로 활용하는것으로 대체
 
@@ -135,6 +135,67 @@
 </details>
 
 
+<details>
+<summary>  @Query (JPQL) 사용시 이슈 </summary>
+<div markdown="1">
+
+- **Issue** : JPQL에서 group_concat()과 Select() 서브 쿼리문을 사용시 오류 발생 
+- **Problem** : RDB 제약으로 컬렉션 형태로 엔티티가 저장이 되어 있지 않기 때문에 group_concat()이 동작하지 않고 서브쿼리 또한 엔티티 기반의 JPQL에서는 동작하지 않습니다. 
+- **Solution** : JPQL을 사용해 해당 쿼리를 조회하려면  @ElementCollection 과 @Subselect 사용이 필요하다는 것을 깨달았지만, 불필요하게 코드가 길어질 수 있고 유지보수에 어려움이 있을수 있다고 판단하였습니다. 그래서 NativeQuery (SQL)를 사용했지만,  컴파일 시점에 오류를 찾을수 없는 단점이 있기 때문에 추후에 QueryDsl 도입을 고려중 입니다.
+  
+</div>
+</details>
+
+
+
+<details>
+<summary>  페이징 기능 구현시 SQL문 문법 오류 </summary>
+<div markdown="1">
+
+- **Issue** : 아래의 페이징 쿼리 실행시 "Could not locate named parameter [size]" 오류 발생
+```sql
+    @Query(value="select u.idx writerIdx,\n" +
+            "       u.nick_name writerNickName,\n" +
+            "       u.image image,\n" +
+            "       p.idx postIdx,\n" +
+            "       p.content postContent,\n" +
+            "       case when timestampdiff(second , p.updated_at, current_timestamp) <60\n" +
+            "           then concat(timestampdiff(second, p.updated_at, current_timestamp),'초 전')\n" +
+            "\n" +
+            "           when timestampdiff(minute , p.updated_at, current_timestamp) <60\n" +
+            "           then concat(timestampdiff(minute, p.updated_at, current_timestamp),'분 전')\n" +
+            "\n" +
+            "           when timestampdiff(hour , p.updated_at, current_timestamp) <24\n" +
+            "           then concat(timestampdiff(hour, p.updated_at, current_timestamp),'시간 전')\n" +
+            "\n" +
+            "           when timestampdiff(day , p.updated_at, current_timestamp) < 30\n" +
+            "           then concat(timestampdiff(day, p.updated_at, current_timestamp),'일 전')\n" +
+            "\n" +
+            "           when timestampdiff(month , p.updated_at, current_timestamp) < 12\n" +
+            "           then concat(timestampdiff(month, p.updated_at, current_timestamp),'개월 전')\n" +
+            "\n" +
+            "           else concat(timestampdiff(year , p.updated_at, current_timestamp), '년 전')\n" +
+            "       end postCreatedDate,\n" +
+            "       group_concat(pi.idx) postImageIdx,\n" +
+            "       group_concat(pi.image) postimage,\n" +
+            "       group_concat(pi.image_number) postImageNumber\n" +
+            "\n" +
+            "from (select idx, content, updated_at ,user_idx from post where status ='ACTIVE') p\n" +
+            "    join (select idx, image,image_number, post_idx from post_image where status ='ACTIVE') pi\n" +
+            "    on p.idx = pi.post_idx\n" +
+            "    join (select idx, nick_name, image from user where status ='ACTIVE') u\n" +
+            "    on p.user_idx = u.idx\n" +
+            "group by p.idx having p.idx < :pageIndex\n" +
+            "order by p.idx DESC limit :size;", nativeQuery = true)   //size 바로 뒤의 세미콜론으로 인해 쿼리문 오류발생
+    List<GetPostsRes> getPosts(@Param("pageIndex") Long pageIndex, @Param("size") int size);
+```    
+    
+- **Problem** : @Query(Native SQL)로 쿼리문 작성시 마지막에 입력받은 size 변수를 매핑하는 과정에서 세미콜론(;)으로 인해 오류가 발생하였습니다.
+    
+- **Solution** : 세미콜론(;)을 제거하면 해결이 되지만, jpa에서 Pageable 인터페이스를 지원해 주기 때문에 이를 활용해 페이징 기능을 구현하였습니다. (쿼리문 마지막에 limit page, size 형식으로 page와 size가 자동 매핑됩니다.)
+
+</div>
+</details>
 
 
 
@@ -152,6 +213,7 @@
 - [ ] Response 구조의 Best Practice 연구  
 - [ ] @Pathvariable로 입력받는 모든 경로 변수(idx)에 유효성 검사 적용 (ex, 입력값 필터링)
 - [ ] 휴먼계정과 차단계정 관리를 위한 DB 설계와 API 구현 
+- [ ] 회원탈퇴시 다수의 테이블의 레코드에서 Update 쿼리문이 동작하여 반영시간이 약 10초가 걸리는 이슈 해결 필요  
 - [ ] 게시글과 댓글 신고 API 구현
 - [ ] Admin 도메인 DB 설계 및 API 구현
 - [ ] JPQL(@Query) 코드를 Query DSL 코드로 리팩토링  
