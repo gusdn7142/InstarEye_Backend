@@ -14,6 +14,7 @@
     - 비밀번호 : ws3x7t   
 - 📁 [디렉토리 구조](https://github.com/gusdn7142/Instagram_Clone_Server/wiki/%F0%9F%93%81-Directory-Structure)
 - 📽 시연 영상 : 추가예정
+- 📋️ 개발가이드와 화면설계서 : 저작권으로 인해 비공개
 
 </br>
 
@@ -96,29 +97,61 @@
 
 >인스타그램 서비스의 핵심기능은 피드 작성과 조회입니다.  
 >서비스의 세부적인 기능은 [API 명세서](https://www.notion.so/API-1d94156d9f984832ba21b023aa5716f1) 를 참고해 주시면 감사합니다.   
-- 구현한 기능 (도메인별)  
-  - 사용자 : 회원가입 API, 로그인 API, 카카오 회원가입∘로그인 API, 프로필 조회∘수정 API, 회원탍퇴 API, 개인정보 처리방침 재동의 API
-  - 게시글 : 게시글 작성∘수정∘삭제 API, 전체∘특정 게시글 조회 API
-  - 채팅 : 채팅 메시지 전송 API, 채팅 내역 조회 API, 채팅 메시지 삭제 API,
-  - 댓글 : 댓글 작성 API, 전체 댓글 조회 API, 댓글 삭제 API, 댓글 수정 API
-  - 좋아요 : 게시글 좋아요 API, 게시글 좋아요 취소 API, 댓글 좋아요 API, 댓글 좋아요 취소 API 
-  - 팔로우 요청 : 팔로우 요청 API, 팔로우 요청 취소 API, 팔로우 요청 거절 API
-  - 팔로우 : 팔로우 API, 팔로우 취소 API, 팔로우 요청 승인 API
-
+- 구현한 기능  
+  - API  (도메인별 분류)
+    - 사용자 : 회원가입 API, 로그인 API, 카카오 회원가입∘로그인 API, 프로필 조회∘수정 API, 회원탍퇴 API, 개인정보 처리방침 재동의 API
+    - 게시글 : 게시글 작성∘수정∘삭제 API, 전체∘특정 게시글 조회 API
+    - 채팅 : 채팅 메시지 전송 API, 채팅 내역 조회 API, 채팅 메시지 삭제 API,
+    - 댓글 : 댓글 작성 API, 전체 댓글 조회 API, 댓글 삭제 API, 댓글 수정 API
+    - 좋아요 : 게시글 좋아요 API, 게시글 좋아요 취소 API, 댓글 좋아요 API, 댓글 좋아요 취소 API 
+    - 팔로우 요청 : 팔로우 요청 API, 팔로우 요청 취소 API, 팔로우 요청 거절 API
+    - 팔로우 : 팔로우 API, 팔로우 취소 API, 팔로우 요청 승인 API
+  - 스케줄러 
+    - 개인정보 처리방침 동의여부 확인 (1년마다 갱신)
 
 </br>
 
 ## 🌟 트러블 슈팅
-추가 예정
+<details>
+<summary>도메인 서버 등록시 반영시간 관련 이슈</summary>
+<div markdown="1">
+
+- **Issue** :  도메인(https://in-stagram.site)을 구입 후 EC2의 공인 IP를 연결해 주었는데, 서버가 응답하지 않습니다.
+- **Problem** : 공인 ip와 도메인간의 연결은 되었는데, 아직 도메인 주소 활성화가 되지 않아서 그런것 같습니다.
+- **Solution** : 5시간 정도 기다린 후 도메인(https://in-stagram.site)이 연결되어 nignx 웹서버의 default 화면을 볼 수 있었습니다.
+  
+</div>
+</details>
+
+<details>
+<summary> 스웨거 UI에 반영할 오류코드 설명 관련 이슈 </summary>
+<div markdown="1">
+
+- **Issue & Problem** : Status Code가 200일때 정상응답과 에러응답 설명이 같이 표기해야 하기 때문에 스웨거로 클라이언트와 협업시 불편을 겪을것을 예상되었습니다. 
+![Swegger Error UI](https://user-images.githubusercontent.com/62496215/184532374-17cebd34-13b4-48f0-8693-160cad58673e.png)
+- **Solution** : 이 프로젝트에서는 스웨거 대신 노션을 API 명세서로 활용하는것으로 대체
+
+</div>
+</details>
+
+
+
+
 
 </br>
 
 ## ❕ 회고 / 느낀점
 추가예정
 
-
+</br>
 
 ## 👩‍💻 리팩토링 계획
-추가 예정
-
-
+- [ ] 테스트 코드(TDD) 도입
+- [ ] 프론트엔드 개발자와 협업하여 API 연결 및 이슈 처리
+- [ ] Docker를 이용해 Spring Boot 애플리케이션 배포
+- [ ] Response 구조의 Best Practice 연구  
+- [ ] @Pathvariable로 입력받는 모든 경로 변수(idx)에 유효성 검사 적용 (ex, 입력값 필터링)
+- [ ] 휴먼계정과 차단계정 관리를 위한 DB 설계와 API 구현 
+- [ ] 게시글과 댓글 신고 API 구현
+- [ ] Admin 도메인 DB 설계 및 API 구현
+- [ ] JPQL(@Query) 코드를 Query DSL 코드로 리팩토링  
