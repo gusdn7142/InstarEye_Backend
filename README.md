@@ -13,7 +13,7 @@
 - 📦 [ERD 설계도](https://aquerytool.com/aquerymain/index/?rurl=b0f4f366-b187-4bed-b854-ea1b30aec38b)    
     - 비밀번호 : ws3x7t   
 - 📁 [디렉토리 구조](https://github.com/gusdn7142/Instagram_Clone_Server/wiki/%F0%9F%93%81-Directory-Structure)
-- 📽 시연 영상 : 추가예정
+- 📽 시연 영상 : API 명세서의 postman 실행 결과 화면으로 대체  
 - 📋️ 개발가이드와 화면설계서 : 저작권으로 인해 비공개
 
 </br>
@@ -111,7 +111,7 @@
 
 </br>
 
-## 🌟 트러블 슈팅
+## 🌟 핵심 트러블 슈팅
 <details>
 <summary>도메인 서버 등록시 반영시간 관련 이슈</summary>
 <div markdown="1">
@@ -191,7 +191,7 @@
             "order by p.idx DESC limit :size;", nativeQuery = true)   //size 바로 뒤의 세미콜론으로 인해 쿼리문 오류발생
     List<GetPostsRes> getPosts(@Param("pageIndex") Long pageIndex, @Param("size") int size);
 ```        
-- **Solution** : 세미콜론(;)을 제거하면 해결이 되지만, jpa에서 Pageable 인터페이스를 지원해 주기 때문에 이를 활용해 페이징 기능을 구현하였습니다. (쿼리문 마지막에 limit (pageIndex)*size, size 형식으로 pageIndex와 size가 자동 매핑됩니다.)
+- **Solution** : 세미콜론(;)을 제거하면 해결이 되지만, jpa에서 Pageable 인터페이스를 지원해 주기 때문에 이를 활용해 페이징 기능을 구현하였습니다. (쿼리문 마지막에 limit offset(pageIndex*size), size 형식으로 pageIndex와 size가 자동 매핑됩니다.)
 ```sql
     @Query(value="select u.idx writerIdx,\n" +
             "       u.nick_name writerNickName,\n" +
