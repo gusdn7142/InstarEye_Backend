@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.instagram.domain.user.domain.AccountType;
+import com.instagram.domain.user.domain.PrivacyPolicyStatus;
 import com.instagram.domain.user.dto.*;
 import com.instagram.domain.user.service.UserService;
 import com.instagram.global.error.BasicException;
@@ -76,15 +77,18 @@ public class UserController {
             else if (errorCode.equals("Size.postUserReq.password")) {
                 return new BasicResponse(REQ_ERROR_INVALID_PASSWORD);
             }
-            else if (errorCode.equals("Pattern.postUserReq.birthDay")) {
-                return new BasicResponse(REQ_ERROR_INVALID_BIRTHDAY);
+            else if (errorCode.equals("Past.postUserReq.birthDay")) {
+                return new BasicResponse(REQ_ERROR_PAST_BIRTHDAY);
             }
-            else if (errorCode.equals("Pattern.postUserReq.privacyPolicyStatus")) {
-                return new BasicResponse(REQ_ERROR_INVALID_PRIVACY_POLICY_STATUS);
+            else if (errorCode.equals("NotNull.postUserReq.birthDay")) {
+                return new BasicResponse(REQ_ERROR_NULL_BIRTHDAY);
             }
             else if (errorCode.equals("Size.postUserReq.nickName")) {
                 return new BasicResponse(REQ_ERROR_INVALID_NICK_NAME);
             }
+        }
+        if (postUserReq.getPrivacyPolicyStatus()==PrivacyPolicyStatus.DISAGREE) {
+            return new BasicResponse(REQ_ERROR_INVALID_PRIVACY_POLICY_STATUS);
         }
         /* 유효성 검사 구현 끝 */
 

@@ -32,7 +32,7 @@ public class Post {
     @Column (nullable=false, columnDefinition="varchar(3002)")
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)  //실무에서는 n+1 쿼리조회 문제 때문에 LAZY(지연 로딩만 사용.)
+    @ManyToOne(fetch = FetchType.LAZY)  //실무에서는 n+1 쿼리조회 문제 때문에 LAZY(지연 로딩만 사용.) cascade = CascadeType.ALL
     @JoinColumn(name = "user_idx")
     private User user;  //글쓴이 인덱스
 

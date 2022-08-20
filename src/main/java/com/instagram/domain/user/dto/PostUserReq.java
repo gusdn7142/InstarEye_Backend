@@ -8,12 +8,10 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.util.Date;
 
 
@@ -34,19 +32,21 @@ public class PostUserReq {
     @Size(min=1, max=20, message="비밀번호 형식 오류")
     private String password;  //비밀번호
 
-    @ApiModelProperty(notes= "생일", example = "2021년 6월 28일", required = true)
-    @Pattern(regexp = "^[0-9]{4}년\\s[0-9]{1,2}월\\s[0-9]{1,2}일" , message="생일 형식 오류")
-    private String birthDay;  //생일
+    @ApiModelProperty(notes= "생일", example = "2021-06-28", required = true)
+    @NotNull(message="생일 미입력")
+    @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)
+    @Past(message="생일 날짜 오류")   //현재보다 과거이면 통과
+    private Date birthDay;  //생일
 
     @ApiModelProperty(notes= "개인정보 처리방침 동의여부", example = "AGREE", required = true)
-    @Pattern(regexp = "^(AGREE)$", message="개인정보 처리방침 미동의")
-    private String privacyPolicyStatus;  //개인정보 처리방침 동의여부
+    private PrivacyPolicyStatus privacyPolicyStatus;  //개인정보 처리방침 동의여부
 
     @ApiModelProperty(notes= "사용자 이름(닉네임)", example = "gridgetest12344", required = true)
     @Size(min=1, max=20, message="닉네임 형식 오류")
     private String nickName;  //사용자 이름(닉네임)
 
 
-    //private String email;  //이메일
+    //자동 입력
+    private String email;  //이메일
 
 }

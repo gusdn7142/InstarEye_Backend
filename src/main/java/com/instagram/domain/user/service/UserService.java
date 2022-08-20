@@ -31,7 +31,6 @@ public class UserService {
     /* 1. 회원가입 API */
     public String createUser(PostUserReq postUserReq) throws BasicException {
 
-
         //전화번호 중복 검사 ("ACTIVE"가 1일떄 포함)
         if (userDao.findByPhone(postUserReq.getPhone()) != null){
             throw new BasicException(RES_ERROR_EXIST_PHONE);
@@ -42,33 +41,19 @@ public class UserService {
             throw new BasicException(RES_ERROR_EXIST_NICK_NAME);
         }
 
-
-
         try{
-
-            //PostUserReq 객체의 데이터를 담을 User 엔티티 생성
-            User userCreation = new User();
-            BeanUtils.copyProperties(postUserReq,userCreation);
-
-            //String형식인 birthDay 변수를 Date 형식으로 변환 (년,월,일 => - - )
-            SimpleDateFormat formatter  = new SimpleDateFormat("yyyy년 MM월 dd일");
-            Date birthDay = formatter.parse(postUserReq.getBirthDay());
-            userCreation.setBirthDay(birthDay);
-
-            //String형식인 privacyPolicyStatus 변수를 Enum 타입으로 변환
-            PrivacyPolicyStatus privacyPolicyStatus = PrivacyPolicyStatus.valueOf(postUserReq.getPrivacyPolicyStatus());
-            userCreation.setPrivacyPolicyStatus(privacyPolicyStatus);
-
-            //Emial에 "null" 값 저장
-            userCreation.setEmail("");
+            //Email에 "null" 값 저장
+            postUserReq.setEmail("");
 
             //패스워드 암호화
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);  //BCryptPasswordEncoder 클래스 활용 (암호화 속도는 default가 10)
-            userCreation.setPassword(encoder.encode(postUserReq.getPassword()));  //userCreation 객체에 암호화된 패스워드 삽입
+            postUserReq.setPassword(encoder.encode(postUserReq.getPassword()));  //userCreation 객체에 암호화된 패스워드 삽입
 
-
+            //PostUserReq 객체의 데이터를 담을 User 엔티티 생성
+            User userCreation = new User();
 
             //user DB에 사용자 정보 등록
+            BeanUtils.copyProperties(postUserReq,userCreation);
             userDao.save(userCreation);
             return "DB에 사용자 등록 성공";
 

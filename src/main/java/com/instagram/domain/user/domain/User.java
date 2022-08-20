@@ -2,8 +2,7 @@ package com.instagram.domain.user.domain;
 
 
 import com.instagram.domain.model.DataStatus;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -16,8 +15,8 @@ import java.util.Date;
 @Setter
 
 @Entity
-@DynamicInsert   //jap 메서드 동작시 null인 필드 제외
-@DynamicUpdate   //jap 메서드 동작시 null인 필드 제외
+@DynamicInsert   //jpa 메서드 동작시 null인 필드 제외
+@DynamicUpdate   //jpa 메서드 동작시 null인 필드 제외
 @Table(name = "user")
 public class User {
 
@@ -75,6 +74,5 @@ public class User {
 
     @Column (columnDefinition = "timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime updatedAt; //갱신 시각
-
 
 }

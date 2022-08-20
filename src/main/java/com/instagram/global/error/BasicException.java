@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class BasicException extends Exception{
+public class BasicException extends RuntimeException{
     private BasicResponseStatus status;
 
 

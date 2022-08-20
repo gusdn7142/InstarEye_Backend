@@ -39,7 +39,6 @@ public class ChatService {
             User sender = userDao.findByIdx(senderIdx);
             User receiver = userDao.findByIdx(receiverIdx);
 
-
             //chat DB에 채팅내용 저장
             Chat chatCreation = new Chat();
             chatCreation.setSender(sender);
@@ -48,18 +47,15 @@ public class ChatService {
 
             chatDao.save(chatCreation);
 
-
             //채팅 알림 형식으로 응답
             PostChatRes postChatRes = PostChatRes.builder()
-                                        .receiverIdx(receiver.getIdx())
-                                        .receiverNickName(receiver.getNickName())
-                                        .receiverImage(receiver.getImage())
-                                        .senderChatContent(content)
-                                        .build();
+                    .receiverIdx(receiver.getIdx())
+                    .receiverNickName(receiver.getNickName())
+                    .receiverImage(receiver.getImage())
+                    .senderChatContent(content)
+                    .build();
 
             return postChatRes;
-
-
         } catch (Exception exception) {
             throw new BasicException(DATABASE_ERROR_CREATE_CHATS);  //채팅 메시지 전송 실패
         }

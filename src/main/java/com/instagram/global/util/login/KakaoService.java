@@ -30,7 +30,7 @@ public class KakaoService {
 
 
     /*
-    * accessToken을 통해 카카오 계정 정보를 조회
+    * kakaoAccessToken을 통해 카카오 계정 정보를 조회
     * @return KakaoUserProfile
     */
     public KakaoUserProfile findProfile() throws BasicException {  //access 토큰 생성
