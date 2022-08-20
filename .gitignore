@@ -40,6 +40,23 @@
 
 
 
+
+#default
+.gradle
+.idea
+build/classes
+build/reports
+build/test-results
+bulid/tmp
+build/bootJarMainClassName
+gradle/
+HELP.md
+build.gradle
+gradlew
+gradlew.bat
+settings.gradle
+
+
 #RDS Info
 src/main/resources
 build/resources
