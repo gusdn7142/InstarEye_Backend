@@ -47,7 +47,7 @@
 build/classes
 build/reports
 build/test-results
-bulid/tmp
+build/tmp
 build/bootJarMainClassName
 gradle/
 HELP.md
