@@ -60,7 +60,7 @@
 - https://in-stagram.site/ 주소를 가진 Server에 resource 요청
 - HTTP 메서드 활용 : Post, Patch, Get   
 #### 2️⃣ Interceptor
-- 형식적 Validation 처리
+- 형식적 Validation 처리 (pathVariable 변수 한정)
     - 파라미터로 입력받은 모든 pathVariable 변수를 조회
     - 모든 pathVariable 변수에 "타입 오류"와 "미 입력"에 대한 예외 처리 
     - 오류 발생시 예외 메시지(+코드)를 정상 응답("200")으로 BasicException 객체에 담아 @ControllerAdvice에 예외를 전달
@@ -263,7 +263,7 @@
 - [ ] 프론트엔드 개발자와 협업하여 API 연결 및 이슈 처리
 - [ ] Docker를 이용해 Spring Boot 애플리케이션 배포
 - [ ] Response 구조의 Best Practice 연구  
-- [ ] @Pathvariable로 입력받는 모든 경로 변수(idx)에 유효성 검사 적용 (ex, 입력값 필터링)
+- [x] @Pathvariable로 입력받는 모든 경로 변수(idx)에 유효성 검사 적용 (ex, 입력값 필터링)
 - [ ] 휴먼계정과 차단계정 관리를 위한 DB 설계와 API 구현 
 - [ ] 회원탈퇴시 다수의 테이블의 레코드에서 Update 쿼리문이 동작하여 반영시간이 약 10초가 걸리는 이슈 해결 필요  
 - [ ] 게시글과 댓글 신고 API 구현
