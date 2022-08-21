@@ -63,7 +63,7 @@
 - 형식적 Validation 처리
     - 파라미터로 입력받은 모든 pathVariable 변수를 조회
     - 모든 pathVariable 변수에 "타입 오류"와 "미 입력"에 대한 예외 처리 
-    - 예외 발생시 예외 메시지(+코드)를 정상 응답("200")으로 BasicException 객체에 담아 @ControllerAdvice에 예외 전달
+    - 오류 발생시 예외 메시지(+코드)를 정상 응답("200")으로 BasicException 객체에 담아 @ControllerAdvice에 예외를 전달
     - @ExceptionHandler로 예외를 받아 예외메시지(+코드)를 BasicResponse 객체에 담아 클라이언트에게 응답 
 - 사용자 인가 절차
     - 헤더로 입력 받은 accessToken과 파리미터로 입력받은 User의 idx 조회
