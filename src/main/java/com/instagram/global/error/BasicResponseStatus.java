@@ -13,11 +13,15 @@ public enum BasicResponseStatus {
      */
     SUCCESS("SUCCESS", "NOT_ERROR", "요청 성공"),
 
+    /**
+     * 공통 (Pathvariable 변수 에러값 재정의)
+     */
+    REQ_ERROR_INVALID_IDX("FAIL","REQ_ERROR_INVALID_IDX","idx 형식 오류"),
+
 
     /**
      * user 도메인
      */
-
     REQ_ERROR_INVALID_PHONE("FAIL","REQ_ERROR_INVALID_PHONE","전화번호 형식 오류"),
     REQ_ERROR_INVALID_NAME("FAIL","REQ_ERROR_INVALID_NAME","이름 형식 오류"),
     REQ_ERROR_INVALID_PASSWORD("FAIL","REQ_ERROR_INVALID_PASSWORD","비밀번호 형식 오류"),
@@ -215,6 +219,16 @@ public enum BasicResponseStatus {
         this.message = message;
     }
 
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    public void setCode(String code){
+        this.code = code;
+    }
+    public void setMessage(String message){
+        this.message = message;
+    }
 
 
 }
