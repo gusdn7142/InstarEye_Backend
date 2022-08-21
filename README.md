@@ -73,6 +73,10 @@
     - 로그인 API (/users), 회원가입(/users/login), 카카오 회원가입(/users/kakao) 카카오 로그인(/users/kakao-login), 개인정보 처리방침 재동의 API (/users/*/privacy-policy-reagree)
 
 #### 3️⃣ Controller
+- 클라이언트의 요청 값을 조회  (String to AnyType 컨버터 자동 적용)
+    - @RequestBody : JSON 형식으로 DTO 객체에 매핑
+    - @Pathvariable : 파라미터 변수와 매핑
+    - @RequestPart : form 형식으로 변수에 매핑
 - 형식적 Validation 처리
     - 요청받은 데이터(ex,DTO 객체)를 Bean Validation(@Valid)혹은 조건문을 통해 타입과 형식 검증 수행
     - 오류 발생시 예외 메시지(+코드)를 정상 응답("200")으로 BasicResponse 객체에 담아 응답
