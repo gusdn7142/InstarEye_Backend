@@ -60,11 +60,16 @@
 - https://in-stagram.site/ 주소를 가진 Server에 resource 요청
 - HTTP 메서드 활용 : Post, Patch, Get   
 #### 2️⃣ Interceptor
-- 로그인 인가 확인 절차
-    - accessToken을 헤더로 입력받고 User의 idx 값을 파라미터로 입력받음.
+- 형식적 Validation 처리
+    - 파라미터로 입력받은 모든 pathVariable 변수를 조회
+    - 모든 pathVariable 변수에 "타입 오류"와 "미 입력"에 대한 예외 처리 
+    - 예외 발생시 예외 메시지(+코드)를 정상 응답("200")으로 BasicException 객체에 담아 @ControllerAdvice에 예외 전달
+    - @ExceptionHandler로 예외를 받아 예외메시지(+코드)를 BasicResponse 객체에 담아 클라이언트에게 응답 
+- 사용자 인가 절차
+    - 헤더로 입력 받은 accessToken과 파리미터로 입력받은 User의 idx 조회
     - User의 idx와 accessToken에서 추출한 userIdx와 일치하는지 확인
-    - 일치한다면 컨트롤러로 이동, 일치하지 않다면 예외메시지 응답
-- 로그인 인가 절차에서 제외되는 URI 
+    - 일치한다면 컨트롤러로 이동, 일치하지 않다면 예외를 @ControllerAdvice와 @ExceptionHandler로 전달하여 예외메시지(+코드)를 BasicResponse 객체에 담아 클라이언트에게 응답
+- 사용자 인가 절차에서 제외되는 URI 
     - 로그인 API (/users), 회원가입(/users/login), 카카오 회원가입(/users/kakao) 카카오 로그인(/users/kakao-login), 개인정보 처리방침 재동의 API (/users/*/privacy-policy-reagree)
 
 #### 3️⃣ Controller
