@@ -178,7 +178,7 @@ public class PostController {
 
         try{
             //DB에 게시글 정보 수정
-            String responseMessage = postService.modifyPost(postIdx ,content, postImageIdxList, multipartFile, imageNumber);
+            String responseMessage = postService.modifyPost(postIdx ,content, postImageIdxList, multipartFile, imageNumber, userIdx);
 
             return new BasicResponse(responseMessage);
         } catch(BasicException exception){
@@ -205,7 +205,7 @@ public class PostController {
 
 
             //게시글 삭제
-            postService.deletePost(postIdx);
+            postService.deletePost(postIdx, userIdx);
 
             String result = "게시글 정보 삭제";
             return new BasicResponse(result);

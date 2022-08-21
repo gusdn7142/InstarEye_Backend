@@ -114,12 +114,16 @@ public class PostService {
 
     /* 8. 게시글 수정 API */
     @Transactional(rollbackFor = {Exception.class})
-    public String modifyPost(Long postIdx, String content, List<Long> postImageIdxList, List<MultipartFile> multipartFile, List<Integer> imageNumber ) throws BasicException {
-
+    public String modifyPost(Long postIdx, String content, List<Long> postImageIdxList, List<MultipartFile> multipartFile, List<Integer> imageNumber, Long userIdx) throws BasicException {
 
         Post postBefore = postDao.findByIdx(postIdx);
         List<PostImage> PostImageBeforeList = postImageDao.findByPost(postBefore);
 
+        //게시글 작성자 일치 여부 확인
+        User Writer = userDao.findByIdx(userIdx);
+        if(postBefore.getUser() != Writer){
+            throw new BasicException(RES_ERROR_POSTS_NOT_SAME_POST);    //"개시글 작성자 불일치 오류"
+        }
 
         //Post DB에서 게시글 정보 수정
         postDao.modifyPost(content, postIdx);
@@ -152,16 +156,14 @@ public class PostService {
             throw new BasicException(S3_ERROR_FAIL_DELETE_FILE);  //"S3에서 파일 삭제 실패"
         }
 
-
         return "게시글 수정 성공";
-
     }
 
 
 
     /* 9. 게시글 삭제 API -  */
     @Transactional(rollbackFor = {Exception.class})
-    public void deletePost(Long postIdx) throws BasicException {
+    public void deletePost(Long postIdx, Long userIdx) throws BasicException {
 
         //게시글 삭제 여부 조회 (유저가 계속 클릭시..)
         Post postDelete = postDao.findByIdx(postIdx);
@@ -169,8 +171,13 @@ public class PostService {
             throw new BasicException(RES_ERROR_POSTS_DELETE_POST);    //"삭제된 게시글"
         }
 
-        List<PostImage> PostImageDeleteList = postImageDao.findByPost(postDelete);
+        //게시글 작성자 일치 여부 확인
+        User Writer = userDao.findByIdx(userIdx);
+        if(postDelete.getUser() != Writer){
+            throw new BasicException(RES_ERROR_POSTS_NOT_SAME_POST);    //"개시글 작성자 불일치 오류"
+        }
 
+        List<PostImage> PostImageDeleteList = postImageDao.findByPost(postDelete);
 
         try{
             //게시글 정보 삭제
@@ -190,8 +197,6 @@ public class PostService {
             String fileName = PostImageDeleteList.get(i).getImage().replace(Secret.AWS_S3_CONNECT_URL, "");
             awsS3Service.deleteFile(fileName);
         }
-
-
 
     }
 
