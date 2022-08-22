@@ -51,10 +51,10 @@
 
 
 ## 🔩 시스템 구성도
-### 전체 서비스 구조  
-![그림1](https://user-images.githubusercontent.com/62496215/183283405-5d94529a-8531-4041-bcf2-1c489c3142a0.png)
+### 1. 전체 서비스 구조  
+![Architecture](https://user-images.githubusercontent.com/62496215/185957417-342145bc-3ae3-445c-9c4e-75bf82561528.png)
 
-### 서버 동작 흐름  
+### 2. 서버 동작 흐름  
 ![그림2](https://user-images.githubusercontent.com/62496215/183283787-7269efa6-aba1-455a-8945-315955fe3928.png)
 #### 1️⃣ Client
 - https://in-stagram.site/ 주소를 가진 Server에 resource 요청
