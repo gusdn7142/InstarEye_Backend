@@ -60,14 +60,23 @@
 - https://in-stagram.site/ 주소를 가진 Server에 resource 요청
 - HTTP 메서드 활용 : Post, Patch, Get   
 #### 2️⃣ Interceptor
-- 로그인 인가 확인 절차
-    - accessToken을 헤더로 입력받고 User의 idx 값을 파라미터로 입력받음.
+- 형식적 Validation 처리 (pathVariable 변수 한정)
+    - 파라미터로 입력받은 모든 pathVariable 변수를 조회
+    - 모든 pathVariable 변수에 "타입 오류"와 "미 입력"에 대한 예외 처리 
+    - 오류 발생시 예외 메시지(+코드)를 정상 응답("200")으로 BasicException 객체에 담아 @ControllerAdvice에 예외를 전달
+    - @ExceptionHandler로 예외를 받아 예외메시지(+코드)를 BasicResponse 객체에 담아 클라이언트에게 응답 
+- 사용자 인가 절차
+    - 헤더로 입력 받은 accessToken과 파리미터로 입력받은 User의 idx 조회
     - User의 idx와 accessToken에서 추출한 userIdx와 일치하는지 확인
-    - 일치한다면 컨트롤러로 이동, 일치하지 않다면 예외메시지 응답
-- 로그인 인가 절차에서 제외되는 URI 
+    - 일치한다면 컨트롤러로 이동, 일치하지 않다면 예외를 @ControllerAdvice와 @ExceptionHandler로 전달하여 예외메시지(+코드)를 BasicResponse 객체에 담아 클라이언트에게 응답
+- 사용자 인가 절차에서 제외되는 URI 
     - 로그인 API (/users), 회원가입(/users/login), 카카오 회원가입(/users/kakao) 카카오 로그인(/users/kakao-login), 개인정보 처리방침 재동의 API (/users/*/privacy-policy-reagree)
 
 #### 3️⃣ Controller
+- 클라이언트의 요청 값을 조회  (String to AnyType 컨버터 자동 적용)
+    - @RequestBody : JSON 형식으로 DTO 객체에 매핑
+    - @Pathvariable : 파라미터 변수와 매핑
+    - @RequestPart : form 형식으로 변수에 매핑
 - 형식적 Validation 처리
     - 요청받은 데이터(ex,DTO 객체)를 Bean Validation(@Valid)혹은 조건문을 통해 타입과 형식 검증 수행
     - 오류 발생시 예외 메시지(+코드)를 정상 응답("200")으로 BasicResponse 객체에 담아 응답
@@ -155,93 +164,159 @@
 - **Issue** : 아래의 페이징 쿼리 실행시 "Could not locate named parameter [size]" 오류 발생
     
 - **Problem** : @Query(Native SQL)로 쿼리문 작성시 마지막에 입력받은 size 변수를 매핑하는 과정에서 세미콜론(;)으로 인해 오류가 발생하였습니다.
-```sql
-    @Query(value="select u.idx writerIdx,\n" +
-            "       u.nick_name writerNickName,\n" +
-            "       u.image image,\n" +
-            "       p.idx postIdx,\n" +
-            "       p.content postContent,\n" +
-            "       case when timestampdiff(second , p.updated_at, current_timestamp) <60\n" +
-            "           then concat(timestampdiff(second, p.updated_at, current_timestamp),'초 전')\n" +
-            "\n" +
-            "           when timestampdiff(minute , p.updated_at, current_timestamp) <60\n" +
-            "           then concat(timestampdiff(minute, p.updated_at, current_timestamp),'분 전')\n" +
-            "\n" +
-            "           when timestampdiff(hour , p.updated_at, current_timestamp) <24\n" +
-            "           then concat(timestampdiff(hour, p.updated_at, current_timestamp),'시간 전')\n" +
-            "\n" +
-            "           when timestampdiff(day , p.updated_at, current_timestamp) < 30\n" +
-            "           then concat(timestampdiff(day, p.updated_at, current_timestamp),'일 전')\n" +
-            "\n" +
-            "           when timestampdiff(month , p.updated_at, current_timestamp) < 12\n" +
-            "           then concat(timestampdiff(month, p.updated_at, current_timestamp),'개월 전')\n" +
-            "\n" +
-            "           else concat(timestampdiff(year , p.updated_at, current_timestamp), '년 전')\n" +
-            "       end postCreatedDate,\n" +
-            "       group_concat(pi.idx) postImageIdx,\n" +
-            "       group_concat(pi.image) postimage,\n" +
-            "       group_concat(pi.image_number) postImageNumber\n" +
-            "\n" +
-            "from (select idx, content, updated_at ,user_idx from post where status ='ACTIVE') p\n" +
-            "    join (select idx, image,image_number, post_idx from post_image where status ='ACTIVE') pi\n" +
-            "    on p.idx = pi.post_idx\n" +
-            "    join (select idx, nick_name, image from user where status ='ACTIVE') u\n" +
-            "    on p.user_idx = u.idx\n" +
-            "group by p.idx having p.idx < :pageIndex\n" +
-            "order by p.idx DESC limit :size;", nativeQuery = true)   //size 바로 뒤의 세미콜론으로 인해 쿼리문 오류발생
-    List<GetPostsRes> getPosts(@Param("pageIndex") Long pageIndex, @Param("size") int size);
-```        
+    ```sql
+        @Query(value="select u.idx writerIdx,\n" +
+                "       u.nick_name writerNickName,\n" +
+                "       u.image image,\n" +
+                "       p.idx postIdx,\n" +
+                "       p.content postContent,\n" +
+                "       case when timestampdiff(second , p.updated_at, current_timestamp) <60\n" +
+                "           then concat(timestampdiff(second, p.updated_at, current_timestamp),'초 전')\n" +
+                "\n" +
+                "           when timestampdiff(minute , p.updated_at, current_timestamp) <60\n" +
+                "           then concat(timestampdiff(minute, p.updated_at, current_timestamp),'분 전')\n" +
+                "\n" +
+                "           when timestampdiff(hour , p.updated_at, current_timestamp) <24\n" +
+                "           then concat(timestampdiff(hour, p.updated_at, current_timestamp),'시간 전')\n" +
+                "\n" +
+                "           when timestampdiff(day , p.updated_at, current_timestamp) < 30\n" +
+                "           then concat(timestampdiff(day, p.updated_at, current_timestamp),'일 전')\n" +
+                "\n" +
+                "           when timestampdiff(month , p.updated_at, current_timestamp) < 12\n" +
+                "           then concat(timestampdiff(month, p.updated_at, current_timestamp),'개월 전')\n" +
+                "\n" +
+                "           else concat(timestampdiff(year , p.updated_at, current_timestamp), '년 전')\n" +
+                "       end postCreatedDate,\n" +
+                "       group_concat(pi.idx) postImageIdx,\n" +
+                "       group_concat(pi.image) postimage,\n" +
+                "       group_concat(pi.image_number) postImageNumber\n" +
+                "\n" +
+                "from (select idx, content, updated_at ,user_idx from post where status ='ACTIVE') p\n" +
+                "    join (select idx, image,image_number, post_idx from post_image where status ='ACTIVE') pi\n" +
+                "    on p.idx = pi.post_idx\n" +
+                "    join (select idx, nick_name, image from user where status ='ACTIVE') u\n" +
+                "    on p.user_idx = u.idx\n" +
+                "group by p.idx having p.idx < :pageIndex\n" +
+                "order by p.idx DESC limit :size;", nativeQuery = true)   //size 바로 뒤의 세미콜론으로 인해 쿼리문 오류발생
+        List<GetPostsRes> getPosts(@Param("pageIndex") Long pageIndex, @Param("size") int size);
+    ```        
 - **Solution** : 세미콜론(;)을 제거하면 해결이 되지만, jpa에서 Pageable 인터페이스를 지원해 주기 때문에 이를 활용해 페이징 기능을 구현하였습니다. (쿼리문 마지막에 limit offset(pageIndex*size), size 형식으로 pageIndex와 size가 자동 매핑됩니다.)
-```sql
-    @Query(value="select u.idx writerIdx,\n" +
-            "       u.nick_name writerNickName,\n" +
-            "       u.image writerImage,\n" +
-            "       p.idx postIdx,\n" +
-            "       p.content postContent,\n" +
-            "       case when timestampdiff(second , p.updated_at, current_timestamp) <60\n" +
-            "           then concat(timestampdiff(second, p.updated_at, current_timestamp),'초 전')\n" +
-            "\n" +
-            "           when timestampdiff(minute , p.updated_at, current_timestamp) <60\n" +
-            "           then concat(timestampdiff(minute, p.updated_at, current_timestamp),'분 전')\n" +
-            "\n" +
-            "           when timestampdiff(hour , p.updated_at, current_timestamp) <24\n" +
-            "           then concat(timestampdiff(hour, p.updated_at, current_timestamp),'시간 전')\n" +
-            "\n" +
-            "           when timestampdiff(day , p.updated_at, current_timestamp) < 30\n" +
-            "           then concat(timestampdiff(day, p.updated_at, current_timestamp),'일 전')\n" +
-            "\n" +
-            "           when timestampdiff(month , p.updated_at, current_timestamp) < 12\n" +
-            "           then concat(timestampdiff(month, p.updated_at, current_timestamp),'개월 전')\n" +
-            "\n" +
-            "           else concat(timestampdiff(year , p.updated_at, current_timestamp), '년 전')\n" +
-            "       end postCreatedDate,\n" +
-            "       group_concat(pi.idx) postImageIdx,\n" +
-            "       group_concat(pi.image) postimage,\n" +
-            "       group_concat(pi.image_number) postImageNumber,\n" +
-            "       CONCAT(IFNULL(FORMAT(pl.postLikeCount,0),0),'개') as postLikeCount,\n" +
-            "       CONCAT(IFNULL(FORMAT(c.commentCount,0),0),'개') as commentCount,\n" +
-            "       IFNULL(pl2.likeClickStatus,'INACTIVE') as likeClickStatus\n" +
-            "\n" +
-            "from (select idx, content, updated_at ,user_idx from post where status ='ACTIVE') p\n" +
-            "    left join (select idx, image,image_number, post_idx from post_image where status ='ACTIVE') pi\n" +
-            "    on p.idx = pi.post_idx\n" +
-            "    join (select idx, nick_name, image from user where status ='ACTIVE') u\n" +
-            "    on p.user_idx = u.idx\n" +
-            "    left join (select post_idx, count(post_idx) as postLikeCount from post_like where status = 'ACTIVE' group by post_idx) pl\n" +
-            "    on p.idx = pl.post_idx\n" +
-            "    left join(select post_idx, count(post_idx) as commentCount from comment where status='ACTIVE' group by post_idx) c\n" +
-            "    on p.idx = c.post_idx\n" +
-            "    left join (select post_idx, 'ACTIVE' as likeClickStatus from post_like where user_idx = :userIdx) pl2\n" +
-            "    on p.idx = pl2.post_idx\n" +
-            "group by p.idx\n" +
-            "order by p.idx DESC", nativeQuery = true)
-    List<GetPostsRes> getPosts(Pageable pageable, @Param("userIdx") Long userIdx);
-```    
+    ```sql
+        @Query(value="select u.idx writerIdx,\n" +
+                "       u.nick_name writerNickName,\n" +
+                "       u.image writerImage,\n" +
+                "       p.idx postIdx,\n" +
+                "       p.content postContent,\n" +
+                "       case when timestampdiff(second , p.updated_at, current_timestamp) <60\n" +
+                "           then concat(timestampdiff(second, p.updated_at, current_timestamp),'초 전')\n" +
+                "\n" +
+                "           when timestampdiff(minute , p.updated_at, current_timestamp) <60\n" +
+                "           then concat(timestampdiff(minute, p.updated_at, current_timestamp),'분 전')\n" +
+                "\n" +
+                "           when timestampdiff(hour , p.updated_at, current_timestamp) <24\n" +
+                "           then concat(timestampdiff(hour, p.updated_at, current_timestamp),'시간 전')\n" +
+                "\n" +
+                "           when timestampdiff(day , p.updated_at, current_timestamp) < 30\n" +
+                "           then concat(timestampdiff(day, p.updated_at, current_timestamp),'일 전')\n" +
+                "\n" +
+                "           when timestampdiff(month , p.updated_at, current_timestamp) < 12\n" +
+                "           then concat(timestampdiff(month, p.updated_at, current_timestamp),'개월 전')\n" +
+                "\n" +
+                "           else concat(timestampdiff(year , p.updated_at, current_timestamp), '년 전')\n" +
+                "       end postCreatedDate,\n" +
+                "       group_concat(pi.idx) postImageIdx,\n" +
+                "       group_concat(pi.image) postimage,\n" +
+                "       group_concat(pi.image_number) postImageNumber,\n" +
+                "       CONCAT(IFNULL(FORMAT(pl.postLikeCount,0),0),'개') as postLikeCount,\n" +
+                "       CONCAT(IFNULL(FORMAT(c.commentCount,0),0),'개') as commentCount,\n" +
+                "       IFNULL(pl2.likeClickStatus,'INACTIVE') as likeClickStatus\n" +
+                "\n" +
+                "from (select idx, content, updated_at ,user_idx from post where status ='ACTIVE') p\n" +
+                "    left join (select idx, image,image_number, post_idx from post_image where status ='ACTIVE') pi\n" +
+                "    on p.idx = pi.post_idx\n" +
+                "    join (select idx, nick_name, image from user where status ='ACTIVE') u\n" +
+                "    on p.user_idx = u.idx\n" +
+                "    left join (select post_idx, count(post_idx) as postLikeCount from post_like where status = 'ACTIVE' group by post_idx) pl\n" +
+                "    on p.idx = pl.post_idx\n" +
+                "    left join(select post_idx, count(post_idx) as commentCount from comment where status='ACTIVE' group by post_idx) c\n" +
+                "    on p.idx = c.post_idx\n" +
+                "    left join (select post_idx, 'ACTIVE' as likeClickStatus from post_like where user_idx = :userIdx) pl2\n" +
+                "    on p.idx = pl2.post_idx\n" +
+                "group by p.idx\n" +
+                "order by p.idx DESC", nativeQuery = true)
+        List<GetPostsRes> getPosts(Pageable pageable, @Param("userIdx") Long userIdx);
+    ```    
 </div>
 </details>
 
 
 
+<details>
+<summary> PathVariable 변수들의 유효성 검사 코드 이슈 </summary>
+<div markdown="1">
+
+- **Issue** : 디증 if문으로 인해 코드가 길어지는 문제가 발생했습니다.    
+    ```java
+        //(변경 전) PathVariable 변수들에 대한 유효성 검사 : 미입력과 타입 오류
+        public void CheckPathVariableValid(Map<String, String> pathVariables){
+            if(pathVariables.get("userIdx") != null) {
+                try {
+                    Long.valueOf(pathVariables.get("userIdx"));
+                } catch (Exception exception){
+                    throw new BasicException(REQ_ERROR_INVALID_USERIDX);  //userIdx 형식 오류"
+                }
+            }              
+            ................ if(pathVariables.get(idx) 로직 반복 (생략) ..............                                                     if(pathVariables.get("followeeIdx") != null) {
+                try {
+                    Long.valueOf(pathVariables.get("followeeIdx"));
+                } catch (Exception exception){
+                    throw new BasicException(REQ_ERROR_INVALID_FOLLOWEEIDX);  //followeeIdx 형식 오류"
+                }
+            }         
+        }
+    ```                         
+- **Problem** : 유지보수 측면에서 리팩토링이 필요할 것으로 생각했습니다.
+- **Solution** : ArrayList와 for문을 활용해 중첩되는 if문 코드를 리팩토링 하였습니다.   
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; idx 변수 값들은 ArrayList\<String\>로 공통 처리하고, idx 변수에 따라 달라지는 Enum 상수  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; REQ_ERROR_INVALID_IDX의 status, code, message 필드 값은 setter()를 활용해 유동적으로 변경되도록  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 구현하였습니다.      
+    ```java
+        //(변경 후) PathVariable 변수들에 대한 유효성 검사 : 미입력과 타입 오류
+        public void CheckPathVariableValid(Map<String, String> pathVariables){
+            List<String> pathVariableList = new ArrayList<>(Arrays.asList("userIdx",
+                    "senderIdx",
+                    "followerReqIdx",
+                    "followerIdx",
+                    "receiverIdx",
+                    "postIdx",
+                    "commentIdx",
+                    "followReqIdx",
+                    "followIdx",
+                    "followeeIdx"
+            ));
+
+            String valueByPathVariable = null;
+            BasicResponseStatus status = null;
+            for(int i=0; i<pathVariableList.size(); i++){
+                if((valueByPathVariable = pathVariables.get(pathVariableList.get(i))) != null) {
+                    try {
+                        Long.valueOf(valueByPathVariable);
+                    } catch (Exception exception){
+                        status.REQ_ERROR_INVALID_IDX.setStatus("FAIL");
+                        status.REQ_ERROR_INVALID_IDX.setCode("REQ_ERROR_INVALID_"+pathVariableList.get(i).toUpperCase());
+                        status.REQ_ERROR_INVALID_IDX.setMessage(pathVariableList.get(i)+" 형식 오류");
+                        throw new BasicException(status.REQ_ERROR_INVALID_IDX);  //receiverIdx 형식 오류"
+                    }
+                }
+            }
+        }
+    ```     
+</div>
+</details>                    
+                    
+
+                
+                
 </br>
 
 ## ❕ 회고 / 느낀점
@@ -258,7 +333,7 @@
 - [ ] 프론트엔드 개발자와 협업하여 API 연결 및 이슈 처리
 - [ ] Docker를 이용해 Spring Boot 애플리케이션 배포
 - [ ] Response 구조의 Best Practice 연구  
-- [ ] @Pathvariable로 입력받는 모든 경로 변수(idx)에 유효성 검사 적용 (ex, 입력값 필터링)
+- [x] @Pathvariable로 입력받는 모든 경로 변수(idx)에 유효성 검사 적용 (ex, 입력값 필터링)
 - [ ] 휴먼계정과 차단계정 관리를 위한 DB 설계와 API 구현 
 - [ ] 회원탈퇴시 다수의 테이블의 레코드에서 Update 쿼리문이 동작하여 반영시간이 약 10초가 걸리는 이슈 해결 필요  
 - [ ] 게시글과 댓글 신고 API 구현
