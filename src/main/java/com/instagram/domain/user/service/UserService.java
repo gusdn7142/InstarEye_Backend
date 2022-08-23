@@ -49,12 +49,15 @@ public class UserService {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);  //BCryptPasswordEncoder 클래스 활용 (암호화 속도는 default가 10)
             postUserReq.setPassword(encoder.encode(postUserReq.getPassword()));  //userCreation 객체에 암호화된 패스워드 삽입
 
-            //PostUserReq 객체의 데이터를 담을 User 엔티티 생성
-            User userCreation = new User();
-
-            //user DB에 사용자 정보 등록
-            BeanUtils.copyProperties(postUserReq,userCreation);
-            userDao.save(userCreation);
+            userDao.save(User.builder()
+                    .phone(postUserReq.getPhone())
+                    .name(postUserReq.getName())
+                    .password(postUserReq.getPassword())
+                    .birthDay(postUserReq.getBirthDay())
+                    .privacyPolicyStatus(postUserReq.getPrivacyPolicyStatus())
+                    .nickName(postUserReq.getNickName())
+                    .email(postUserReq.getEmail())
+                    .build());
             return "DB에 사용자 등록 성공";
 
         } catch (Exception exception) {
@@ -248,17 +251,17 @@ public class UserService {
 
         //카카오 유저 계정 생성
         try{
-
-            //PostUserReq 객체의 데이터를 담을 User 엔티티 생성
-            User userCreation = new User();
-
-            //String형식인 privacyPolicyStatus 변수를 Enum 타입으로 변환
-            PrivacyPolicyStatus privacyPolicyStatus = PrivacyPolicyStatus.valueOf(postKakaoUserReq.getPrivacyPolicyStatus());
-            userCreation.setPrivacyPolicyStatus(privacyPolicyStatus);
-
-            BeanUtils.copyProperties(postKakaoUserReq,userCreation);
-
-            userDao.save(userCreation);
+            userDao.save(User.builder()
+                    .phone(postKakaoUserReq.getPhone())
+                    .name(postKakaoUserReq.getName())
+                    .password(postKakaoUserReq.getPassword())
+                    .birthDay(postKakaoUserReq.getBirthDay())
+                    .privacyPolicyStatus(postKakaoUserReq.getPrivacyPolicyStatus())
+                    .nickName(postKakaoUserReq.getNickName())
+                    .email(postKakaoUserReq.getEmail())
+                    .image(postKakaoUserReq.getImage())
+                    .accountType(postKakaoUserReq.getAccountType())
+                    .build());
             return "카카오 회원가입 성공";
 
         } catch (Exception exception) {

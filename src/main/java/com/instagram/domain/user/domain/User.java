@@ -12,7 +12,7 @@ import java.util.Date;
 
 
 @Getter
-@Setter
+//@Setter
 
 @Entity
 @DynamicInsert   //jpa 메서드 동작시 null인 필드 제외
@@ -75,4 +75,38 @@ public class User {
     @Column (columnDefinition = "timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime updatedAt; //갱신 시각
 
+    @Builder
+    public User (String name,
+                 String nickName,
+                 String phone,
+                 String email,
+                 String password,
+                 Date birthDay,
+                 String image,
+                 String webSite,
+                 String introduction,
+                 AccountHiddenState accountHiddenState,
+                 PrivacyPolicyStatus privacyPolicyStatus,
+                 AccountType accountType,
+                 DataStatus status,
+                 LocalDateTime createdAt,
+                 LocalDateTime updatedAt){
+        this.name = name;
+        this.nickName = nickName;
+        this.phone = phone;
+        this.email = email;
+        this.password = password;
+        this.birthDay = birthDay;
+        this.image = image;
+        this.webSite = webSite;
+        this.introduction = introduction;
+        this.accountHiddenState = accountHiddenState;
+        this.privacyPolicyStatus = privacyPolicyStatus;
+        this.accountType = accountType;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public User(){ }
 }

@@ -276,12 +276,18 @@ public class UserController {
             else if (errorCode.equals("Size.postKakaoUserReq.nickName")) {
                 return new BasicResponse(REQ_ERROR_INVALID_NICK_NAME);
             }
-            else if (errorCode.equals("Pattern.postKakaoUserReq.birthDay")) {
-                return new BasicResponse(REQ_ERROR_INVALID_BIRTHDAY);
+            else if (errorCode.equals("Past.postKakaoUserReq.birthDay")) {
+                return new BasicResponse(REQ_ERROR_PAST_BIRTHDAY);
+            }
+            else if (errorCode.equals("NotNull.postKakaoUserReq.birthDay")) {
+                return new BasicResponse(REQ_ERROR_NULL_BIRTHDAY);
             }
             else if (errorCode.equals("Pattern.postKakaoUserReq.privacyPolicyStatus")) {
                 return new BasicResponse(REQ_ERROR_INVALID_PRIVACY_POLICY_STATUS);
             }
+        }
+        if (postKakaoUserReq.getPrivacyPolicyStatus()==PrivacyPolicyStatus.DISAGREE) {
+            return new BasicResponse(REQ_ERROR_INVALID_PRIVACY_POLICY_STATUS);
         }
         /* 유효성 검사 구현 끝 */
 
