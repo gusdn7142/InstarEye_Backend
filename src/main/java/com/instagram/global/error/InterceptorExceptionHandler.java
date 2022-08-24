@@ -33,6 +33,9 @@ public class InterceptorExceptionHandler {
         if(e.getMessage().contains("birthDay")){  //생일 입력시 에러 처리
             return new BasicResponse(REQ_ERROR_INVALID_BIRTHDAY);
         }
+        if(e.getMessage().contains("accountHiddenState")){  //계정 공개상태 형식 오류 (Need : OPEN or PRIVATE)
+            return new BasicResponse(REQ_ERROR_INVALID_ACCOUNT_HIDDEN_STATE);
+        }
 
         return new BasicResponse(e.getMessage());
     }

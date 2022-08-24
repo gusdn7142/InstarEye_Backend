@@ -142,6 +142,7 @@ public class UserService {
 
 
     /* 4. 프로필 수정 - 이름 */
+    @Transactional(rollbackFor = {Exception.class})
     public void modifyUserInfo(PatchUserReq patchUserReq) throws BasicException {    //UserController.java에서 객체 값( id, nickName)을 받아와서...
 
         //닉네임 중복 검사 ("ACTIVE"가 1일떄 포함)
@@ -149,10 +150,11 @@ public class UserService {
             throw new BasicException(RES_ERROR_EXIST_NICK_NAME);
         }
 
+        User user = userDao.findByIdx(patchUserReq.getUserIdx());
         try{
             //이름 변경
             if(patchUserReq.getName() != null){
-                userDao.modifyName(patchUserReq.getName(), patchUserReq.getUserIdx());
+                user.updateName(patchUserReq.getName());
             }
         } catch(Exception exception){
             throw new BasicException(DATABASE_ERROR_MODIFY_FAIL_USER_NAME);   //"이름 변경 오류"
@@ -162,7 +164,7 @@ public class UserService {
         try{
             //닉네임 값 변경
             if(patchUserReq.getNickName() != null){
-                userDao.modifyNickName(patchUserReq.getNickName(), patchUserReq.getUserIdx());
+                user.updateNickName(patchUserReq.getNickName());
             }
         } catch(Exception exception){
             throw new BasicException(DATABASE_ERROR_MODIFY_FAIL_USER_NICKNAME);   //"닉네임 변경 오류"
@@ -173,7 +175,7 @@ public class UserService {
         try{
             //웹사이트 변경
             if(patchUserReq.getWebSite() != null){
-                userDao.modifyWebSite(patchUserReq.getWebSite(), patchUserReq.getUserIdx());
+                user.updateWebSite(patchUserReq.getWebSite());
             }
         } catch(Exception exception){
             throw new BasicException(DATABASE_ERROR_MODIFY_FAIL_USER_WEBSITE);   //"웹사이트 변경 오류"
@@ -183,7 +185,7 @@ public class UserService {
         try{
             //소개글 변경
             if(patchUserReq.getIntroduction() != null){
-                userDao.modifyIntroduction(patchUserReq.getIntroduction(), patchUserReq.getUserIdx());
+                user.updateIntroduction(patchUserReq.getIntroduction());
             }
         } catch(Exception exception){
             throw new BasicException(DATABASE_ERROR_MODIFY_FAIL_USER_INTRODUCTION);   //"소개글 변경 오류."
@@ -193,10 +195,7 @@ public class UserService {
         try{
             //계정공개 유무 변경
             if(patchUserReq.getAccountHiddenState() != null){
-
-                //String형식인 accountHiddenState 변수를 Enum 타입으로 변환
-                AccountHiddenState accountHiddenState = AccountHiddenState.valueOf(patchUserReq.getAccountHiddenState());
-                userDao.modifyAccountHiddenState(accountHiddenState, patchUserReq.getUserIdx());
+                user.updateHiddenState(patchUserReq.getAccountHiddenState());
             }
         } catch(Exception exception){
             throw new BasicException(DATABASE_ERROR_MODIFY_FAIL_USER_ACCOUNT_HIDDEN_STATE);   //"계정공개 유무 변경 오류."

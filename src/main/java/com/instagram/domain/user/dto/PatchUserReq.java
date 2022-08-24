@@ -1,6 +1,7 @@
 package com.instagram.domain.user.dto;
 
 
+import com.instagram.domain.user.domain.AccountHiddenState;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,8 +28,7 @@ public class PatchUserReq {
 
     private String introduction;  //소개
 
-    @Pattern(regexp = "^(OPEN|PRIVATE)$", message="계정 공개상태 형식 오류")
-    private String accountHiddenState; //계정 공개 유무
+    private AccountHiddenState accountHiddenState; //계정 공개 유무
 
 
 }

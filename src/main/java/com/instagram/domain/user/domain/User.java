@@ -60,10 +60,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private PrivacyPolicyStatus privacyPolicyStatus;  //개인정보 처리방침 동의여부
 
-    @Column (nullable=false, columnDefinition ="varchar(20) default 'LOCAL'")
+    @Column (nullable=true, columnDefinition ="varchar(20) default 'LOCAL'")
     @Enumerated(EnumType.STRING)
     private AccountType accountType;  //계정 타입
-
 
     @Column (columnDefinition = "varchar(10) default 'ACTIVE'")
     @Enumerated(EnumType.STRING)
@@ -109,4 +108,26 @@ public class User {
     }
 
     public User(){ }
+
+    public void updateName(String name){
+        this.name = name;
+    }
+
+    public void updateNickName(String nickName){
+        this.nickName = nickName;
+    }
+
+    public void updateWebSite(String webSite){
+        this.webSite = webSite;
+    }
+
+    public void updateIntroduction(String introduction){
+        this.introduction = introduction;
+    }
+
+    public void updateHiddenState(AccountHiddenState accountHiddenState){
+        this.accountHiddenState = accountHiddenState;
+    }
+
+
 }

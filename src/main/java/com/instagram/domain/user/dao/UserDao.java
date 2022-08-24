@@ -59,42 +59,6 @@ public interface UserDao extends JpaRepository<User, Long> {
             "where  u.idx = :userIdx and u.status ='ACTIVE'",nativeQuery = true)
     GetUserRes getUser(@Param("userIdx") Long userIdx);
 
-
-
-
-    /* 4. 프로필 편집 API */
-    //이름 변경
-    @Modifying
-    @Transactional
-    @Query(value="update User set name = :name where idx = :userIdx and status = 'ACTIVE'\n")
-    void modifyName(@Param("name") String name, @Param("userIdx") Long userIdx );
-
-    //닉네임 변경
-    @Modifying
-    @Transactional
-    @Query(value="update User set nickName = :nickName where idx = :userIdx and status = 'ACTIVE'\n")
-    void modifyNickName(@Param("nickName") String nickName, @Param("userIdx") Long userIdx );
-
-    //웹사이트 변경
-    @Modifying
-    @Transactional
-    @Query(value="update User set webSite = :webSite where idx = :userIdx and status = 'ACTIVE'\n")
-    void modifyWebSite(@Param("webSite") String webSite, @Param("userIdx") Long userIdx );
-
-    //소개글  변경
-    @Modifying
-    @Transactional
-    @Query(value="update User set introduction = :introduction where idx = :userIdx and status = 'ACTIVE'\n")
-    void modifyIntroduction(@Param("introduction") String introduction, @Param("userIdx") Long userIdx );
-
-    //계정공개 유무 변경
-    @Modifying
-    @Transactional
-    @Query(value="update User set accountHiddenState = :accountHiddenState where idx = :userIdx and status = 'ACTIVE'\n")
-    void modifyAccountHiddenState(@Param("accountHiddenState") AccountHiddenState accountHiddenState, @Param("userIdx") Long userIdx );
-
-
-
     /* 5. 회원 탈퇴 API */
     @Modifying
     @Transactional
