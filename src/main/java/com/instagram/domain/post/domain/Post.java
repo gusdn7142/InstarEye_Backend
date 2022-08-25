@@ -13,7 +13,9 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -50,7 +52,13 @@ public class Post {
     @Column (columnDefinition = "timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime updatedAt; //갱신 시각
 
+    @OneToMany(mappedBy = "post")
+    private List<PostImage> postImages = new ArrayList<>();
 
+    public Post deletePost(){
+        this.status = DataStatus.INACTIVE;
+        return this;
+    }
 
 
 }

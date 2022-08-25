@@ -1,14 +1,23 @@
 package com.instagram.domain.user.domain;
 
 
+import com.instagram.domain.chat.domain.Chat;
+import com.instagram.domain.comment.domain.Comment;
+import com.instagram.domain.commentLike.domain.CommentLike;
+import com.instagram.domain.follow.domain.Follow;
+import com.instagram.domain.followReq.domain.FollowReq;
 import com.instagram.domain.model.DataStatus;
+import com.instagram.domain.post.domain.Post;
+import com.instagram.domain.postLike.domain.PostLike;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @Getter
@@ -108,6 +117,40 @@ public class User {
     }
 
     public User(){ }
+
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<PostLike> postLikes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<CommentLike> commentLikes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "receiver")
+    private List<Chat> receiverChats = new ArrayList<>();
+
+    @OneToMany(mappedBy = "sender")
+    private List<Chat> senderChats = new ArrayList<>();
+
+    @OneToMany(mappedBy = "followee")
+    private List<Follow> followeeFollows = new ArrayList<>();
+
+    @OneToMany(mappedBy = "follower")
+    private List<Follow> followerFollows = new ArrayList<>();
+
+    @OneToMany(mappedBy = "reqFollowee")
+    private List<FollowReq> reqFolloweeFollowReqs = new ArrayList<>();
+
+    @OneToMany(mappedBy = "reqFollower")
+    private List<FollowReq> reqFollowerFollowReqs = new ArrayList<>();
+
+    public void deleteUser(){
+        this.status = DataStatus.INACTIVE;
+    }
 
     public void updateName(String name){
         this.name = name;

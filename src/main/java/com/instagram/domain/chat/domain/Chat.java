@@ -50,8 +50,8 @@ public class Chat {
     @Column (columnDefinition = "timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime updatedAt; //갱신 시각
 
-
-
-
+    public void deleteChat(){
+        this.status = DataStatus.INACTIVE;
+    }
 
 }

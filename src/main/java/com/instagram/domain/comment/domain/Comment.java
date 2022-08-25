@@ -49,9 +49,8 @@ public class Comment {
     @Column (columnDefinition = "timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime updatedAt; //갱신 시각
 
-
-
-
-
+    public void deleteComment(){
+        this.status = DataStatus.INACTIVE;
+    }
 
 }

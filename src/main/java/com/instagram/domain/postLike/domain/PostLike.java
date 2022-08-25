@@ -45,6 +45,8 @@ public class PostLike {
     @Column (columnDefinition = "timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime updatedAt; //갱신 시각
 
-
+    public void deletePostLike(){
+        this.status = DataStatus.INACTIVE;
+    }
 
 }

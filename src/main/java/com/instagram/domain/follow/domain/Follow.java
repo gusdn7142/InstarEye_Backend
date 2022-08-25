@@ -44,5 +44,8 @@ public class Follow {
     @Column (columnDefinition = "timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime updatedAt; //갱신 시각
 
+    public void deleteFollow(){
+        this.status = DataStatus.INACTIVE;
+    }
 
 }

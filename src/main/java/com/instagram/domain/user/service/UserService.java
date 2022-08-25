@@ -1,6 +1,13 @@
 package com.instagram.domain.user.service;
 
 
+import com.instagram.domain.chat.domain.Chat;
+import com.instagram.domain.comment.domain.Comment;
+import com.instagram.domain.commentLike.domain.CommentLike;
+import com.instagram.domain.follow.domain.Follow;
+import com.instagram.domain.followReq.domain.FollowReq;
+import com.instagram.domain.post.domain.Post;
+import com.instagram.domain.postLike.domain.PostLike;
 import com.instagram.domain.user.dao.UserDao;
 import com.instagram.domain.user.domain.AccountHiddenState;
 import com.instagram.domain.user.domain.PrivacyPolicyStatus;
@@ -16,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import static com.instagram.global.error.BasicResponseStatus.*;
 
@@ -208,16 +216,70 @@ public class UserService {
 
 
     /* 5. 회원 탈퇴   */
+    @Transactional(rollbackFor = {Exception.class})
     public void deleteUser(Long userIdx) throws BasicException {
 
         //회원 탈퇴 여부 확인
-        if(userDao.findByIdx(userIdx) == null){
+        User user = userDao.findByIdx(userIdx);
+        if(user == null){
             throw new BasicException(RES_ERROR_NOT_EXIST_USER);  //"존재하지 않는 사용자 계정"
         }
 
         try{
             //회원 탈퇴
-            userDao.deleteUser(userIdx);
+            //1. 게시글 정보와 게시글 이미지 정보 삭제
+            List<Post> postList = user.getPosts();
+            postList.forEach(post -> {
+                post.deletePost().getPostImages().forEach(postImageElement -> {
+                    postImageElement.deletePostImage();
+                });
+            });
+            //2. 게시글 좋아요 정보 삭제
+            List<PostLike> postLikeList = user.getPostLikes();
+            postLikeList.forEach(postLike -> {
+                postLike.deletePostLike();
+            });
+            //3. 댓글 정보 삭제
+            List<Comment> commentList = user.getComments();
+            commentList.forEach(comment -> {
+                comment.deleteComment();
+            });
+            //4. 댓글 좋아요 정보 삭제
+            List<CommentLike> commentLikeList = user.getCommentLikes();
+            commentLikeList.forEach(commentLike -> {
+                commentLike.deleteCommentLike();
+            });
+
+            //5. 채팅 정보 삭제
+            List<Chat> receiverChatList = user.getReceiverChats();
+            List<Chat> senderChatList = user.getSenderChats();
+            receiverChatList.forEach(receiverChat ->{
+                receiverChat.deleteChat();
+            });
+            senderChatList.forEach(senderChat->{
+                senderChat.deleteChat();;
+            });
+            //6. 팔로우 정보 삭제
+            List<Follow> followeeFollowList= user.getFolloweeFollows();
+            List<Follow> followerFollowList= user.getFollowerFollows();
+            followeeFollowList.forEach(followeeFollow->{
+                followeeFollow.deleteFollow();
+            });
+            followerFollowList.forEach(followerFollow->{
+                followerFollow.deleteFollow();
+            });
+            //7. 팔로우 요청 정보 삭제
+            List<FollowReq> reqFolloweeFollowList= user.getReqFolloweeFollowReqs();
+            List<FollowReq> reqFollowerFollowList= user.getReqFollowerFollowReqs();
+            reqFolloweeFollowList.forEach(reqFolloweeFollow->{
+                reqFolloweeFollow.deleteFollowReq();
+            });
+            reqFollowerFollowList.forEach(reqFollowerFollow->{
+                reqFollowerFollow.deleteFollowReq();
+            });
+            //8. 회원정보 삭제
+            user.deleteUser();
+
         } catch(Exception exception){
             throw new BasicException(DATABASE_ERROR_DELETE_USER);   //'회원 탈퇴 실패'
         }

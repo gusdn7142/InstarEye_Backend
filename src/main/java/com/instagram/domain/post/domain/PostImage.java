@@ -23,8 +23,6 @@ import java.time.LocalDateTime;
 @Table(name = "post_image")   //엔티티와 매핑할 테이블을 지정
 public class PostImage {
 
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;  //인덱스
@@ -50,9 +48,8 @@ public class PostImage {
     @Column (columnDefinition = "timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime updatedAt; //갱신 시각
 
-
-
-
-
+    public void deletePostImage(){
+        this.status = DataStatus.INACTIVE;
+    }
 
 }
