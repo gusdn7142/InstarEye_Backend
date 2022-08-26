@@ -3,6 +3,7 @@ package com.instagram.domain.post.domain;
 
 import com.instagram.domain.model.DataStatus;
 import com.instagram.domain.user.domain.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 
 
 @Getter
-@Setter
+//@Setter
 
 @Entity
 @DynamicInsert   //jap 메서드 동작시 null인 필드 제외
@@ -52,4 +53,20 @@ public class PostImage {
         this.status = DataStatus.INACTIVE;
     }
 
+    @Builder
+    public PostImage (String image,
+                      int imageNumber,
+                      Post post,
+                      DataStatus status,
+                      LocalDateTime createdAt,
+                      LocalDateTime updatedAt){
+        this.image = image;
+        this.imageNumber = imageNumber;
+        this.post = post;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public PostImage(){ }
 }

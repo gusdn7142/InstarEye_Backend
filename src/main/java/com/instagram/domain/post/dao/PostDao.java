@@ -71,13 +71,6 @@ public interface PostDao extends JpaRepository<Post, Long> {
 
 
 
-    /* 8. 게시글 정보 수정 API */
-    @Modifying
-    @Transactional
-    @Query(value="update Post p set p.content = :content where p.idx = :postIdx and p.status = 'ACTIVE'\n")
-    void modifyPost(@Param("content") String content, @Param("postIdx") Long postIdx);
-
-
     /* 9. 게시글 삭제 API */
     @Modifying
     @Transactional

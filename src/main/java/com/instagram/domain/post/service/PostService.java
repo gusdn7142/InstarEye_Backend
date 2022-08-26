@@ -39,61 +39,50 @@ public class PostService {
 
     /* 6. 게시글 작성 */
     @Transactional(rollbackFor = {Exception.class})
-    public String createPost(Long userIdX, String content, List<Integer> imageNumber, List<MultipartFile> multipartFile ) throws BasicException {
-
+    public String createPost(Long userIdX, String content, List<Integer> imageNumberlist, List<MultipartFile> multipartFile ) throws BasicException {
 
         //DB에 게시글 등록 (내용 ,이미지, 이미지 번호)
         try{
             User Writer = userDao.findByIdx(userIdX);
 
             //post DB에 저장
-            Post postCreation = new Post();
-            postCreation.setUser(Writer);
-            postCreation.setContent(content);
-            postDao.save(postCreation);
-
+            Post postCreation = postDao.save(Post.builder()
+                    .content(content)
+                    .user(Writer)
+                    .build());
 
             //postImage DB에 저장
             List<PostImage> postImageListCreation = new ArrayList<>();
             List<String> UUID_fileNameList = new ArrayList<>();;
 
-            for(int i=0; i<imageNumber.size(); i++){
-                PostImage postImageCreation = new PostImage();   //내부에서 postImageIdx를 반복 횟수만큼 생성 (for문에 꼭 포함해야 한다)
-                postImageCreation.setPost(postCreation);
-                postImageCreation.setImageNumber(imageNumber.get(i));
-
+            for(int i=0; i<imageNumberlist.size(); i++){
                 //UUID가 적용된 이미지 파일명 리턴
                 UUID_fileNameList.add(awsS3Service.createFileNameToDB(multipartFile.get(i)));            //UUID.randomUUID().toString() + "-" + multipartFile.get(i).getOriginalFilename();   //이미지 파일명에 UUID 적용
-                postImageCreation.setImage(Secret.AWS_S3_CONNECT_URL+UUID_fileNameList.get(i));
 
+                PostImage postImageCreation = PostImage.builder()
+                        .image(Secret.AWS_S3_CONNECT_URL+UUID_fileNameList.get(i))
+                        .imageNumber(imageNumberlist.get(i))
+                        .post(postCreation)
+                        .build();
                 postImageListCreation.add(postImageCreation);
             }
 
             postImageDao.saveAll(postImageListCreation);
 
-
-
             //S3에 이미지 파일 업로드
-            for(int i=0; i<imageNumber.size(); i++) {
+            for(int i=0; i<imageNumberlist.size(); i++) {
                 URI imageUrl = awsS3Service.uploadFile(multipartFile.get(i), UUID_fileNameList.get(i));  //이미지 파일과 UUID가 적용된 파일명 인수로 전달
             }
 
-
             return "게시글 등록 성공";
-
-
         } catch (Exception exception) {
             throw new BasicException(DATABASE_ERROR_CREATE_POST);  //DB에 게시글 등록 실패
         }
-
-
-
     }
 
 
     /* 7. 전체 게시글 조회 */
     public List<GetPostsRes> getPosts(Pageable pageable, Long userIdx) throws BasicException {
-
 
         try {
             List<GetPostsRes> getPostsRes = postDao.getPosts(pageable, userIdx);
@@ -103,9 +92,6 @@ public class PostService {
         } catch (Exception exception) {
             throw new BasicException(DATABASE_ERROR_FAIL_GET_POSTS);  //"DB에서 게시글 조회 실패"
         }
-
-
-
     }
 
 
@@ -118,7 +104,7 @@ public class PostService {
         List<PostImage> PostImageBeforeList = postImageDao.findByPost(postBefore);
 
         //게시글 삭제 여부 조회
-        if(postBefore == null){             //게시글이 삭제되었다면..
+        if(postBefore == null){
             throw new BasicException(RES_ERROR_POSTS_DELETE_POST);    //"삭제된 게시글"
         }
 
@@ -131,7 +117,7 @@ public class PostService {
         //게시글 내용 변경
         if(content != null) {
             try {
-                postDao.modifyPost(content, postIdx);
+                postBefore.updateContent(content);
             } catch (Exception exception) {
                 throw new BasicException(DATABASE_ERROR_MODIFY_FAIL_POSTS_CONTENT);   //"게시글 내용 변경 오류"
             }
@@ -148,13 +134,13 @@ public class PostService {
 
                 //DB에 새로운 이미지 등록
                 for(int i=0; i<imageNumberlist.size(); i++) {
-                    PostImage postImageCreation = new PostImage();   //내부에서 postImageIdx를 반복 횟수만큼 생성 (for문에 꼭 포함해야 한다)
-                    postImageCreation.setPost(postBefore);
-                    postImageCreation.setImageNumber(imageNumberlist.get(i));
-
                     UUID_fileNameList.add(awsS3Service.createFileNameToDB(multipartFile.get(i)));         //UUID가 적용된 새로운 이미지 파일명 리턴
-                    postImageCreation.setImage(Secret.AWS_S3_CONNECT_URL+UUID_fileNameList.get(i));
 
+                    PostImage postImageCreation = PostImage.builder()
+                            .image(Secret.AWS_S3_CONNECT_URL+UUID_fileNameList.get(i))
+                            .imageNumber(imageNumberlist.get(i))
+                            .post(postBefore)
+                            .build();
                     postImageListCreation.add(postImageCreation);
                 }
                 postImageDao.saveAll(postImageListCreation);
@@ -162,7 +148,6 @@ public class PostService {
             catch (Exception exception) {
                 throw new BasicException(DATABASE_ERROR_MODIFY_FAIL_POSTS_IMAGE);   //"게시글 이미지 변경 오류"
             }
-
 
             //S3에 새로운 이미지 파일 업로드
             for(int i=0; i<imageNumberlist.size(); i++) {

@@ -6,6 +6,7 @@ import com.instagram.domain.user.domain.AccountHiddenState;
 import com.instagram.domain.user.domain.AccountType;
 import com.instagram.domain.user.domain.PrivacyPolicyStatus;
 import com.instagram.domain.user.domain.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
@@ -18,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 @Getter
-@Setter
+//@Setter
 
 @Entity
 @DynamicInsert   //jap 메서드 동작시 null인 필드 제외
@@ -60,5 +61,24 @@ public class Post {
         return this;
     }
 
+    @Builder
+    public Post (String content,
+                 User user,
+                 PostStatus postStatus,
+                 DataStatus status,
+                 LocalDateTime createdAt,
+                 LocalDateTime updatedAt){
+        this.content = content;
+        this.user = user;
+        this.postStatus = postStatus;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 
+    public Post(){ }
+
+    public void updateContent(String content){
+        this.content = content;
+    }
 }

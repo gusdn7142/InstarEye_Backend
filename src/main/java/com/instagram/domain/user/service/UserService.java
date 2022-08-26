@@ -244,6 +244,7 @@ public class UserService {
             commentList.forEach(comment -> {
                 comment.deleteComment();
             });
+
             //4. 댓글 좋아요 정보 삭제
             List<CommentLike> commentLikeList = user.getCommentLikes();
             commentLikeList.forEach(commentLike -> {
