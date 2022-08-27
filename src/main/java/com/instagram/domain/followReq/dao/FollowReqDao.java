@@ -25,21 +25,9 @@ public interface FollowReqDao extends JpaRepository<FollowReq, Long> {
     @Query(value="select fr from FollowReq fr where fr.idx = :followReqIdx and fr.reqFollower = :reqfollower and fr.status = 'ACTIVE' ")
     FollowReq checkReqFollower(@Param("followReqIdx") Long followReqIdx, @Param("reqfollower") User reqfollower);
 
-
-    /* 24. 팔로우 요청 정보 삭제 API */
-    @Modifying
-    @Transactional
-    @Query(value="update FollowReq fr set fr.status = 'INACTIVE' where fr.idx = :followReqIdx and fr.status = 'ACTIVE' ")
-    void deletefollowReq(@Param("followReqIdx") Long followReqIdx);
-
-
     /* 27. 팔로우 요청 받은자 체크 */
     @Query(value="select fr from FollowReq fr where fr.idx = :followReqIdx and fr.reqFollowee = :reqfollowee and fr.status = 'ACTIVE' ")
     FollowReq checkReqFollowee(@Param("followReqIdx") Long followReqIdx, @Param("reqfollowee") User reqfollowee);
-
-
-
-
 
 
 }

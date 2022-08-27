@@ -18,8 +18,8 @@ import java.time.LocalDateTime;
 @Setter
 
 @Entity
-@DynamicInsert   //jap 메서드 동작시 null인 필드 제외
-@DynamicUpdate   //jap 메서드 동작시 null인 필드 제외
+@DynamicInsert   //null인 필드 제외
+@DynamicUpdate   //null인 필드 제외
 @Table(name = "comment_like")   //엔티티와 매핑할 테이블을 지정
 public class CommentLike {
 

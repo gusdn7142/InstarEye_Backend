@@ -49,15 +49,4 @@ public interface ChatDao extends JpaRepository<Chat, Long> {
             "order by c.idx DESC", nativeQuery = true)
     List<GetChatRes> getChats(@Param("senderIdx") Long senderIdx, @Param("receiverIdx") Long receiverIdx, Pageable pageable);
 
-
-    /* 13. 채팅 메시지 삭제 API */
-    @Modifying
-    @Transactional
-    @Query(value="update Chat c set c.status = 'INACTIVE' where c.idx = :chatIdx and c.status = 'ACTIVE' ")
-    void deleteChat(@Param("chatIdx") Long chatIdx);
-
-
-
-
-
 }

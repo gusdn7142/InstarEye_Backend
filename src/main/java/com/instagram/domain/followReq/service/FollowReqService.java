@@ -12,6 +12,7 @@ import com.instagram.domain.user.domain.User;
 import com.instagram.global.error.BasicException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.instagram.global.error.BasicResponseStatus.*;
 
@@ -83,16 +84,14 @@ public class FollowReqService {
 
 
     /* 23. 팔로우 요청 취소 -  */
+    @Transactional(rollbackFor = {Exception.class})
     public void deletefollowReq(Long followReqIdx, Long userIdx) throws BasicException {
 
-
-        // 팔로우 요청정보 삭제 여부 조회 (유저가 계속 클릭시..)
+        // 팔로우 요청정보 삭제 여부 조회
         FollowReq followReqDelete = followReqDao.findByIdx(followReqIdx);
         if(followReqDelete == null){
             throw new BasicException(RES_ERROR_FOLLOWREQS_DELETE_FOLLOWREQ);    //"이미 취소된 팔로우 요청"
         }
-
-
 
         //팔로우 요청 등록자 체크
         User reqfollower = userDao.findByIdx(userIdx);
@@ -100,54 +99,38 @@ public class FollowReqService {
             throw new BasicException(RES_ERROR_FOLLOWREQS_NOT_SAME_REQFOLLOWER);    //팔로우 요청 등록자 불일치 오류
         }
 
-
         try{
             //팔로우 요청 정보 삭제
-            followReqDao.deletefollowReq(followReqIdx);
-
-
+            followReqDelete.deleteFollowReq();
         } catch(Exception exception){
             throw new BasicException(DATABASE_ERROR_FAIL_DELETE_FOLLOWREQS);   //'DB에서 팔로우 요청 취소 실패'
         }
-
-
-
     }
 
 
 
-
-
-
     /* 27. 팔로우 요청 거절 -  */
+    @Transactional(rollbackFor = {Exception.class})
     public void refusefollowReq(Long followReqIdx, Long userIdx) throws BasicException {
-
 
         // 팔로우 요청정보 삭제 여부 조회 (유저가 계속 클릭시..)
         FollowReq followReqDelete = followReqDao.findByIdx(followReqIdx);
         if(followReqDelete == null){
             throw new BasicException(RES_ERROR_FOLLOWREQS_DELETE_FOLLOWREQ);    //"이미 취소된 팔로우 요청"
         }
-
-
         //팔로우 요청 받은 내역이 있는지 체크
         User reqfollowee = userDao.findByIdx(userIdx);
         if(followReqDao.checkReqFollowee(followReqIdx, reqfollowee) == null){
             throw new BasicException(RES_ERROR_FOLLOWREQS_NOT_SAME_REQFOLLOWEE);    //팔로우 요청 받은 내역 없음
         }
 
-
         try{
             //팔로우 요청 정보 삭제
-            followReqDao.deletefollowReq(followReqIdx);
-
-
+            followReqDelete.deleteFollowReq();
+            //followReqDao.deletefollowReq(followReqIdx);
         } catch(Exception exception){
-            throw new BasicException(DATABASE_ERROR_FAIL_DELETE_FOLLOWREQS_REFUSE);   //'DB에서 팔로우 거절 취소 실패'
+            throw new BasicException(DATABASE_ERROR_FAIL_DELETE_FOLLOWREQS_REFUSE);   //'DB에서 팔로우 요청 거절 실패'
         }
-
-
-
     }
 
 

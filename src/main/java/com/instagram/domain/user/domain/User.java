@@ -24,8 +24,8 @@ import java.util.List;
 //@Setter
 
 @Entity
-@DynamicInsert   //jpa 메서드 동작시 null인 필드 제외
-@DynamicUpdate   //jpa 메서드 동작시 null인 필드 제외
+@DynamicInsert   //null인 필드 제외
+@DynamicUpdate   //null인 필드 제외
 @Table(name = "user")
 public class User {
 
@@ -37,7 +37,7 @@ public class User {
     private String name;  //이름
 
     @Column (nullable=false, columnDefinition="varchar(61)")
-    private String nickName;  //사용자 이름
+    private String nickName;  //사용자 이름ㅊㅊㅊ
 
     @Column (nullable=false, columnDefinition="varchar(20)")
     private String phone;  //전화번호

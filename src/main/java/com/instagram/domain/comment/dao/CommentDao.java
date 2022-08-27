@@ -70,13 +70,6 @@ public interface CommentDao extends JpaRepository<Comment, Long> {
     Comment checkCommentWtriter(@Param("commentIdx") Long commentIdx, @Param("commenter") User commenter);
 
 
-    /* 16. 댓글 삭제 API */
-    @Modifying
-    @Transactional
-    @Query(value="update Comment c set c.status = 'INACTIVE' where c.idx = :commentIdx and c.status = 'ACTIVE' ")
-    void deleteComment(@Param("commentIdx") Long commentIdx);
-
-
     /* 17. 댓글 수정 API */
     @Modifying
     @Transactional

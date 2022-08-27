@@ -14,6 +14,7 @@ import com.instagram.domain.user.domain.User;
 import com.instagram.global.error.BasicException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.instagram.global.error.BasicResponseStatus.*;
 
@@ -74,8 +75,8 @@ public class CommentLikeService {
 
 
     /* 21. 댓글 좋아요 취소 -  */
+    @Transactional(rollbackFor = {Exception.class})
     public void deleteCommentLike(Long commentLikeIdx, Long userIdx) throws BasicException {
-
 
         //댓글 좋아요 삭제 여부 조회 (유저가 계속 클릭시..)
         CommentLike commentLikeDelete = commentLikeDao.findByIdx(commentLikeIdx);
@@ -89,18 +90,12 @@ public class CommentLikeService {
             throw new BasicException(RES_ERROR_COMMENTLIKES_NOT_SAME_LIKER);    //댓글 좋아요 등록자 불일치 오류
         }
 
-
         try{
             //댓글 좋아요 정보 삭제
-            commentLikeDao.deleteCommentLike(commentLikeIdx);
-
-
+            commentLikeDelete.deleteCommentLike();
         } catch(Exception exception){
             throw new BasicException(DATABASE_ERROR_FAIL_DELETE_COMMENTLIKES);   //'DB에서 댓글 좋아요 취소 실패'
         }
-
-
-
     }
 
 

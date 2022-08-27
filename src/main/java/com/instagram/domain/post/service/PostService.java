@@ -123,15 +123,18 @@ public class PostService {
             }
         }
 
-        //게시글 이미지 정보 변경
+        //DB에서 기존 이미지 삭제
+        List<PostImage> postImageListBefore = postBefore.getPostImages();
+        postImageListBefore.forEach(postImage -> {
+            postImage.deletePostImage();
+        });;
+
+        //DB에 새로운 게시글 이미지 등록
         List<String> UUID_fileNameList = new ArrayList<>();;
         List<PostImage> postImageListCreation = new ArrayList<>();
 
         if(imageNumberlist != null) {
             try {
-                //DB에서 기존 이미지 삭제
-                postImageDao.deletePostImage(postBefore);
-
                 //DB에 새로운 이미지 등록
                 for(int i=0; i<imageNumberlist.size(); i++) {
                     UUID_fileNameList.add(awsS3Service.createFileNameToDB(multipartFile.get(i)));         //UUID가 적용된 새로운 이미지 파일명 리턴
@@ -193,23 +196,22 @@ public class PostService {
 
         try{
             //게시글 정보 삭제
-            postDao.deletePost(postIdx);
+            postDelete.deletePost();
 
             //게시글 이미지 정보 삭제
-            postImageDao.deletePostImage(postDelete);
-
+            List<PostImage> postImageListBefore = postDelete.getPostImages();
+            postImageListBefore.forEach(postImage -> {
+                postImage.deletePostImage();
+            });;
 
         } catch(Exception exception){
             throw new BasicException(DATABASE_ERROR_DELETE_POSTS);   //'DB에서 게시글 삭제 실패'
         }
-
-
         //S3에서 이미지 파일 삭제
         for(int i=0; i<PostImageDeleteList.size(); i++) {
             String fileName = PostImageDeleteList.get(i).getImage().replace(Secret.AWS_S3_CONNECT_URL, "");
             awsS3Service.deleteFile(fileName);
         }
-
     }
 
 

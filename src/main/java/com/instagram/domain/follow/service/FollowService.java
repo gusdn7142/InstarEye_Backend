@@ -30,10 +30,8 @@ public class FollowService {
     /* 24. 팔로우 (공개 계정)  */
     public PostFollowRes createfollowToOpen(Long followerIdx, Long followeeIdx) throws BasicException {
 
-
         User follower = userDao.findByIdx(followerIdx);
         User followee = userDao.findByIdx(followeeIdx);
-
 
         //팔로위 계정 삭제 여부 조회
         if(followee == null){
@@ -51,37 +49,26 @@ public class FollowService {
             throw new BasicException(RES_ERROR_FOLLOWS_PRIVATE_ACCOUNT);    //"비공개 유저이므로 팔로우 요청과 승인 필요"
         }
 
-
-
         //DB에 팔로우 정보 등록 (처음이면)
         try{
-
-            //post_like DB에 댓글 내용 저장
-            Follow followCreation = new Follow();
-            followCreation.setFollowee(followee);
-            followCreation.setFollower(follower);
-
-            followDao.save(followCreation);
+            Follow followCreation = followDao.save(Follow.builder()
+                    .followee(followee)
+                    .follower(follower)
+                    .build());
 
             //followIdx 반환
-            Follow follow = followDao.findByFollowerAndFollowee(follower, followee);
-
-
-            PostFollowRes postFollowRes = new PostFollowRes(follow.getIdx());
-
+            PostFollowRes postFollowRes = new PostFollowRes(followCreation.getIdx());
             return postFollowRes;
-
         } catch (Exception exception) {
             throw new BasicException(DATABASE_ERROR_CREATE_FOLLOWS);  //"DB에 팔로우 등록 실패"
         }
-
     }
 
 
 
 
 
-    /* 25. 팔로우 승인 (비공개 계정)  */
+    /* 25. 팔로우 요청 승인 (비공개 계정)  */
     @Transactional(rollbackFor = {Exception.class})
     public PostFollowRes createfollowToPrivate(Long followReqIdx) throws BasicException {
 
@@ -100,39 +87,30 @@ public class FollowService {
             throw new BasicException(RES_ERROR_FOLLOWS_EXIST_FOLLOW);    //"팔로우 중복 오류"
         }
 
-
         //DB에 팔로우 정보 등록 (처음이면)
         try{
-
-            //post_like DB에 댓글 내용 저장
-            Follow followCreation = new Follow();
-            followCreation.setFollowee(followee);
-            followCreation.setFollower(follower);
-
-            followDao.save(followCreation);
-
+            Follow followCreation = followDao.save(Follow.builder()
+                    .followee(followee)
+                    .follower(follower)
+                    .build());
 
             //팔로우 요청정보 삭제
-            followReqDao.deletefollowReq(followReqIdx);
-
+            followReq.deleteFollowReq();
 
             //followIdx 반환
-            Follow follow = followDao.findByFollowerAndFollowee(follower, followee);
-
-            PostFollowRes postFollowRes = new PostFollowRes(follow.getIdx());
+            PostFollowRes postFollowRes = new PostFollowRes(followCreation.getIdx());
             return postFollowRes;
 
         } catch (Exception exception) {
             throw new BasicException(DATABASE_ERROR_CREATE_FOLLOWS);  //"DB에 팔로우 등록 실패"
         }
-
     }
 
 
 
     /* 26. 팔로우 취소 -  */
+    @Transactional(rollbackFor = {Exception.class})
     public void deletefollow(Long followIdx, Long userIdx) throws BasicException {
-
 
         // 팔로우 정보 삭제 여부 조회 (유저가 계속 클릭시..)
         Follow followDelete = followDao.findByIdx(followIdx);
@@ -146,19 +124,13 @@ public class FollowService {
             throw new BasicException(RES_ERROR_FOLLOWS_NOT_SAME_FOLLOWER);    //팔로우 등록자 불일치 오류
         }
 
-
-
         try{
             //팔로우 정보 삭제
-            followDao.deletefollow(followIdx);
-
+            followDelete.deleteFollow();
 
         } catch(Exception exception){
             throw new BasicException(DATABASE_ERROR_FAIL_DELETE_FOLLOWS);   //'DB에서 팔로우 취소 실패'
         }
-
-
-
     }
 
 

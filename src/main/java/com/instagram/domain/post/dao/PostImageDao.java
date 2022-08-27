@@ -17,11 +17,4 @@ public interface PostImageDao extends JpaRepository<PostImage, Long> {
     /* 7. post 객체 통해 PostImage 엔티티 조회  */
     @Query(value="select pi from PostImage pi where pi.post = :post and pi.status = 'ACTIVE'")
     List<PostImage> findByPost(@Param("post") Post post);
-
-    /* 9. 게시글 이미지 정보 삭제 API */
-    @Modifying
-    @Transactional
-    @Query(value="update PostImage pi set pi.status = 'INACTIVE' where pi.post = :post and pi.status = 'ACTIVE' ")
-    void deletePostImage(@Param("post") Post post);
-
 }

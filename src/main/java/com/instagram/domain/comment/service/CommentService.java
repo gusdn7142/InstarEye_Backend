@@ -18,6 +18,7 @@ import com.instagram.global.error.BasicException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -34,7 +35,6 @@ public class CommentService {
 
     /* 14. 댓글 작성  */
     public String createComment(Long userIdx, Long postIdx, String content) throws BasicException {
-
 
         //DB에 댓글 내용 등록
         try{
@@ -99,8 +99,8 @@ public class CommentService {
 
 
     /* 16. 댓글 삭제 -  */
+    @Transactional(rollbackFor = {Exception.class})
     public void deleteComment(Long commentIdx, Long userIdx) throws BasicException {
-
 
         //댓글 삭제 여부 조회 (유저가 계속 클릭시..)
         Comment commentDelete = commentDao.findByIdx(commentIdx);
@@ -114,18 +114,12 @@ public class CommentService {
             throw new BasicException(RES_ERROR_COMMENTS_NOT_SAME_COMMENTER);    //댓글 작성자 불일치 오류
         }
 
-
         try{
             //댓글 정보 삭제
-            commentDao.deleteComment(commentIdx);
-
-
+            commentDelete.deleteComment();
         } catch(Exception exception){
             throw new BasicException(DATABASE_ERROR_FAIL_DELETE_COMMENTS);   //'DB에서 댓글 삭제 실패'
         }
-
-
-
     }
 
 

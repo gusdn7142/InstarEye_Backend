@@ -28,13 +28,4 @@ public interface FollowDao extends JpaRepository<Follow, Long> {
     @Query(value="select f from Follow f where f.idx = :followIdx and f.follower = :follower and f.status = 'ACTIVE' ")
     Follow checkFollower(@Param("followIdx") Long followIdx, @Param("follower") User follower);
 
-
-    /* 27. 팔로우 정보 삭제 API */
-    @Modifying
-    @Transactional
-    @Query(value="update Follow f set f.status = 'INACTIVE' where f.idx = :followIdx and f.status = 'ACTIVE' ")
-    void deletefollow(@Param("followIdx") Long followIdx);
-
-
-
 }

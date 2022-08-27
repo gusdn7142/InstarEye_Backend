@@ -69,17 +69,6 @@ public interface PostDao extends JpaRepository<Post, Long> {
     List<GetPostsRes> getPosts(Pageable pageable, @Param("userIdx") Long userIdx);
 
 
-
-
-    /* 9. 게시글 삭제 API */
-    @Modifying
-    @Transactional
-    @Query(value="update Post p set p.status = 'INACTIVE' where p.idx = :postIdx and p.status = 'ACTIVE' ")
-    void deletePost(@Param("postIdx") Long postIdx);
-
-
-
-
     /* 10. 특정 게시글 조회 API */
     @Query(value="select u.idx userIdx,\n" +
             "       u.nick_name userNickName,\n" +

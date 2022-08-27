@@ -28,12 +28,4 @@ public interface PostLikeDao extends JpaRepository<PostLike, Long> {
     PostLike checkPostLiker(@Param("postLikeIdx") Long postLikeIdx, @Param("postLiker") User postLiker);
 
 
-    /* 19. 게시글 좋아요 정보 삭제 API */
-    @Modifying
-    @Transactional
-    @Query(value="update PostLike pl set pl.status = 'INACTIVE' where pl.idx = :postLikeIdx and pl.status = 'ACTIVE' ")
-    void deletePostLike(@Param("postLikeIdx") Long postLikeIdx);
-
-
-
 }

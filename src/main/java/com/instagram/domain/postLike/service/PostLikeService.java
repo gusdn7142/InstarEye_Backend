@@ -11,6 +11,7 @@ import com.instagram.domain.user.domain.User;
 import com.instagram.global.error.BasicException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.instagram.global.error.BasicResponseStatus.*;
 
@@ -70,8 +71,8 @@ public class PostLikeService {
 
 
     /* 19. 게시글 좋아요 취소 -  */
+    @Transactional(rollbackFor = {Exception.class})
     public void deletePostLike(Long postLikeIdx, Long userIdx) throws BasicException {
-
 
         //게시글 좋아요 삭제 여부 조회 (유저가 계속 클릭시..)
         PostLike postLikeDelete = postLikeDao.findByIdx(postLikeIdx);
@@ -85,18 +86,12 @@ public class PostLikeService {
             throw new BasicException(RES_ERROR_POSTLIKES_NOT_SAME_LIKER);    //게시물 좋아요 등록자 불일치 오류
         }
 
-
         try{
             //게시글 좋아요 정보 삭제
-            postLikeDao.deletePostLike(postLikeIdx);
-
-
+            postLikeDelete.deletePostLike();
         } catch(Exception exception){
             throw new BasicException(DATABASE_ERROR_FAIL_DELETE_POSTLIKES);   //'DB에서 게시글 좋아요 취소 실패'
         }
-
-
-
     }
 
 

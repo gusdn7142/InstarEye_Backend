@@ -15,6 +15,7 @@ import com.instagram.global.util.Security.Secret;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -88,6 +89,7 @@ public class ChatService {
 
 
     /* 13. 채팅 메시지 삭제 -  */
+    @Transactional(rollbackFor = {Exception.class})
     public void deleteChat(Long chatIdx) throws BasicException {
 
         //채팅 삭제 여부 조회 (유저가 계속 클릭시..)
@@ -96,18 +98,12 @@ public class ChatService {
             throw new BasicException(RES_ERROR_CHATS_FAIL_DELETE_MESSAGE);    //"삭제된 채팅 메시지"
         }
 
-
         try{
             //채팅 메시지 정보 삭제
-            chatDao.deleteChat(chatIdx);
-
-
+            chatDelete.deleteChat();
         } catch(Exception exception){
             throw new BasicException(DATABASE_ERROR_FAIL_DELETE_CHATS_MESSAGE);   //'DB에서 채팅 메시지 삭제 실패'
         }
-
-
-
     }
 
 

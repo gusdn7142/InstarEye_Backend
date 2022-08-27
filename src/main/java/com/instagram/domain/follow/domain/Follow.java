@@ -2,7 +2,9 @@ package com.instagram.domain.follow.domain;
 
 
 import com.instagram.domain.model.DataStatus;
+import com.instagram.domain.post.domain.PostStatus;
 import com.instagram.domain.user.domain.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
@@ -13,11 +15,11 @@ import java.time.LocalDateTime;
 
 
 @Getter
-@Setter
+//@Setter
 
 @Entity
-@DynamicInsert   //jap 메서드 동작시 null인 필드 제외
-@DynamicUpdate   //jap 메서드 동작시 null인 필드 제외
+@DynamicInsert   //null인 필드 제외
+@DynamicUpdate   //null인 필드 제외
 @Table(name = "follow")   //엔티티와 매핑할 테이블을 지정
 public class Follow {
 
@@ -33,7 +35,6 @@ public class Follow {
     @JoinColumn(name = "follower_idx")
     private User follower;  //팔로우 인덱스
 
-
     @Column (columnDefinition = "varchar(10) default 'ACTIVE'")
     @Enumerated(EnumType.STRING)
     private DataStatus status;    //데이터 상태 (INACTIVE or ACTIVE)
@@ -47,5 +48,21 @@ public class Follow {
     public void deleteFollow(){
         this.status = DataStatus.INACTIVE;
     }
+
+    @Builder
+    public Follow (User followee,
+                 User follower,
+                 DataStatus status,
+                 LocalDateTime createdAt,
+                 LocalDateTime updatedAt){
+        this.followee = followee;
+        this.follower = follower;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public Follow(){ }
+
 
 }
