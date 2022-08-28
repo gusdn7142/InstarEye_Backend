@@ -24,8 +24,4 @@ public interface FollowDao extends JpaRepository<Follow, Long> {
     Follow findByIdx(@Param("followIdx") Long followIdx);
 
 
-    /* 26. 팔로우 등록자 체크 */
-    @Query(value="select f from Follow f where f.idx = :followIdx and f.follower = :follower and f.status = 'ACTIVE' ")
-    Follow checkFollower(@Param("followIdx") Long followIdx, @Param("follower") User follower);
-
 }

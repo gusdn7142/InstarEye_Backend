@@ -25,16 +25,4 @@ public interface CommentLikeDao extends JpaRepository<CommentLike, Long> {
     CommentLike findByUserAndComment(@Param("user") User user, @Param("comment") Comment comment);
 
 
-    /* 21. 게시글 좋아요를 등록자 체크 */
-    @Query(value="select cl from CommentLike cl where cl.idx = :commentLikeIdx and cl.user = :commentLiker and cl.status = 'ACTIVE' ")
-    CommentLike checkCommentLiker(@Param("commentLikeIdx") Long commentLikeIdx, @Param("commentLiker") User commentLiker);
-
-
-    /* 21. 게시글 좋아요 정보 삭제 API */
-    @Modifying
-    @Transactional
-    @Query(value="update CommentLike cl set cl.status = 'INACTIVE' where cl.idx = :commentLikeIdx and cl.status = 'ACTIVE' ")
-    void deleteCommentLike(@Param("commentLikeIdx") Long commentLikeIdx);
-
-
 }

@@ -22,10 +22,4 @@ public interface PostLikeDao extends JpaRepository<PostLike, Long> {
     @Query(value="select pl from PostLike pl where pl.user = :user and pl.post = :post and pl.status = 'ACTIVE'")
     PostLike findByUserAndPost(@Param("user") User user, @Param("post") Post post);
 
-
-    /* 19. 게시글 좋아요를 등록자 체크 */
-    @Query(value="select pl from PostLike pl where pl.idx = :postLikeIdx and pl.user = :postLiker and pl.status = 'ACTIVE' ")
-    PostLike checkPostLiker(@Param("postLikeIdx") Long postLikeIdx, @Param("postLiker") User postLiker);
-
-
 }

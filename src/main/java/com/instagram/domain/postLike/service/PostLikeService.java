@@ -74,7 +74,7 @@ public class PostLikeService {
     @Transactional(rollbackFor = {Exception.class})
     public void deletePostLike(Long postLikeIdx, Long userIdx) throws BasicException {
 
-        //게시글 좋아요 삭제 여부 조회 (유저가 계속 클릭시..)
+        //게시글 좋아요 삭제 여부 조회
         PostLike postLikeDelete = postLikeDao.findByIdx(postLikeIdx);
         if(postLikeDelete == null){
             throw new BasicException(RES_ERROR_POSTLIKES_DELETE_LIKE);    //"이미 취소된 게시글 좋아요"
@@ -82,7 +82,7 @@ public class PostLikeService {
 
         //게시글 좋아요를 등록자 체크
         User postLiker = userDao.findByIdx(userIdx);
-        if(postLikeDao.checkPostLiker(postLikeIdx, postLiker) == null){
+        if(postLikeDelete.getUser() != postLiker) {
             throw new BasicException(RES_ERROR_POSTLIKES_NOT_SAME_LIKER);    //게시물 좋아요 등록자 불일치 오류
         }
 

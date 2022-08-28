@@ -86,7 +86,7 @@ public class CommentLikeService {
 
         //댓글 좋아요를 등록자 체크
         User commentLiker = userDao.findByIdx(userIdx);
-        if(commentLikeDao.checkCommentLiker(commentLikeIdx, commentLiker) == null){
+        if(commentLikeDelete.getUser() != commentLiker) {
             throw new BasicException(RES_ERROR_COMMENTLIKES_NOT_SAME_LIKER);    //댓글 좋아요 등록자 불일치 오류
         }
 

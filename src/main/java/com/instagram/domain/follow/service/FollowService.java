@@ -120,7 +120,7 @@ public class FollowService {
 
         //팔로우 등록자 체크
         User follower = userDao.findByIdx(userIdx);
-        if(followDao.checkFollower(followIdx, follower) == null){
+        if(followDelete.getFollower() != follower){
             throw new BasicException(RES_ERROR_FOLLOWS_NOT_SAME_FOLLOWER);    //팔로우 등록자 불일치 오류
         }
 

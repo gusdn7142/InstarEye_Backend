@@ -95,7 +95,7 @@ public class FollowReqService {
 
         //팔로우 요청 등록자 체크
         User reqfollower = userDao.findByIdx(userIdx);
-        if(followReqDao.checkReqFollower(followReqIdx, reqfollower) == null){
+        if(followReqDelete.getReqFollower() != reqfollower) {
             throw new BasicException(RES_ERROR_FOLLOWREQS_NOT_SAME_REQFOLLOWER);    //팔로우 요청 등록자 불일치 오류
         }
 
@@ -113,21 +113,20 @@ public class FollowReqService {
     @Transactional(rollbackFor = {Exception.class})
     public void refusefollowReq(Long followReqIdx, Long userIdx) throws BasicException {
 
-        // 팔로우 요청정보 삭제 여부 조회 (유저가 계속 클릭시..)
+        // 팔로우 요청정보 삭제 여부 조회
         FollowReq followReqDelete = followReqDao.findByIdx(followReqIdx);
         if(followReqDelete == null){
             throw new BasicException(RES_ERROR_FOLLOWREQS_DELETE_FOLLOWREQ);    //"이미 취소된 팔로우 요청"
         }
         //팔로우 요청 받은 내역이 있는지 체크
         User reqfollowee = userDao.findByIdx(userIdx);
-        if(followReqDao.checkReqFollowee(followReqIdx, reqfollowee) == null){
+        if(followReqDelete.getReqFollowee() != reqfollowee) {
             throw new BasicException(RES_ERROR_FOLLOWREQS_NOT_SAME_REQFOLLOWEE);    //팔로우 요청 받은 내역 없음
         }
 
         try{
             //팔로우 요청 정보 삭제
             followReqDelete.deleteFollowReq();
-            //followReqDao.deletefollowReq(followReqIdx);
         } catch(Exception exception){
             throw new BasicException(DATABASE_ERROR_FAIL_DELETE_FOLLOWREQS_REFUSE);   //'DB에서 팔로우 요청 거절 실패'
         }
