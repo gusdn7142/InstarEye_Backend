@@ -110,7 +110,7 @@ public class CommentService {
 
         //댓글 작성자가 맞는지 확인
         User commenter = userDao.findByIdx(userIdx);
-        if(commentDao.checkCommentWtriter(commentIdx, commenter) == null){
+        if(commentDelete.getUser() != commenter){
             throw new BasicException(RES_ERROR_COMMENTS_NOT_SAME_COMMENTER);    //댓글 작성자 불일치 오류
         }
 
@@ -125,36 +125,23 @@ public class CommentService {
 
 
     /* 17. 댓글 수정 */
+    @Transactional(rollbackFor = {Exception.class})
     public void modifyComment(Long commentIdx, Long userIdx, String content) throws BasicException {
-
 
         //댓글 작성자가 맞는지 확인
         User commenter = userDao.findByIdx(userIdx);
-        if(commentDao.checkCommentWtriter(commentIdx, commenter) == null){
+        Comment comment = commentDao.findByIdx(commentIdx);
+        if(comment.getUser() != commenter){
             throw new BasicException(RES_ERROR_COMMENTS_NOT_SAME_COMMENTER);    //댓글 작성자 불일치 오류
         }
 
-
         try {
             //댓글 정보 수정
-            commentDao.modifyComment(content, commentIdx);
+            comment.updateContent(content);
         } catch (Exception exception) {
             throw new BasicException(DATABASE_ERROR_MODIFY_FAIL_COMMENTS);   //"DB에서 댓글 내용 변경 실패"
         }
-
-
     }
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 @Table(name = "comment")   //엔티티와 매핑할 테이블을 지정
 public class Comment {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;  //인덱스
@@ -38,7 +37,6 @@ public class Comment {
     @JoinColumn(name = "user_idx")
     private User user;  //댓쓴이
 
-
     @Column (columnDefinition = "varchar(10) default 'ACTIVE'")
     @Enumerated(EnumType.STRING)
     private DataStatus status;    //데이터 상태 (INACTIVE or ACTIVE)
@@ -51,6 +49,10 @@ public class Comment {
 
     public void deleteComment(){
         this.status = DataStatus.INACTIVE;
+    }
+
+    public void updateContent(String content){
+        this.content = content;
     }
 
 }
