@@ -3,6 +3,7 @@ package com.instagram.domain.chat.domain;
 import com.instagram.domain.model.DataStatus;
 import com.instagram.domain.post.domain.PostStatus;
 import com.instagram.domain.user.domain.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 
 
 @Getter
-@Setter
+//@Setter
 
 @Entity
 @DynamicInsert   //null인 필드 제외
@@ -39,7 +40,6 @@ public class Chat {
     @JoinColumn(name = "sender_idx")
     private User sender;  //보낸이
 
-
     @Column (columnDefinition = "varchar(10) default 'ACTIVE'")
     @Enumerated(EnumType.STRING)
     private DataStatus status;    //데이터 상태 (INACTIVE or ACTIVE)
@@ -53,5 +53,18 @@ public class Chat {
     public void deleteChat(){
         this.status = DataStatus.INACTIVE;
     }
+
+    @Builder
+    public Chat(String content,
+                User receiver,
+                User sender){
+        this.content = content;
+        this.receiver = receiver;
+        this.sender = sender;
+    }
+
+    public Chat(){   }
+
+
 
 }

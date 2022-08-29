@@ -34,19 +34,17 @@ public class ChatService {
     /* 11. 채팅 메세지 전송 */
     public PostChatRes createChat(Long senderIdx, Long receiverIdx, String content) throws BasicException {
 
-
         //DB에 채팅 내용 등록
         try{
             User sender = userDao.findByIdx(senderIdx);
             User receiver = userDao.findByIdx(receiverIdx);
 
             //chat DB에 채팅내용 저장
-            Chat chatCreation = new Chat();
-            chatCreation.setSender(sender);
-            chatCreation.setReceiver(receiver);
-            chatCreation.setContent(content);
-
-            chatDao.save(chatCreation);
+            chatDao.save(Chat.builder()
+                    .sender(sender)
+                    .receiver(receiver)
+                    .content(content)
+                    .build());
 
             //채팅 알림 형식으로 응답
             PostChatRes postChatRes = PostChatRes.builder()
@@ -60,9 +58,6 @@ public class ChatService {
         } catch (Exception exception) {
             throw new BasicException(DATABASE_ERROR_CREATE_CHATS);  //채팅 메시지 전송 실패
         }
-
-
-
     }
 
 
