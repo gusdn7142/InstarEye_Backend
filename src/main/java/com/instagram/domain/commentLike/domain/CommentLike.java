@@ -5,6 +5,7 @@ import com.instagram.domain.comment.domain.Comment;
 import com.instagram.domain.model.DataStatus;
 import com.instagram.domain.post.domain.Post;
 import com.instagram.domain.user.domain.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 
 
 @Getter
-@Setter
+//@Setter
 
 @Entity
 @DynamicInsert   //null인 필드 제외
@@ -48,5 +49,13 @@ public class CommentLike {
     public void deleteCommentLike(){
         this.status = DataStatus.INACTIVE;
     }
+
+    @Builder
+    public CommentLike(Comment comment,
+                       User user){
+        this.comment = comment;
+        this.user = user;
+    }
+    public CommentLike() { }
 
 }

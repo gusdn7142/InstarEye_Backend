@@ -30,7 +30,6 @@ public class CommentLikeService {
     /* 20. 댓글 좋아요  */
     public PostCommentLikeRes createCommentLike(Long userIdx, Long commentIdx) throws BasicException {
 
-
         User user = userDao.findByIdx(userIdx);
         Comment comment = commentDao.findByIdx(commentIdx);
 
@@ -38,37 +37,26 @@ public class CommentLikeService {
         if(comment == null){             //댓글이 삭제되었다면..
             throw new BasicException(RES_ERROR_COMMENTS_DELETE_COMMENT);    //"삭제된 댓글"
         }
-
         //댓글 좋아요 중복 조회
         CommentLike commentLikeCheck = commentLikeDao.findByUserAndComment(user, comment);
         if(commentLikeCheck != null){
             throw new BasicException(RES_ERROR_COMMENTLIKES_EXIST_LIKE);    //"댓글 좋아요 중복"
         }
-
-
         //DB에 게시글 좋아요 정보 등록 (처음이면)
         try{
-
             //comment_like DB에 댓글 내용 저장
-            CommentLike commentLikeCreation = new CommentLike();
-            commentLikeCreation.setUser(user);
-            commentLikeCreation.setComment(comment);
-
-            commentLikeDao.save(commentLikeCreation);
+            CommentLike commentLike = commentLikeDao.save(CommentLike.builder()
+                    .comment(comment)
+                    .user(user)
+                    .build());
 
             //commentLikeIdx 반환
-            CommentLike commentLike = commentLikeDao.findByUserAndComment(user, comment);
             PostCommentLikeRes postCommentLikeRes = new PostCommentLikeRes(commentLike.getIdx());
 
             return postCommentLikeRes;
-
         } catch (Exception exception) {
             throw new BasicException(DATABASE_ERROR_CREATE_COMMENTLIKES);  //"DB에 댓글 좋아요 등록 실패"
         }
-
-
-
-
     }
 
 
