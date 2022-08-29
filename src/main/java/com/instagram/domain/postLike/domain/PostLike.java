@@ -5,6 +5,7 @@ import com.instagram.domain.model.DataStatus;
 import com.instagram.domain.post.domain.Post;
 import com.instagram.domain.post.domain.PostStatus;
 import com.instagram.domain.user.domain.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
@@ -14,10 +15,10 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
+//@Setter
 
 @Entity
-@DynamicInsert   //jnull인 필드 제외
+@DynamicInsert   //null인 필드 제외
 @DynamicUpdate   //null인 필드 제외
 @Table(name = "post_like")   //엔티티와 매핑할 테이블을 지정
 public class PostLike {
@@ -48,5 +49,13 @@ public class PostLike {
     public void deletePostLike(){
         this.status = DataStatus.INACTIVE;
     }
+
+    @Builder
+    public PostLike(Post post,
+                    User user){
+        this.post = post;
+        this.user = user;
+    }
+    public  PostLike() { }
 
 }

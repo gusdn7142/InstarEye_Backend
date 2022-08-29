@@ -27,7 +27,6 @@ public class PostLikeService {
     /* 18. 게시글 좋아요  */
     public PostPostLikeRes createPostLike(Long userIdx, Long postIdx) throws BasicException {
 
-
         User user = userDao.findByIdx(userIdx);
         Post post = postDao.findByIdx(postIdx);
 
@@ -42,30 +41,21 @@ public class PostLikeService {
             throw new BasicException(RES_ERROR_POSTLIKES_EXIST_LIKE);    //"게시물 좋아요 중복"
         }
 
-
-        //DB에 게시글 좋아요 정보 등록 (처음이면)
+        //DB에 게시글 좋아요 정보 등록
         try{
-
             //post_like DB에 댓글 내용 저장
-            PostLike postLikeCreation = new PostLike();
-            postLikeCreation.setUser(user);
-            postLikeCreation.setPost(post);
-
-            postLikeDao.save(postLikeCreation);
+            PostLike postLike = postLikeDao.save(PostLike.builder()
+                    .post(post)
+                    .user(user)
+                    .build());
 
             //postLikeIdx 반환
-            PostLike postLike = postLikeDao.findByUserAndPost(user, post);
             PostPostLikeRes postPostLikeRes = new PostPostLikeRes(postLike.getIdx());
 
             return postPostLikeRes;
-
         } catch (Exception exception) {
             throw new BasicException(DATABASE_ERROR_CREATE_POSTLIKES);  //"DB에 게시글 좋아요 등록 실패"
         }
-
-
-
-
     }
 
 
