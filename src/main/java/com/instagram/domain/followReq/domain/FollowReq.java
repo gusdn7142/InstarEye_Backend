@@ -4,6 +4,7 @@ package com.instagram.domain.followReq.domain;
 import com.instagram.domain.model.DataStatus;
 import com.instagram.domain.post.domain.Post;
 import com.instagram.domain.user.domain.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 
 
 @Getter
-@Setter
+//@Setter
 
 @Entity
 @DynamicInsert   //null인 필드 제외
@@ -34,7 +35,6 @@ public class FollowReq {
     @JoinColumn(name = "follower_req_idx")
     private User reqFollower;  //팔로우 인덱스
 
-
     @Column (columnDefinition = "varchar(10) default 'ACTIVE'")
     @Enumerated(EnumType.STRING)
     private DataStatus status;    //데이터 상태 (INACTIVE or ACTIVE)
@@ -49,4 +49,12 @@ public class FollowReq {
         this.status = DataStatus.INACTIVE;
     }
 
+    @Builder
+    public FollowReq(User reqFollowee,
+                     User reqFollower){
+        this.reqFollowee = reqFollowee;
+        this.reqFollower = reqFollower;
+    }
+
+    public  FollowReq() {  }
 }

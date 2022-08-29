@@ -28,10 +28,8 @@ public class FollowReqService {
     /* 22. 팔로우 요청  */
     public PostFollowReqRes createfollowReq(Long followerReqIdx, Long followeeReqIdx) throws BasicException {
 
-
         User reqFollower = userDao.findByIdx(followerReqIdx);
         User reqFollowee = userDao.findByIdx(followeeReqIdx);
-
 
         //팔로위 계정 삭제 여부 조회
         if(reqFollowee == null){
@@ -55,31 +53,21 @@ public class FollowReqService {
             throw new BasicException(RES_ERROR_FOLLOWS_EXIST_FOLLOW);    //"팔로우 중복 오류"
         }
 
-
-
         //DB에 팔로우 요청 정보 등록
         try{
-
             //folloReq DB에  팔로우 요청 정보 저장
-            FollowReq followReqCreation = new FollowReq();
-            followReqCreation.setReqFollowee(reqFollowee);
-            followReqCreation.setReqFollower(reqFollower);
-
-            followReqDao.save(followReqCreation);
+            FollowReq followReq = followReqDao.save(FollowReq.builder()
+                    .reqFollowee(reqFollowee)
+                    .reqFollower(reqFollower)
+                    .build());
 
             //followReqIdx 반환
-            FollowReq followReq = followReqDao.findByReqFollowerAndReqFollowee(reqFollower, reqFollowee);
             PostFollowReqRes postFollowReqRes = new PostFollowReqRes(followReq.getIdx());
 
             return postFollowReqRes;
-
         } catch (Exception exception) {
             throw new BasicException(DATABASE_ERROR_CREATE_FOLLOWREQS);  //"DB에 팔로우 요청 등록 실패"
         }
-
-
-
-
     }
 
 
