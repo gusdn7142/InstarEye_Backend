@@ -4,6 +4,7 @@ package com.instagram.domain.comment.domain;
 import com.instagram.domain.model.DataStatus;
 import com.instagram.domain.post.domain.Post;
 import com.instagram.domain.user.domain.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 
 
 @Getter
-@Setter
+//@Setter
 
 @Entity
 @DynamicInsert   //null인 필드 제외
@@ -54,5 +55,18 @@ public class Comment {
     public void updateContent(String content){
         this.content = content;
     }
+
+    @Builder
+    public Comment(String content,
+                   Post post,
+                   User user){
+        this.content = content;
+        this.post = post;
+        this.user = user;
+    }
+
+    public Comment() { }
+
+
 
 }

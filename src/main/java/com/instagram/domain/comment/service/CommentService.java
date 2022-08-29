@@ -36,33 +36,28 @@ public class CommentService {
     /* 14. 댓글 작성  */
     public String createComment(Long userIdx, Long postIdx, String content) throws BasicException {
 
-        //DB에 댓글 내용 등록
-        try{
-            User user = userDao.findByIdx(userIdx);
-            Post post = postDao.findByIdx(postIdx);
+        User user = userDao.findByIdx(userIdx);
+        Post post = postDao.findByIdx(postIdx);
 
-            //게시글 삭제 여부 조회 (유저가 계속 클릭시..)
-            if(post == null){             //게시글이 삭제되었다면..
-                throw new BasicException(RES_ERROR_POSTS_DELETE_POST);    //"삭제된 게시글"
-            }
-
-            //comment DB에 댓글 내용 저장
-            Comment commentCreation = new Comment();
-            commentCreation.setUser(user);
-            commentCreation.setPost(post);
-            commentCreation.setContent(content);
-
-            commentDao.save(commentCreation);
-
-
-            return "댓글 등록 성공";
-
-        } catch (Exception exception) {
-            throw new BasicException(DATABASE_ERROR_CREATE_COMMENTS);  //DB에 댓글 정보 등록 실패"
+        //게시글 삭제 여부 조회
+        if(post == null){
+            throw new BasicException(RES_ERROR_POSTS_DELETE_POST);    //"삭제된 게시글"
         }
 
+        //DB에 댓글 내용 등록
+        try{
+            //comment DB에 댓글 내용 저장
+            commentDao.save(Comment.builder()
+                    .user(user)
+                    .post(post)
+                    .content(content)
+                    .build());
 
-
+            return "댓글 등록 성공";
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            throw new BasicException(DATABASE_ERROR_CREATE_COMMENTS);  //DB에 댓글 정보 등록 실패"
+        }
     }
 
 
