@@ -32,7 +32,7 @@
   - Nginx
   - GitHub
   - Swagger
-  - Docker (추가예정)
+  - Docker
 
 #### `Etc`  
   - JWT
