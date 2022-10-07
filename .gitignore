@@ -66,6 +66,8 @@ build/resources
 build/classes/java/main/com/instagram/global/util/Security/Secret.class
 src/main/java/com/instagram/global/util/Security/Secret.java
 
+#Dockerfile
+Dockerfile
 
 
 
