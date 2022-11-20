@@ -90,6 +90,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         List<String> pathVariableList = new ArrayList<>(Arrays.asList("userIdx",
                 "senderIdx",
                 "followerReqIdx",
+                "followeeReqIdx",
                 "followerIdx",
                 "receiverIdx",
                 "postIdx",
