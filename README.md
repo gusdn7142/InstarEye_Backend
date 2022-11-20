@@ -326,11 +326,12 @@
   
   
 <details>
-<summary>  4. 회원탈퇴시 User 테이블과 연관된 다수의 테이블의 레코드를 변경하는 Update 쿼리문이 실행되어 응답시간이 약 10초가 걸리는 이슈 발생 </summary>
+<summary>  4. 회원탈퇴 API의 응답 속도가 26초 가량 걸리는 이슈 발생 </summary>
 <div markdown="1">
 
-- **Issue** : 회원탈퇴 API의 응답 속도가 10초 가량 걸리는 문제 발생 
-- **Problem** : UserDao  한방 쿼리 SQL로 인해 한 사용자와 연관된 테이블의 레코드가 많을수록 API의 응답 속도가 현저하게 느려지는것을 확인하였습니다.
+- **Issue** : 회원탈퇴시 User 테이블과 연관된 다수의 테이블의 레코드를 변경하는 Update 쿼리문이 실행되어 응답시간이 약 26초가 걸리는 이슈 발생  
+	      ![image](https://user-images.githubusercontent.com/62496215/202897160-2e28b139-75d6-4840-8d7b-350eee144cdd.png)
+- **Problem** : UserDao 클래스의 회원탈퇴 함수가 한방 쿼리 SQL로 인해 한 사용자와 연관된 테이블의 레코드가 많을수록 API의 응답 속도가 현저하게 느려지는것을 확인하였습니다.
     ```java
     public interface UserDao extends JpaRepository<User, Long> {
 
@@ -364,12 +365,13 @@
                 "    f.status = 'INACTIVE',\n" +
                 "    fr.status = 'INACTIVE'\n" +
                 "\n" +
-                "where u.idx = :userIdx")
-        void deleteUser(@Param("userIdx") Long userIdx, nativeQuery = true);
+                "where u.idx = :userIdx", nativeQuery = true)
+        void deleteUser(@Param("userIdx") Long userIdx);
 
     }
     ```       
-- **Solution** : JPA의 변경감지 특성을 이용해 각 엔티티 클래스의 delete엔티티() 메서드로 UserService 클래스의 회원탈퇴 로직을 구현함으로써 기존의 과다한 조인 전략으로 성능이 좋지 않았던 한방 쿼리를 제거하고 이제 영속성 컨텍스트를 통해 변경사항이 있는 필드만 Update가 되도록 구현하였습니다.
+- **Solution** : JPA의 변경감지 특성을 이용해 각 엔티티 클래스의 delete엔티티() 메서드로 UserService 클래스의 회원탈퇴 함수를 구현하였습니다. (기존의 과다한 조인 전략으로 성능이 좋지 않았던 한방 쿼리를 제거하고 이제 영속성 컨텍스트를 통해 변경사항이 있는 필드만 Update가 되도록 코드를 구현함으로써 응답시간을 1초 미만으로 줄일 수 있었습니다.  
+	![image](https://user-images.githubusercontent.com/62496215/202897181-65381a82-aae5-4435-b8d0-8ca9e346035a.png)
     ```java
     @Service
     @RequiredArgsConstructor
