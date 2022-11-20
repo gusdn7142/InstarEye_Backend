@@ -321,10 +321,142 @@
     ```     
 </div>
 </details>                    
-                    
 
+  
+  
+  
+<details>
+<summary>  4. 회원탈퇴시 User 테이블 이외의 연관된 다수의 테이블에서 Update 쿼리문이 실행되어 응답시간이 약 10초가 걸리는 이슈 발생 </summary>
+<div markdown="1">
+
+- **Issue** : 회원탈퇴 API의 응답 속도가 10초 가량 걸리는 문제 발생 
+- **Problem** : UserDao  한방 쿼리 SQL로 인해 한 사용자와 연관된 테이블의 레코드가 많을수록 API의 응답 속도가 현저하게 느려지는것을 확인하였습니다.
+    ```java
+    public interface UserDao extends JpaRepository<User, Long> {
+
+        /* 5. 회원 탈퇴 API */
+        @Modifying
+        @Transactional
+        @Query(value="update user u left join post p\n" +
+                "    on u.idx = p.user_idx\n" +
+                "join post_image pi\n" +
+                "    on p.idx = pi.post_idx\n" +
+                "join chat c\n" +
+                "    on u.idx = c.sender_idx or u.idx = c.receiver_idx\n" +
+                "join comment cm\n" +
+                "    on p.idx = cm.post_idx or u.idx = cm.user_idx\n" +
+                "join comment_like cl\n" +
+                "    on cm.idx = cl.comment_idx or u.idx = cl.user_idx\n" +
+                "join post_like pl\n" +
+                "    on p.idx = pl.post_idx or u.idx = pl.user_idx\n" +
+                "join follow f\n" +
+                "    on u.idx = f.follower_idx or u.idx = f.followee_idx\n" +
+                "join follow_req fr\n" +
+                "    on u.idx = fr.follower_req_idx or u.idx = fr.followee_req_idx\n" +
+                "\n" +
+                "set u.status = 'INACTIVE',\n" +
+                "    p.status = 'INACTIVE',\n" +
+                "    pi.status = 'INACTIVE',\n" +
+                "    c.status = 'INACTIVE',\n" +
+                "    cm.status = 'INACTIVE',\n" +
+                "    cl.status = 'INACTIVE',\n" +
+                "    pl.status = 'INACTIVE',\n" +
+                "    f.status = 'INACTIVE',\n" +
+                "    fr.status = 'INACTIVE'\n" +
+                "\n" +
+                "where u.idx = :userIdx")
+        void deleteUser(@Param("userIdx") Long userIdx, nativeQuery = true);
+
+    }
+    ```       
+- **Solution** : JPA의 변경감지 특성을 이용해 각 엔티티 클래스의 delete엔티티() 메서드를 통해 UserService 클래스의 회원탈퇴 로직을 구현함으로써 기존의 과다한 조인 전략으로 성능이 좋지 않았던 SQL 로직을 제거하였습니다. (이제 영속성 컨텍스트의 변경사항이 있는 필드만 변경이 됩니다.)   
+    ```java
+    @Service
+    @RequiredArgsConstructor
+    public class UserService {
+
+    private final UserDao userDao;
+    private final JwtService jwtservice;
+
+        /* 5. 회원 탈퇴   */
+        @Transactional(rollbackFor = {Exception.class})
+        public void deleteUser(Long userIdx) throws BasicException {
+
+            //회원 탈퇴 여부 확인
+            if(userDao.findByIdx(userIdx) == null){
+                throw new BasicException(RES_ERROR_NOT_EXIST_USER);  //"존재하지 않는 사용자 계정"
+            }
+
+            try{
+						    //회원 탈퇴
+                //1. 게시글 정보와 게시글 이미지 정보 삭제
+                List<Post> postList = user.getPosts();
+                postList.forEach(post -> {
+                    post.deletePost().getPostImages().forEach(postImageElement -> {
+                        postImageElement.deletePostImage();
+                    });
+                });
+                //2. 게시글 좋아요 정보 삭제
+                List<PostLike> postLikeList = user.getPostLikes();
+                postLikeList.forEach(postLike -> {
+                    postLike.deletePostLike();
+                });
+                //3. 댓글 정보 삭제
+                List<Comment> commentList = user.getComments();
+                commentList.forEach(comment -> {
+                    comment.deleteComment();
+                });
+                //4. 댓글 좋아요 정보 삭제
+                List<CommentLike> commentLikeList = user.getCommentLikes();
+                commentLikeList.forEach(commentLike -> {
+                    commentLike.deleteCommentLike();
+                });
+
+                //5. 채팅 정보 삭제
+                List<Chat> receiverChatList = user.getReceiverChats();
+                List<Chat> senderChatList = user.getSenderChats();
+                receiverChatList.forEach(receiverChat ->{
+                    receiverChat.deleteChat();
+                });
+                senderChatList.forEach(senderChat->{
+                    senderChat.deleteChat();;
+                });
+                //6. 팔로우 정보 삭제
+                List<Follow> followeeFollowList= user.getFolloweeFollows();
+                List<Follow> followerFollowList= user.getFollowerFollows();
+                followeeFollowList.forEach(followeeFollow->{
+                    followeeFollow.deleteFollow();
+                });
+                followerFollowList.forEach(followerFollow->{
+                    followerFollow.deleteFollow();
+                });
+                //7. 팔로우 요청 정보 삭제
+                List<FollowReq> reqFolloweeFollowList= user.getReqFolloweeFollowReqs();
+                List<FollowReq> reqFollowerFollowList= user.getReqFollowerFollowReqs();
+                reqFolloweeFollowList.forEach(reqFolloweeFollow->{
+                    reqFolloweeFollow.deleteFollowReq();
+                });
+                reqFollowerFollowList.forEach(reqFollowerFollow->{
+                    reqFollowerFollow.deleteFollowReq();
+                });
+                //8. 회원정보 삭제
+                user.deleteUser();
+
+                //레거시 코드 : userDao.deleteUser(userIdx);
+            } catch(Exception exception){
+                throw new BasicException(DATABASE_ERROR_DELETE_USER);   //'회원 탈퇴 실패'
+            }
+  
+        }
+    }
+    ```   
+  
+</div>
+</details>
                 
-                
+
+  
+  
 </br>
 
 ## ❕ 회고 / 느낀점
@@ -337,8 +469,8 @@
 </br>
 
 ## 👩‍💻 리팩토링 계획
-- [x] 회원탈퇴시 다수의 테이블의 레코드에서 Update 쿼리문이 동작하여 반영시간이 약 10초가 걸리는 이슈 해결  
-      =>엔티티 객체의 delete엔티티() 메서드를 통해 회원탈퇴 로직을 구현함으로써 기존의 과다한 조인 전략으로 성능이 좋지 않았던 SQL문을 제거\
+- [x] 회원탈퇴시 User 테이블 이외의 연관된 다수의 테이블에서 Update 쿼리문이 실행되어 응답시간이 약 10초가 걸리는 이슈 해결  
+      =>엔티티 객체의 delete엔티티() 메서드를 통해 회원탈퇴 로직을 구현함으로써 기존의 과다한 조인 전략으로 성능이 좋지 않았던 SQL문을 제거
 - [x] @Pathvariable로 입력받는 모든 경로 변수(idx)에 유효성 검사 적용 (ex, 입력값 필터링) 
 - [x] Docker를 이용해 Spring Boot 애플리케이션 배포
 - [ ] JPQL(@Query) 코드를 Query DSL 코드로 리팩토링  
