@@ -10,8 +10,7 @@
 ## 💁‍♂️ Wiki
 - ✍ [개발일지](https://fir-lancer-6bb.notion.site/API-1d79c1f4fe524863a63ebfc4287dce9a)
 - 📰 [API 명세서](https://www.notion.so/API-1d94156d9f984832ba21b023aa5716f1)
-- 📦 [ERD 설계도](https://aquerytool.com/aquerymain/index/?rurl=b0f4f366-b187-4bed-b854-ea1b30aec38b)    
-    - 비밀번호 : ws3x7t   
+- 📦 [ERD 설계도](https://user-images.githubusercontent.com/62496215/183288506-76da300b-f533-4cfd-ae43-70c8a07cbfbf.png)    
 - 📁 [디렉토리 구조](https://github.com/gusdn7142/Instagram_Clone_Server/wiki/%F0%9F%93%81-Directory-Structure)
 - 📽 시연 영상 : API 명세서의 postman 실행 결과 화면으로 대체  
 - 📋️ 개발가이드와 화면설계서 : 저작권으로 인해 비공개
@@ -122,7 +121,7 @@
 
 ## 🌟 핵심 트러블 슈팅
 <details>
-<summary>도메인 서버 등록시 반영시간 관련 이슈</summary>
+<summary> (삭제예정) 도메인 서버 등록시 반영시간 관련 이슈 </summary>
 <div markdown="1">
 
 - **Issue** :  도메인(https://in-stagram.site)을 구입 후 EC2의 공인 IP를 연결해 주었는데, 서버가 응답하지 않습니다.
@@ -133,19 +132,19 @@
 </details>
 
 <details>
-<summary> 스웨거 UI에 반영할 오류코드 설명 관련 이슈 </summary>
+<summary> 1. 스웨거 UI에 반영할 오류코드 설명 관련 이슈 </summary>
 <div markdown="1">
 
 - **Issue & Problem** : Status Code가 200일때 정상응답과 에러응답 설명을 같이 표기해야 하기 때문에 스웨거로 클라이언트와 협업시 불편을 겪을것을 예상되었습니다. 
 ![Swegger Error UI](https://user-images.githubusercontent.com/62496215/184532374-17cebd34-13b4-48f0-8693-160cad58673e.png)
-- **Solution** : 이 프로젝트에서는 스웨거 대신 노션을 API 명세서로 활용하는것으로 대체
+- **Solution** : 이 프로젝트에서는 스웨거 대신 노션을 API 명세서로 활용하는것으로 대체하였지만, 요구사항에 따라 API 구현 코드가 계속 변경되므로 노션으로는 협업시 불편하다고 판단이 되어 스웨거를 사용하도록 재결정 하였습니다. (문제가 되었던 커스텀 에러 표기는 API 응답시 message 필드로 확인 할 수 있기 때문에 스웨거에 일일이 표기할 필요가 없다는 결론을 내렸습니다.)
 
 </div>
 </details>
 
 
 <details>
-<summary>  @Query (JPQL) 사용시 이슈 </summary>
+<summary>  2. @Query (JPQL) 사용시 이슈 </summary>
 <div markdown="1">
 
 - **Issue** : JPQL에서 group_concat()과 Select() 서브 쿼리문을 사용시 오류 발생 
@@ -158,7 +157,7 @@
 
 
 <details>
-<summary>  페이징 기능 구현시 SQL문 문법 오류 </summary>
+<summary>  (삭제 예정) 페이징 기능 구현시 SQL문 문법 오류  </summary>
 <div markdown="1">
 
 - **Issue** : 아래의 페이징 쿼리 실행시 "Could not locate named parameter [size]" 오류 발생
@@ -252,12 +251,15 @@
 
 
 <details>
-<summary> PathVariable 변수들의 유효성 검사 코드 이슈 </summary>
+<summary> 3. PathVariable 변수들의 유효성 검사 코드 길이 이슈 </summary>
 <div markdown="1">
 
-- **Issue** : 디증 if문으로 인해 코드가 길어지는 문제가 발생했습니다.    
+- **Issue** : 사용자 인증시 필요한 userIdx와 기타 Idx 필드에 대한 타입 오류를 검사하는 코드 길이가 길어지는 문제가 발생했습니다.   
     ```java
-        //(변경 전) PathVariable 변수들에 대한 유효성 검사 : 미입력과 타입 오류
+    @Component
+    public class LoginCheckInterceptor implements HandlerInterceptor {
+    
+        //(변경 전) PathVariable 변수들에 대한 유효성 검사 : Null 입력과 타입 오류
         public void CheckPathVariableValid(Map<String, String> pathVariables){
             if(pathVariables.get("userIdx") != null) {
                 try {
@@ -266,7 +268,8 @@
                     throw new BasicException(REQ_ERROR_INVALID_USERIDX);  //userIdx 형식 오류"
                 }
             }              
-            ................ if(pathVariables.get(idx) 로직 반복 (생략) ..............                                                     if(pathVariables.get("followeeIdx") != null) {
+            ................ if(pathVariables.get(idx) 로직 반복 (생략) ..............                                                                            
+            if(pathVariables.get("followeeIdx") != null) {
                 try {
                     Long.valueOf(pathVariables.get("followeeIdx"));
                 } catch (Exception exception){
@@ -274,14 +277,18 @@
                 }
             }         
         }
+    }         
     ```                         
-- **Problem** : 유지보수 측면에서 리팩토링이 필요할 것으로 생각했습니다.
-- **Solution** : ArrayList와 for문을 활용해 중첩되는 if문 코드를 리팩토링 하였습니다.   
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; idx 변수 값들은 ArrayList\<String\>로 공통 처리하고, idx 변수에 따라 달라지는 Enum 상수  
+- **Problem** : 유지보수 측면에서 다중 if문에 대한 리팩토링이 필요할 것으로 생각했습니다.
+- **Solution** : 기존의 중첩되는 if문 코드를 간결하게 리팩토링 하였습니다.   
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (idx 변수 값들은 ArrayList\<String\>로 공통 처리하고, idx 변수에 따라 달라지는 Enum 상수  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; REQ_ERROR_INVALID_IDX의 status, code, message 필드 값은 setter()를 활용해 유동적으로 변경되도록  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 구현하였습니다.      
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 구현하였습니다.)   
     ```java
-        //(변경 후) PathVariable 변수들에 대한 유효성 검사 : 미입력과 타입 오류
+    @Component
+    public class LoginCheckInterceptor implements HandlerInterceptor {    
+    
+        //(변경 후) PathVariable 변수들에 대한 유효성 검사 : Null 입력과 타입 오류
         public void CheckPathVariableValid(Map<String, String> pathVariables){
             List<String> pathVariableList = new ArrayList<>(Arrays.asList("userIdx",
                     "senderIdx",
@@ -310,6 +317,7 @@
                 }
             }
         }
+    }    
     ```     
 </div>
 </details>                    
@@ -329,14 +337,15 @@
 </br>
 
 ## 👩‍💻 리팩토링 계획
-- [ ] 테스트 코드(TDD) 도입
-- [ ] 프론트엔드 개발자와 협업하여 API 연결 및 이슈 처리
-- [ ] Docker를 이용해 Spring Boot 애플리케이션 배포
-- [ ] Response 구조의 Best Practice 연구  
-- [x] @Pathvariable로 입력받는 모든 경로 변수(idx)에 유효성 검사 적용 (ex, 입력값 필터링)
-- [ ] 휴면계정과 차단계정 관리를 위한 DB 설계와 API 구현 
 - [x] 회원탈퇴시 다수의 테이블의 레코드에서 Update 쿼리문이 동작하여 반영시간이 약 10초가 걸리는 이슈 해결  
-      =>엔티티 객체의 delete엔티티() 메서드를 통해 회원탈퇴 로직을 구현함으로써 기존의 과다한 조인 전략으로 성능이 좋지 않았던 SQL문을 제거
+      =>엔티티 객체의 delete엔티티() 메서드를 통해 회원탈퇴 로직을 구현함으로써 기존의 과다한 조인 전략으로 성능이 좋지 않았던 SQL문을 제거\
+- [x] @Pathvariable로 입력받는 모든 경로 변수(idx)에 유효성 검사 적용 (ex, 입력값 필터링) 
+- [x] Docker를 이용해 Spring Boot 애플리케이션 배포
+- [ ] JPQL(@Query) 코드를 Query DSL 코드로 리팩토링  
+- [ ] 테스트 코드 도입
+- [ ] 프론트엔드 개발자와 협업하여 API 연결 및 이슈 처리
+- [ ] Response 구조의 Best Practice 연구  
+- [ ] 휴면계정과 차단계정 관리를 위한 DB 설계와 API 구현 
 - [ ] 게시글과 댓글 신고 API 구현
 - [ ] Admin 도메인 DB 설계 및 API 구현
-- [ ] JPQL(@Query) 코드를 Query DSL 코드로 리팩토링  
+
