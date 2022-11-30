@@ -19,7 +19,10 @@ public class interceptorConfig implements WebMvcConfigurer {
                                                                     "/users/login",
                                                                     "/users/kakao",
                                                                     "/users/kakao-login",
-                                                                    "/users/**/privacy-policy-reagree"
+                                                                    "/users/**/privacy-policy-reagree",
+                                                                    "/swagger-resources/**",
+                                                                    "/swagger-ui/**",
+                                                                    "/v2/api-docs" 
     ));
 
 
