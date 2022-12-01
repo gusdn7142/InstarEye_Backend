@@ -16,7 +16,7 @@ import static com.instagram.global.error.BasicResponseStatus.SUCCESS;
 @Getter
 @AllArgsConstructor
 @JsonPropertyOrder({"status", "code", "message", "result"})
-public class BasicResponse {
+public class BasicResponse<T> {
 
     @ApiModelProperty(notes = "응답상태", example = "SUCCESS")
     private String status;
@@ -27,14 +27,14 @@ public class BasicResponse {
     @ApiModelProperty(notes = "응답 메시지" , example = "요청 성공")
     private String message;
 
-    @ApiModelProperty(notes = "응답 결과" ,example = "API마다 응답해주는 자원이 다릅니다.")
+    @ApiModelProperty(notes = "응답 결과" , example = "API마다 응답해주는 자원이 다릅니다.")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Object result;
+    private T result;
 
 
 
     /* 요청에 성공한 경우 */
-    public BasicResponse(Object result) {
+    public BasicResponse(T result) {
         this.status = SUCCESS.getStatus();
         this.code = SUCCESS.getCode();
         this.message = SUCCESS.getMessage();

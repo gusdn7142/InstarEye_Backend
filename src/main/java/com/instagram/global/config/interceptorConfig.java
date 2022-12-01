@@ -22,7 +22,7 @@ public class interceptorConfig implements WebMvcConfigurer {
                                                                     "/users/**/privacy-policy-reagree",
                                                                     "/swagger-resources/**",
                                                                     "/swagger-ui/**",
-                                                                    "/v2/api-docs" 
+                                                                    "/v2/api-docs"
     ));
 
 

@@ -6,6 +6,7 @@ import com.instagram.domain.post.dto.GetPostsRes;
 import com.instagram.domain.post.service.PostService;
 import com.instagram.global.error.BasicException;
 import com.instagram.global.error.BasicResponse;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +24,7 @@ import java.util.List;
 import static com.instagram.global.error.BasicResponseStatus.*;
 
 
+@Api(tags = "게시글(post) API")
 @RestController
 @RequestMapping("posts")
 @RequiredArgsConstructor
@@ -30,19 +32,17 @@ public class PostController {
 
     private final PostService postService;
 
-
     /**
      * 6. 게시글 작성 API
      * [POST] /posts/:userId
-     * @return BaseResponse(responseMessage)
+     * @return BaseResponse<String>
      */
+    @ApiOperation(value = "게시글 작성 API", notes = "URL : https://in-stagram.site/posts/:userId")
     @PostMapping("/{userIdx}")      //, consumes = {"multipart/form-data"}
-    public BasicResponse createPost(@PathVariable("userIdx") Long userIdx,
-                                       @RequestPart(value = "content", required = false) String content,
-                                       @RequestPart(value = "imageNumberlist", required = false) List<Integer> imageNumberlist,
-                                       @RequestPart(value = "multipartFile", required = false) List<MultipartFile> multipartFile) {
-
-
+    public BasicResponse<String> createPost(@ApiParam(value = "사용자 인덱스", example = "1", required = true) @PathVariable(name="userIdx") Long userIdx,
+                                    @ApiParam(value = "게시글 내용", example = "안녕하세요. 그릿지3 수정글입니다", required = true) @RequestPart(value = "content", required = false) String content,
+                                    @ApiParam(value = "게시글 이미지 번호", example = "1", required = true) @RequestPart(value = "imageNumberlist", required = false) List<Integer> imageNumberlist,
+                                    @ApiParam(value = "게시글 이미지 파일", example = "a.png", required = true) @RequestPart(value = "multipartFile", required = false) List<MultipartFile> multipartFile) {
 
         /* 유효성 검사 구현부 */
         if(content==null && imageNumberlist == null && multipartFile == null){
@@ -83,11 +83,6 @@ public class PostController {
         }
         /* 유효성 검사 구현 끝 */
 
-
-
-
-
-
         try {
             //DB에 게시글 등록
             String responseMessage = postService.createPost(userIdx, content, imageNumberlist, multipartFile);
@@ -96,23 +91,19 @@ public class PostController {
         } catch (BasicException exception) {
             return new BasicResponse(exception.getStatus());
         }
-
-
     }
-
-
 
 
     /**
      * 7. 전체 게시글 조회 API
      * [GET] /posts/all/:userIdx
-     * @return BaseResponse(getPostRes)
+     * @return BaseResponse<List<GetPostsRes>>
      */
-
+    @ApiOperation(value = "전체 게시글 조회 API", notes = "URL : https://in-stagram.site/posts/all/:userIdx")
     @GetMapping("/all/{userIdx}")
-    public BasicResponse getPosts(@RequestParam(required = false) Integer pageIndex ,
-                                  @RequestParam(required = false) Integer size,
-                                  @PathVariable("userIdx") Long userIdx){  //, direction = Sort.Direction.DESC, sort = "p.idx"  ??
+    public BasicResponse<List<GetPostsRes>> getPosts(@ApiParam(value = "페이지 인덱스", example = "0", required = true) @RequestParam(required = false) Integer pageIndex ,
+                                  @ApiParam(value = "페이지 크기", example = "10", required = true) @RequestParam(required = false) Integer size,
+                                  @ApiParam(value = "사용자 인덱스", example = "1", required = true) @PathVariable("userIdx") Long userIdx){  //, direction = Sort.Direction.DESC, sort = "p.idx"  ??
 
         if(pageIndex == null){
             return new BasicResponse(REQ_ERROR_NOT_EXIST_PAGING_PAGEINDEX);
@@ -122,35 +113,29 @@ public class PostController {
         }
         PageRequest pageable = PageRequest.of(pageIndex , size);
 
-
-
         try {
-
-            //전체 게시글 조회
+            //전체 게시글 조회.
             List<GetPostsRes> getPostsRes = postService.getPosts(pageable, userIdx);
 
             return new BasicResponse(getPostsRes);
         } catch (BasicException exception) {
             return new BasicResponse((exception.getStatus()));
         }
-
-
     }
-
 
 
     /**
      * 8. 게시글 수정 API
-     * [PATCH] /post/:userIdx/:postIdx
-     * @return BaseResponse()
+     * [PATCH] /posts/:userIdx/:postIdx
+     * @return BaseResponse<String>
      */
-    // Body
+    @ApiOperation(value = "게시글 수정 API", notes = "URL : https://in-stagram.site/posts/:userIdx/:postIdx")
     @PatchMapping("/{userIdx}/{postIdx}")
-    public BasicResponse modifyPost(@PathVariable("userIdx") Long userIdx,
-                                    @PathVariable("postIdx") Long postIdx,
-                                    @RequestPart(value = "content", required = false) String content,
-                                    @RequestPart(value = "multipartFile", required = false) List<MultipartFile> multipartFile,
-                                    @RequestPart(value = "imageNumberlist", required = false) List<Integer> imageNumberlist) {
+    public BasicResponse<String> modifyPost(@ApiParam(value = "사용자 인덱스", example = "1", required = true) @PathVariable("userIdx") Long userIdx,
+                                    @ApiParam(value = "게시글 인덱스", example = "14", required = true) @PathVariable("postIdx") Long postIdx,
+                                    @ApiParam(value = "게시글 내용", example = "안녕하세요. 그릿지3 수정글입니다.", required = true) @RequestPart(value = "content", required = false) String content,
+                                    @ApiParam(value = "게시글 이미지 파일", example = "나비.png", required = true) @RequestPart(value = "multipartFile", required = false) List<MultipartFile> multipartFile,
+                                    @ApiParam(value = "게시글 이미지 번호", example = "1", required = true) @RequestPart(value = "imageNumberlist", required = false) List<Integer> imageNumberlist) {
 
         /* 유효성 검사 구현부 */
         if(content==null && imageNumberlist == null && multipartFile == null){
@@ -202,20 +187,16 @@ public class PostController {
     }
 
 
-
     /**
      * 9. 게시글 삭제 API
      * [PATCH] /posts/:userIdx/:postIdx/status
-     * @return BaseResponse<String>
+     * @return BaseResponse<String>>
      */
-
+    @ApiOperation(value = "게시글 삭제 API", notes = "URL : https://in-stagram.site/posts/:userIdx/:postIdx/status")
     @PatchMapping("/{userIdx}/{postIdx}/status")
-    public BasicResponse deletePost(@PathVariable("userIdx") Long userIdx, @PathVariable("postIdx") Long postIdx ) {
-
-
+    public BasicResponse<String> deletePost(@ApiParam(value = "사용자 인덱스", example = "1", required = true) @PathVariable("userIdx") Long userIdx,
+                                    @ApiParam(value = "게시글 인덱스", example = "14", required = true) @PathVariable("postIdx") Long postIdx ) {
         try {
-
-
             //게시글 삭제
             postService.deletePost(postIdx, userIdx);
 
@@ -227,21 +208,16 @@ public class PostController {
     }
 
 
-
-
-
     /**
      * 10. 특정 게시글 조회 API
      * [GET] /posts/:userId/:postId
-     * @return BaseResponse(getPostRes)
+     * @return BaseResponse<GetPostRes>
      */
-
+    @ApiOperation(value = "특정 게시글 조회 API", notes = "URL : https://in-stagram.site/posts/:userIdx/:postIdx/status")
     @GetMapping("/{userIdx}/{postIdx}")
-    public BasicResponse getPost(@PathVariable("userIdx") Long userIdx, @PathVariable("postIdx") Long postIdx ){
-
-
+    public BasicResponse<GetPostRes> getPost(@ApiParam(value = "사용자 인덱스", example = "1", required = true) @PathVariable("userIdx") Long userIdx,
+                                             @ApiParam(value = "게시글 인덱스", example = "14", required = true) @PathVariable("postIdx") Long postIdx ){
         try {
-
             //특정 게시글 조회
             GetPostRes getPostRes = postService.getPost(postIdx);
 
@@ -249,23 +225,7 @@ public class PostController {
         } catch (BasicException exception) {
             return new BasicResponse((exception.getStatus()));
         }
-
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -6,9 +6,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.RequestMethod;
 import springfox.documentation.builders.*;
+import springfox.documentation.schema.Example;
 import springfox.documentation.schema.ModelRef;
+import springfox.documentation.schema.ScalarType;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Parameter;
+import springfox.documentation.service.RequestParameter;
 import springfox.documentation.service.ResponseMessage;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -29,19 +32,24 @@ public class SwaggerConfig {
 
     @Bean
     public Docket api() {
-//        Parameter parameterBuilder = new ParameterBuilder()
-//                .name(HttpHeaders.AUTHORIZATION)
-//                .description("Access Tocken")
-//                .modelRef(new ModelRef("string"))
-//                .parameterType("header")
-//                .required(false)
-//                .build();
-//
-//        List<Parameter> globalParamters = new ArrayList<>();
-//        globalParamters.add(parameterBuilder);
+
+        //전역 파라미터 설정
+        RequestParameterBuilder parameterBuilder = new RequestParameterBuilder();
+        parameterBuilder
+                .name("Access Tocken")
+                .description("Access Tocken")
+                .query(q -> q.defaultValue("eyJ0easdaxcc2RpWxxw~~")
+                        .model(modelSpecificationBuilder -> modelSpecificationBuilder.scalarModel(ScalarType.STRING)))
+                .in("header")
+                .required(false)
+                .build();
+
+        List<RequestParameter> globalParamters = new ArrayList<>();
+        globalParamters.add(parameterBuilder.build());
 
         //API 기본 설정
         return new Docket(DocumentationType.SWAGGER_2)
+                .globalRequestParameters(globalParamters)   //전역 파라미터 등록
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.instagram")) // 특정 패키지경로를 API문서화 한다. 1차 필터
                 .paths(PathSelectors.any())                                // apis중에서 특정 path조건 API만 문서화 하는 2차 필터

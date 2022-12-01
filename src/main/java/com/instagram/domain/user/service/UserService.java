@@ -168,7 +168,6 @@ public class UserService {
             throw new BasicException(DATABASE_ERROR_MODIFY_FAIL_USER_NAME);   //"이름 변경 오류"
         }
 
-
         try{
             //닉네임 값 변경
             if(patchUserReq.getNickName() != null){
@@ -177,8 +176,6 @@ public class UserService {
         } catch(Exception exception){
             throw new BasicException(DATABASE_ERROR_MODIFY_FAIL_USER_NICKNAME);   //"닉네임 변경 오류"
         }
-
-
 
         try{
             //웹사이트 변경
@@ -189,7 +186,6 @@ public class UserService {
             throw new BasicException(DATABASE_ERROR_MODIFY_FAIL_USER_WEBSITE);   //"웹사이트 변경 오류"
         }
 
-
         try{
             //소개글 변경
             if(patchUserReq.getIntroduction() != null){
@@ -199,7 +195,6 @@ public class UserService {
             throw new BasicException(DATABASE_ERROR_MODIFY_FAIL_USER_INTRODUCTION);   //"소개글 변경 오류."
         }
 
-
         try{
             //계정공개 유무 변경
             if(patchUserReq.getAccountHiddenState() != null){
@@ -208,9 +203,6 @@ public class UserService {
         } catch(Exception exception){
             throw new BasicException(DATABASE_ERROR_MODIFY_FAIL_USER_ACCOUNT_HIDDEN_STATE);   //"계정공개 유무 변경 오류."
         }
-
-
-
     }
 
 

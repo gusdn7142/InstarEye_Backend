@@ -12,10 +12,7 @@ import com.instagram.global.error.BasicException;
 import com.instagram.global.error.BasicResponse;
 import com.instagram.global.util.login.KakaoService;
 import com.instagram.global.util.login.KakaoUserProfile;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -44,24 +41,11 @@ public class UserController {
     /*
      * 1. 회원가입 API
      * [POST] /users
-     * @return BaseResponse(responseMessage)
+     * @return BaseResponse<String>
      */
     @ApiOperation(value = "회원가입 API", notes = "URL : https://in-stagram.site/users" )
-    @ApiResponses(value = {
-            @ApiResponse(code = 201,  message = "1. 'status' : 'FAIL', 'code' : 'POST_USERS_INVALID_PHONE', 'message' = '전화번호 형식 오류' \t\n" +
-                                                "2. 'status' : 'FAIL', 'code' : 'POST_USERS_INVALID_NAME', 'message' = '이름 형식 오류' \t\n" +
-                                                "3. 'status' : 'FAIL', 'code' : 'POST_USERS_INVALID_PASSWORD', 'message' = '비밀번호 형식 오류' \t\n" +
-                                                "4. 'status' : 'FAIL', 'code' : 'POST_USERS_INVALID_BIRTHDAY', 'message' = '생일 형식 오류' \t\n" +
-                                                "4. 'status' : 'FAIL', 'code' : 'POST_USERS_INVALID_PRIVACY_POLICY_STATUS', 'message' = '개인정보 처리방침 미동의' \t\n" +
-                                                "4. 'status' : 'FAIL', 'code' : 'POST_USERS_INVALID_NICK_NAME', 'message' = '닉네임 형식 오류' \t\n" +
-                                                "5. 'status' : 'FAIL', 'code' : 'POST_USERS_EXISTS_PHONE', 'message' = '전화번호 중복 오류' \t\n" +
-                                                "6. 'status' : 'FAIL', 'code' : 'POST_USERS_EXISTS_NICK_NAME', 'message' = '닉네임 중복 오류' \t\n" +
-                                                "7. 'status' : 'FAIL', 'code' : 'DATABASE_ERROR_CREATE_USER', 'message' = 'DB에 사용자 등록 실패' \t\n"
-                                                , response = BasicResponse.class),
-    })
     @PostMapping("")
-    public BasicResponse createUser(@Valid @RequestBody PostUserReq postUserReq, BindingResult bindingResult) {
-
+    public BasicResponse<String> createUser(@Valid @RequestBody PostUserReq postUserReq, BindingResult bindingResult) {
 
         /* 유효성 검사 구현부 */
         if(bindingResult.hasErrors()) {   //에러가 있다면
@@ -94,7 +78,6 @@ public class UserController {
 
 
         try{
-
             //DB에 유저 등록
             String responseMessage = userService.createUser(postUserReq);
 
@@ -102,23 +85,17 @@ public class UserController {
         } catch(BasicException exception){
             return new BasicResponse(exception.getStatus());
         }
-
-
-
     }
-
-
-
 
 
     /*
      * 2. 로그인 API
      * [POST] /users/login
-     * @return BaseResponse(PostLoginRes)
+     * @return BaseResponse<PostLoginRes>
      */
+    @ApiOperation(value = "로그인 API", notes = "URL : https://in-stagram.site/users/login" )
     @PostMapping("/login")
-    public BasicResponse login(@Valid @RequestBody PostLoginReq postLoginReq, BindingResult bindingResult) {
-
+    public BasicResponse<PostLoginRes> login(@Valid @RequestBody PostLoginReq postLoginReq, BindingResult bindingResult) {
 
         /* 유효성 검사 구현부 */
         if(bindingResult.hasErrors()) {   //에러가 있다면
@@ -134,8 +111,6 @@ public class UserController {
         }
         /* 유효성 검사 구현 끝 */
 
-
-
         try{
             //로그인
             PostLoginRes postLoginRes = userService.login(postLoginReq);
@@ -144,39 +119,26 @@ public class UserController {
         } catch(BasicException exception){
             return new BasicResponse(exception.getStatus());
         }
-
-
     }
-
-
 
 
     /**
      * 3. 프로필 조회 API
      * [GET] /users/:userId/profile
-     * @return BaseResponse(GetUserRes)
-     * @return getUserRes
+     * @return BaseResponse<GetUserRes>
      */
+    @ApiOperation(value = "프로필 조회 API", notes = "URL : https://in-stagram.site/users/:userId/profile" )
     @GetMapping("/{userIdx}/profile")
-    public BasicResponse getUser(@PathVariable("userIdx") Long userIdx) {
-
-
+    public BasicResponse<GetUserRes> getUser(@ApiParam(value = "사용자 인덱스", example = "1", required = true) @PathVariable("userIdx") Long userIdx) {
 
         try {
             GetUserRes getUserRes = userService.getUser(userIdx);
-
             return new BasicResponse(getUserRes);
 
         } catch(BasicException exception){
             return new BasicResponse((exception.getStatus()));
         }
-
-
-
-
-
     }
-
 
 
     /**
@@ -184,11 +146,10 @@ public class UserController {
      * [PATCH] /users/:userId/profile
      * @return BaseResponse(String)
      */
-
+    @ApiOperation(value = "프로필 수정 API", notes = "URL : https://in-stagram.site/users/:userId/profile" )
     @PatchMapping("/{userIdx}/profile")
-    public BasicResponse modifyUserInfo(@PathVariable("userIdx") Long userIdx,
+    public BasicResponse<String> modifyUserInfo(@ApiParam(value = "사용자 인덱스", example = "1", required = true) @PathVariable("userIdx") Long userIdx,
                                         @Valid @RequestBody PatchUserReq patchUserReq, BindingResult bindingResult){
-
 
         /* 유효성 검사 구현부 */
         if(bindingResult.hasErrors()) {   //에러가 있다면
@@ -207,8 +168,6 @@ public class UserController {
         }
         /* 유효성 검사 구현 끝 */
 
-
-
         try {
 
             //유저 id를 Dto에 넣음
@@ -222,11 +181,7 @@ public class UserController {
         } catch (BasicException exception) {
             return new BasicResponse((exception.getStatus()));
         }
-
-
     }
-
-
 
 
     /**
@@ -234,13 +189,11 @@ public class UserController {
      * [PATCH] /users/:userIdx/status
      * @return BaseResponse<String>
      */
-
+    @ApiOperation(value = "회원 탈퇴 API", notes = "URL : https://in-stagram.site/users/:userIdx/status" )
     @PatchMapping("/{userIdx}/status")
-    public BasicResponse deleteUser(@PathVariable("userIdx") Long userIdx){
-
+    public BasicResponse<String> deleteUser(@ApiParam(value = "사용자 인덱스", example = "1", required = true) @PathVariable("userIdx") Long userIdx){
 
         try {
-
             //유저 상태 비활성화
             userService.deleteUser(userIdx);
 
@@ -252,18 +205,14 @@ public class UserController {
     }
 
 
-
-
     /**
      * 카카오 회원가입 API
      * [POST] /users/kakao
-     * @return BaseResponse(message)
+     * @return BaseResponse<String>
      */
-    @ResponseBody
     @PostMapping("/kakao")
-    public BasicResponse createKakaoUser(@Valid @RequestBody PostKakaoUserReq postKakaoUserReq, BindingResult bindingResult) {   //@RequestHeader HttpHeaders header => header.get("accessToken")
-
-
+    @ApiOperation(value = "카카오 회원가입 API", notes = "URL : https://in-stagram.site/users/kakao")
+    public BasicResponse<String> createKakaoUser(@Valid @RequestBody PostKakaoUserReq postKakaoUserReq, BindingResult bindingResult) {   //@RequestHeader HttpHeaders header => header.get("accessToken")
 
         /* 유효성 검사 구현부 */
         if(bindingResult.hasErrors()) {   //에러가 있다면
@@ -291,7 +240,6 @@ public class UserController {
         }
         /* 유효성 검사 구현 끝 */
 
-
         /* kakaoAccessToken을 통해 카카오 계정 정보를 조회  */
         KakaoUserProfile kakaoUserProfile=null;
         try {
@@ -300,7 +248,6 @@ public class UserController {
         catch(BasicException exception){
             return new BasicResponse(ERROR_INVALID_KAKAO_ACCESS_TOKEN);
         }
-
 
         //카카오 계정 정보를 DTO 객체에 입력
         String email = "";
@@ -319,7 +266,6 @@ public class UserController {
         try{
             String message = userService.createKakaoUser(postKakaoUserReq);
 
-
             return new BasicResponse(message);
         } catch(BasicException exception){
             return new BasicResponse((exception.getStatus()));
@@ -328,19 +274,14 @@ public class UserController {
     }
 
 
-
-
-
-
     /**
      * 카카오 로그인 API
      * [POST] /users/kakao-logIn
      * @return BaseResponse<>
      */
-    @ResponseBody
+    @ApiOperation(value = "카카오 로그인 API", notes = "URL : https://in-stagram.site/users/kakao-logIn")
     @PostMapping("/kakao-login")
-    public BasicResponse logInKakao (@RequestHeader HttpHeaders header) {
-
+    public BasicResponse<PostLoginRes> logInKakao() {
 
         /* kakaoaccessToken을 통해 카카오 계정 정보를 조회  */
         KakaoUserProfile kakaoUserProfile=null;
@@ -350,7 +291,6 @@ public class UserController {
         catch(BasicException exception){
             return new BasicResponse(ERROR_INVALID_KAKAO_ACCESS_TOKEN);
         }
-
 
         /* 로그인 진행   */
         try {
@@ -366,19 +306,14 @@ public class UserController {
     }
 
 
-
-
-
-
     /*
      * 개인정보 처리방침 재동의 API
      * [PATCH] /users/:userIdx/privacy-policy-reagree
-     * @return BaseResponse(message)
+     * @return BaseResponse<String>
      */
+    @ApiOperation(value = "개인정보 처리방침 재동의 API", notes = "URL : https://in-stagram.site/users/:userIdx/privacy-policy-reagree")
     @PatchMapping("/{userIdx}/privacy-policy-reagree")
-    public BasicResponse reagreePrivacyPolicy(@PathVariable(value = "userIdx") Long userIdx) {
-
-
+    public BasicResponse<String> reagreePrivacyPolicy(@ApiParam(value = "사용자 인덱스", example = "1", required = true) @PathVariable(value = "userIdx") Long userIdx) {
 
         try{
             //개인정보 처리방침 재동의
@@ -388,20 +323,7 @@ public class UserController {
         } catch(BasicException exception){
             return new BasicResponse(exception.getStatus());
         }
-
-
     }
-
-
-
-
-
-
-
-
-
-
-
 
 
 }
