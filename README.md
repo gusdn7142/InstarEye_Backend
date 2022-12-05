@@ -251,10 +251,10 @@
 
 
 <details>
-<summary> 3. PathVariable 변수들의 유효성 검사 코드 길이 이슈 </summary>
+<summary> 3. PathVariable 변수들의 유효성 검사 코드가 반복되는 이슈 </summary>
 <div markdown="1">
 
-- **Issue** : 사용자 인증시 필요한 userIdx와 기타 Idx 필드에 대한 타입 오류를 검사하는 코드 길이가 길어지는 문제가 발생했습니다.   
+- **Issue & Problem** : 사용자 인증시 필요한 userIdx와 기타 Idx 필드에 대한 타입 오류 검사시 if문 코드가 반복되는 이슈가 발생했습니다.     
     ```java
     @Component
     public class LoginCheckInterceptor implements HandlerInterceptor {
@@ -267,8 +267,10 @@
                 } catch (Exception exception){
                     throw new BasicException(REQ_ERROR_INVALID_USERIDX);  //userIdx 형식 오류"
                 }
-            }              
-            ................ if(pathVariables.get(idx) 로직 반복 (생략) ..............                                                                            
+            }     									      
+            .........................................................................		
+            ................ if(pathVariables.get(idx) {  } 로직 반복 (생략) ........    
+	        .........................................................................   													
             if(pathVariables.get("followeeIdx") != null) {
                 try {
                     Long.valueOf(pathVariables.get("followeeIdx"));
@@ -279,8 +281,7 @@
         }
     }         
     ```                         
-- **Problem** : 유지보수 측면에서 다중 if문에 대한 리팩토링이 필요할 것으로 생각했습니다.
-- **Solution** : 기존의 중첩되는 if문 코드를 간결하게 리팩토링 하였습니다.   
+- **Solution** : 기존의 반복되는 if문 코드를 간결하게 리팩토링 하였습니다.   
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (idx 변수 값들은 ArrayList\<String\>로 공통 처리하고, idx 변수에 따라 달라지는 Enum 상수  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; REQ_ERROR_INVALID_IDX의 status, code, message 필드 값은 setter()를 활용해 유동적으로 변경되도록  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 구현하였습니다.)   
@@ -326,7 +327,7 @@
   
   
 <details>
-<summary>  4. 회원탈퇴 API의 응답 속도가 26초 가량 걸리는 이슈 발생 </summary>
+<summary>  4. 회원탈퇴 API의 응답 속도가 26초 가량 걸리는 이슈 </summary>
 <div markdown="1">
 
 - **Issue** : 회원탈퇴시 User 테이블과 연관된 다수의 테이블의 레코드를 변경하는 Update 쿼리문이 실행되어 응답시간이 약 26초가 걸리는 이슈 발생  
