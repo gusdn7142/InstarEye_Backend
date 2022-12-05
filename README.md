@@ -475,7 +475,7 @@
       =>엔티티 객체의 delete엔티티() 메서드를 통해 회원탈퇴 로직을 구현함으로써 기존의 과다한 조인 전략으로 성능이 좋지 않았던 SQL문을 제거
 - [x] @Pathvariable로 입력받는 모든 경로 변수(idx)에 유효성 검사 적용 (ex, 입력값 필터링) 
 - [x] Docker를 이용해 Spring Boot 애플리케이션 배포
-- [ ] 모든 API에 Swagger 적용
+- [x] 모든 API에 Swagger 적용
 - [ ] JPQL(@Query) 코드를 Query DSL 코드로 리팩토링  
 - [ ] 테스트 코드 도입
 - [ ] 프론트엔드 개발자와 협업하여 API 연결 및 이슈 처리
