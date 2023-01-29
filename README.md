@@ -69,7 +69,7 @@
     - User의 idx와 accessToken에서 추출한 userIdx와 일치하는지 확인
     - 일치한다면 컨트롤러로 이동, 일치하지 않다면 예외를 @ControllerAdvice와 @ExceptionHandler로 전달하여 예외메시지(+코드)를 BasicResponse 객체에 담아 클라이언트에게 응답
 - 사용자 인가 절차에서 제외되는 URI 
-    - 로그인 API (/users), 회원가입(/users/login), 카카오 회원가입(/users/kakao) 카카오 로그인(/users/kakao-login), 개인정보 처리방침 재동의 API (/users/*/privacy-policy-reagree)
+    - 로그인 API (/users), 회원가입(/users/login), 카카오 회원가입(/users/kakao), 카카오 로그인(/users/kakao-login), 개인정보 처리방침 재동의 API (/users/*/privacy-policy-reagree)
 
 #### 3️⃣ Controller
 - 클라이언트의 요청 값을 조회  (String to AnyType 컨버터 자동 적용)
