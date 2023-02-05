@@ -51,7 +51,7 @@
 
 ## 🔩 시스템 구성도
 ### 1. 전체 서비스 구조  
-![image](https://user-images.githubusercontent.com/62496215/216818044-dfbcc0a3-2d73-42a8-b6f8-336ded952864.png)
+![image](https://user-images.githubusercontent.com/62496215/216818418-188a1226-8b2a-44fb-a539-674895a96f8b.png)
 
 ### 2. 서버 동작 흐름  
 ![그림2](https://user-images.githubusercontent.com/62496215/183283787-7269efa6-aba1-455a-8945-315955fe3928.png)
