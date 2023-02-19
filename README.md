@@ -8,8 +8,8 @@
 </br>
 
 ## 💁‍♂️ Wiki
-- ✍ [개발일지](https://fir-lancer-6bb.notion.site/API-1d79c1f4fe524863a63ebfc4287dce9a)
-- 📰 [API 명세서](https://www.notion.so/API-1d94156d9f984832ba21b023aa5716f1)
+- ✍ [개발일지](추가 예정)
+- 📰 [API 명세서](추가 예정)
 - 📦 [ERD 설계도](https://user-images.githubusercontent.com/62496215/183288506-76da300b-f533-4cfd-ae43-70c8a07cbfbf.png)    
 - 📁 [디렉토리 구조](https://github.com/gusdn7142/Instagram_Clone_Server/wiki/%F0%9F%93%81-Directory-Structure)
 - 📽 시연 영상 : API 명세서의 postman 실행 결과 화면으로 대체  
