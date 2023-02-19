@@ -58,7 +58,14 @@
 #### 1️⃣ Client
 - https://in-stagram.site/ 주소를 가진 Server에 resource 요청
 - HTTP 메서드 활용 : Post, Patch, Get   
-#### 2️⃣ Interceptor
+
+#### 2️⃣ DispatcherServlet
+- 핸들러 매핑정보를 통해 요청 URL에 매핑된 핸들러(컨트롤러) 조회
+- 해당 핸들러를 실행할 수 있는 핸들러 어댑터 조회
+- (사용자 인가 절차가 필요한 URL이면) 핸들러 인터셉터 호출
+- 핸들러 어댑터를 통해 핸들러(컨트롤러) 호출
+
+#### 3️⃣ Interceptor
 - 형식적 Validation 처리 (pathVariable 변수 한정)
     - 파라미터로 입력받은 모든 pathVariable 변수를 조회
     - 모든 pathVariable 변수에 "타입 오류"와 "미 입력"에 대한 예외 처리 
@@ -71,7 +78,7 @@
 - 사용자 인가 절차에서 제외되는 URI 
     - 로그인 API (/users), 회원가입(/users/login), 카카오 회원가입(/users/kakao), 카카오 로그인(/users/kakao-login), 개인정보 처리방침 재동의 API (/users/*/privacy-policy-reagree)
 
-#### 3️⃣ Controller
+#### 4️⃣ Controller
 - 클라이언트의 요청 값을 조회  (String to AnyType 컨버터 자동 적용)
     - @RequestBody : JSON 형식으로 DTO 객체에 매핑
     - @Pathvariable : 파라미터 변수와 매핑
@@ -82,21 +89,25 @@
 - 결과 응답
     - Service 계층에서 넘어온 로직 처리 결과(자원 or 예외메시지)를 BasicResponse 객체에 담아 클라이언트에게 응답 
 
-#### 4️⃣ Service
+#### 5️⃣ Service
 - 의미적 Validation 처리
     - DB 서버의 CRUD 혹은 AWS S3의 파일 업로드∘삭제 로직 수행시에 발생할 수 있는 예외를 처리
     - 오류 발생시 예외 메시지(+코드)를 정상 응답("200")으로 BasicException 객체에 담아 Controller 계층에 응답 
 - 트랜잭션 처리
-    - @Transactional 어노테이션 적용 : 하나의 Service 로직에서 2개 이상의 쿼리 로직을 수행시 발생할 수 있는 에러에 대한 롤백 처리
-- 결과 응답
-    - 주로 DB 서버의 CRUD 명령을 수행한 결과를 다양한 타입으로 Controller 계층에 응답
+    - Insert, Update, Delete Query가 생성되는 메서드에 @Transactional 어노테이션 적용
+- 결과 리턴
+    - 주로 Dao 계층에서 DB 서버의 CRUD 명령을 수행한 결과를 다양한 DTO 타입으로 리턴 받아 Controller 계층에 리턴
 
-#### 5️⃣ Dao
+#### 6️⃣ Dao
 - 쿼리 수행 
     - JPA (@Query) 활용 : 주로 Native Query(SQL) 혹은 UnNative Query(jpql)을 활용해 DB 쿼리 로직 수행 
     - Join, SubQuery, group_concat, IFNULL, FORMAT, Concat 등의 Mysql 문법 활용
-- 결과 응답
-    - 주로 DTO 객체, Entity, void 등의 형식으로 Service 계층에 응답
+- 결과 리턴
+    - 주로 DTO 객체, Entity, void 등의 형식으로 Service 계층에 리턴
+
+#### 🔁 Scheduler
+- 스프링 스케줄러 동작 : 매일 자정 모든 사용자의 개인정보 처리방침 동의 시기를 DB에서 확인하여 가입 일에서 1년이 지난 사용자의 동의 상태를 만료
+
 
 </br>
 
@@ -104,7 +115,7 @@
 ## 🔎 핵심 기능 및 담당 기능
 
 >인스타그램 서비스의 핵심기능은 피드 작성과 조회입니다.  
->서비스의 세부적인 기능은 [API 명세서](https://www.notion.so/API-1d94156d9f984832ba21b023aa5716f1) 를 참고해 주시면 감사합니다.   
+>서비스의 세부적인 기능은 [API 명세서](추가 예정) 를 참고해 주시면 감사합니다.   
 - 구현한 기능  
   - API  (도메인별 분류)
     - 사용자 : 회원가입 API, 로그인 API, 카카오 회원가입∘로그인 API, 프로필 조회∘수정 API, 회원퇴 API, 개인정보 처리방침 재동의 API
