@@ -23,7 +23,6 @@
   - Spring Boot 2.7.2
   - Gradle 7.5
   - Spring Data JPA
-  - Spring Security
 #### `DevOps`  
   - AWS EC2 (Ubuntu 20.04)  
   - AWS RDS (Mysql 8.0)
@@ -53,7 +52,7 @@
 ### 1. 전체 서비스 구조  
 ![image](https://user-images.githubusercontent.com/62496215/216818418-188a1226-8b2a-44fb-a539-674895a96f8b.png)
 
-### 2. 서버 동작 흐름  
+### 2. 서버 동작 흐름 (변경 예정)  
 ![그림2](https://user-images.githubusercontent.com/62496215/183283787-7269efa6-aba1-455a-8945-315955fe3928.png)
 #### 1️⃣ Client
 - https://in-stagram.site/ 주소를 가진 Server에 resource 요청
@@ -132,7 +131,7 @@
 
 ## 🌟 핵심 트러블 슈팅
 <details>
-<summary> (삭제예정) 도메인 서버 등록시 반영시간 관련 이슈 </summary>
+<summary> 1. 도메인 서버 등록시 반영시간 관련 이슈 </summary>
 <div markdown="1">
 
 - **Issue** :  도메인(https://in-stagram.site)을 구입 후 EC2의 공인 IP를 연결해 주었는데, 서버가 응답하지 않습니다.
@@ -143,7 +142,7 @@
 </details>
 
 <details>
-<summary> 1. 스웨거 UI에 반영할 오류코드 설명 관련 이슈 </summary>
+<summary> 2. 스웨거 UI에 반영할 오류코드 설명 관련 이슈 </summary>
 <div markdown="1">
 
 - **Issue & Problem** : Status Code가 200일때 정상응답과 에러응답 설명을 같이 표기해야 하기 때문에 스웨거로 클라이언트와 협업시 불편을 겪을것을 예상되었습니다. 
@@ -155,7 +154,7 @@
 
 
 <details>
-<summary>  2. @Query (JPQL) 사용시 이슈 </summary>
+<summary>  3. @Query (JPQL) 사용시 이슈 </summary>
 <div markdown="1">
 
 - **Issue** : JPQL에서 group_concat()과 Select() 서브 쿼리문을 사용시 오류 발생 
@@ -166,103 +165,8 @@
 </details>
 
 
-
 <details>
-<summary>  (삭제 예정) 페이징 기능 구현시 SQL문 문법 오류  </summary>
-<div markdown="1">
-
-- **Issue** : 아래의 페이징 쿼리 실행시 "Could not locate named parameter [size]" 오류 발생
-    
-- **Problem** : @Query(Native SQL)로 쿼리문 작성시 마지막에 입력받은 size 변수를 매핑하는 과정에서 세미콜론(;)으로 인해 오류가 발생하였습니다.
-    ```sql
-        @Query(value="select u.idx writerIdx,\n" +
-                "       u.nick_name writerNickName,\n" +
-                "       u.image image,\n" +
-                "       p.idx postIdx,\n" +
-                "       p.content postContent,\n" +
-                "       case when timestampdiff(second , p.updated_at, current_timestamp) <60\n" +
-                "           then concat(timestampdiff(second, p.updated_at, current_timestamp),'초 전')\n" +
-                "\n" +
-                "           when timestampdiff(minute , p.updated_at, current_timestamp) <60\n" +
-                "           then concat(timestampdiff(minute, p.updated_at, current_timestamp),'분 전')\n" +
-                "\n" +
-                "           when timestampdiff(hour , p.updated_at, current_timestamp) <24\n" +
-                "           then concat(timestampdiff(hour, p.updated_at, current_timestamp),'시간 전')\n" +
-                "\n" +
-                "           when timestampdiff(day , p.updated_at, current_timestamp) < 30\n" +
-                "           then concat(timestampdiff(day, p.updated_at, current_timestamp),'일 전')\n" +
-                "\n" +
-                "           when timestampdiff(month , p.updated_at, current_timestamp) < 12\n" +
-                "           then concat(timestampdiff(month, p.updated_at, current_timestamp),'개월 전')\n" +
-                "\n" +
-                "           else concat(timestampdiff(year , p.updated_at, current_timestamp), '년 전')\n" +
-                "       end postCreatedDate,\n" +
-                "       group_concat(pi.idx) postImageIdx,\n" +
-                "       group_concat(pi.image) postimage,\n" +
-                "       group_concat(pi.image_number) postImageNumber\n" +
-                "\n" +
-                "from (select idx, content, updated_at ,user_idx from post where status ='ACTIVE') p\n" +
-                "    join (select idx, image,image_number, post_idx from post_image where status ='ACTIVE') pi\n" +
-                "    on p.idx = pi.post_idx\n" +
-                "    join (select idx, nick_name, image from user where status ='ACTIVE') u\n" +
-                "    on p.user_idx = u.idx\n" +
-                "group by p.idx having p.idx < :pageIndex\n" +
-                "order by p.idx DESC limit :size;", nativeQuery = true)   //size 바로 뒤의 세미콜론으로 인해 쿼리문 오류발생
-        List<GetPostsRes> getPosts(@Param("pageIndex") Long pageIndex, @Param("size") int size);
-    ```        
-- **Solution** : 세미콜론(;)을 제거하면 해결이 되지만, jpa에서 Pageable 인터페이스를 지원해 주기 때문에 이를 활용해 페이징 기능을 구현하였습니다. (쿼리문 마지막에 limit offset(pageIndex*size), size 형식으로 pageIndex와 size가 자동 매핑됩니다.)
-    ```sql
-        @Query(value="select u.idx writerIdx,\n" +
-                "       u.nick_name writerNickName,\n" +
-                "       u.image writerImage,\n" +
-                "       p.idx postIdx,\n" +
-                "       p.content postContent,\n" +
-                "       case when timestampdiff(second , p.updated_at, current_timestamp) <60\n" +
-                "           then concat(timestampdiff(second, p.updated_at, current_timestamp),'초 전')\n" +
-                "\n" +
-                "           when timestampdiff(minute , p.updated_at, current_timestamp) <60\n" +
-                "           then concat(timestampdiff(minute, p.updated_at, current_timestamp),'분 전')\n" +
-                "\n" +
-                "           when timestampdiff(hour , p.updated_at, current_timestamp) <24\n" +
-                "           then concat(timestampdiff(hour, p.updated_at, current_timestamp),'시간 전')\n" +
-                "\n" +
-                "           when timestampdiff(day , p.updated_at, current_timestamp) < 30\n" +
-                "           then concat(timestampdiff(day, p.updated_at, current_timestamp),'일 전')\n" +
-                "\n" +
-                "           when timestampdiff(month , p.updated_at, current_timestamp) < 12\n" +
-                "           then concat(timestampdiff(month, p.updated_at, current_timestamp),'개월 전')\n" +
-                "\n" +
-                "           else concat(timestampdiff(year , p.updated_at, current_timestamp), '년 전')\n" +
-                "       end postCreatedDate,\n" +
-                "       group_concat(pi.idx) postImageIdx,\n" +
-                "       group_concat(pi.image) postimage,\n" +
-                "       group_concat(pi.image_number) postImageNumber,\n" +
-                "       CONCAT(IFNULL(FORMAT(pl.postLikeCount,0),0),'개') as postLikeCount,\n" +
-                "       CONCAT(IFNULL(FORMAT(c.commentCount,0),0),'개') as commentCount,\n" +
-                "       IFNULL(pl2.likeClickStatus,'INACTIVE') as likeClickStatus\n" +
-                "\n" +
-                "from (select idx, content, updated_at ,user_idx from post where status ='ACTIVE') p\n" +
-                "    left join (select idx, image,image_number, post_idx from post_image where status ='ACTIVE') pi\n" +
-                "    on p.idx = pi.post_idx\n" +
-                "    join (select idx, nick_name, image from user where status ='ACTIVE') u\n" +
-                "    on p.user_idx = u.idx\n" +
-                "    left join (select post_idx, count(post_idx) as postLikeCount from post_like where status = 'ACTIVE' group by post_idx) pl\n" +
-                "    on p.idx = pl.post_idx\n" +
-                "    left join(select post_idx, count(post_idx) as commentCount from comment where status='ACTIVE' group by post_idx) c\n" +
-                "    on p.idx = c.post_idx\n" +
-                "    left join (select post_idx, 'ACTIVE' as likeClickStatus from post_like where user_idx = :userIdx) pl2\n" +
-                "    on p.idx = pl2.post_idx\n" +
-                "group by p.idx\n" +
-                "order by p.idx DESC", nativeQuery = true)
-        List<GetPostsRes> getPosts(Pageable pageable, @Param("userIdx") Long userIdx);
-    ```    
-</div>
-</details>
-
-
-
-<details>
-<summary> 3. PathVariable 변수들의 유효성 검사 코드가 반복되는 이슈 </summary>
+<summary> 4. PathVariable 변수들의 유효성 검사 코드가 반복되는 이슈 </summary>
 <div markdown="1">
 
 - **Issue & Problem** : 사용자 인증시 필요한 userIdx와 기타 Idx 필드에 대한 타입 오류 검사시 if문 코드가 반복되는 이슈가 발생했습니다.     
@@ -338,7 +242,7 @@
   
   
 <details>
-<summary>  4. 회원탈퇴 API의 응답 속도가 26초 가량 걸리는 이슈 </summary>
+<summary>  5. 회원탈퇴 API의 응답 속도가 26초 가량 걸리는 이슈 </summary>
 <div markdown="1">
 
 - **Issue** : 회원탈퇴시 User 테이블과 연관된 다수의 테이블의 레코드를 변경하는 Update 쿼리문이 실행되어 응답시간이 약 26초가 걸리는 이슈 발생  
