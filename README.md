@@ -8,8 +8,8 @@
 </br>
 
 ## 💁‍♂️ Wiki
-- ✍ [개발일지](https://fir-lancer-6bb.notion.site/API-1d79c1f4fe524863a63ebfc4287dce9a)
-- 📰 [API 명세서](https://www.notion.so/API-1d94156d9f984832ba21b023aa5716f1)
+- ✍ [개발일지](추가 예정)
+- 📰 [API 명세서](추가 예정)
 - 📦 [ERD 설계도](https://user-images.githubusercontent.com/62496215/183288506-76da300b-f533-4cfd-ae43-70c8a07cbfbf.png)    
 - 📁 [디렉토리 구조](https://github.com/gusdn7142/Instagram_Clone_Server/wiki/%F0%9F%93%81-Directory-Structure)
 - 📽 시연 영상 : API 명세서의 postman 실행 결과 화면으로 대체  
@@ -23,7 +23,6 @@
   - Spring Boot 2.7.2
   - Gradle 7.5
   - Spring Data JPA
-  - Spring Security
 #### `DevOps`  
   - AWS EC2 (Ubuntu 20.04)  
   - AWS RDS (Mysql 8.0)
@@ -51,14 +50,21 @@
 
 ## 🔩 시스템 구성도
 ### 1. 전체 서비스 구조  
-![Architecture](https://user-images.githubusercontent.com/62496215/185957417-342145bc-3ae3-445c-9c4e-75bf82561528.png)
+![image](https://user-images.githubusercontent.com/62496215/216818418-188a1226-8b2a-44fb-a539-674895a96f8b.png)
 
-### 2. 서버 동작 흐름  
+### 2. 서버 동작 흐름 (변경 예정)  
 ![그림2](https://user-images.githubusercontent.com/62496215/183283787-7269efa6-aba1-455a-8945-315955fe3928.png)
 #### 1️⃣ Client
 - https://in-stagram.site/ 주소를 가진 Server에 resource 요청
 - HTTP 메서드 활용 : Post, Patch, Get   
-#### 2️⃣ Interceptor
+
+#### 2️⃣ DispatcherServlet
+- 핸들러 매핑정보를 통해 요청 URL에 매핑된 핸들러(컨트롤러) 조회
+- 해당 핸들러를 실행할 수 있는 핸들러 어댑터 조회
+- (사용자 인가 절차가 필요한 URL이면) 핸들러 인터셉터 호출
+- 핸들러 어댑터를 통해 핸들러(컨트롤러) 호출
+
+#### 3️⃣ Interceptor
 - 형식적 Validation 처리 (pathVariable 변수 한정)
     - 파라미터로 입력받은 모든 pathVariable 변수를 조회
     - 모든 pathVariable 변수에 "타입 오류"와 "미 입력"에 대한 예외 처리 
@@ -69,9 +75,9 @@
     - User의 idx와 accessToken에서 추출한 userIdx와 일치하는지 확인
     - 일치한다면 컨트롤러로 이동, 일치하지 않다면 예외를 @ControllerAdvice와 @ExceptionHandler로 전달하여 예외메시지(+코드)를 BasicResponse 객체에 담아 클라이언트에게 응답
 - 사용자 인가 절차에서 제외되는 URI 
-    - 로그인 API (/users), 회원가입(/users/login), 카카오 회원가입(/users/kakao) 카카오 로그인(/users/kakao-login), 개인정보 처리방침 재동의 API (/users/*/privacy-policy-reagree)
+    - 로그인 API (/users), 회원가입(/users/login), 카카오 회원가입(/users/kakao), 카카오 로그인(/users/kakao-login), 개인정보 처리방침 재동의 API (/users/*/privacy-policy-reagree)
 
-#### 3️⃣ Controller
+#### 4️⃣ Controller
 - 클라이언트의 요청 값을 조회  (String to AnyType 컨버터 자동 적용)
     - @RequestBody : JSON 형식으로 DTO 객체에 매핑
     - @Pathvariable : 파라미터 변수와 매핑
@@ -82,21 +88,25 @@
 - 결과 응답
     - Service 계층에서 넘어온 로직 처리 결과(자원 or 예외메시지)를 BasicResponse 객체에 담아 클라이언트에게 응답 
 
-#### 4️⃣ Service
+#### 5️⃣ Service
 - 의미적 Validation 처리
     - DB 서버의 CRUD 혹은 AWS S3의 파일 업로드∘삭제 로직 수행시에 발생할 수 있는 예외를 처리
     - 오류 발생시 예외 메시지(+코드)를 정상 응답("200")으로 BasicException 객체에 담아 Controller 계층에 응답 
 - 트랜잭션 처리
-    - @Transactional 어노테이션 적용 : 하나의 Service 로직에서 2개 이상의 쿼리 로직을 수행시 발생할 수 있는 에러에 대한 롤백 처리
-- 결과 응답
-    - 주로 DB 서버의 CRUD 명령을 수행한 결과를 다양한 타입으로 Controller 계층에 응답
+    - Insert, Update, Delete Query가 생성되는 메서드에 @Transactional 어노테이션 적용
+- 결과 리턴
+    - 주로 Dao 계층에서 DB 서버의 CRUD 명령을 수행한 결과를 다양한 DTO 타입으로 리턴 받아 Controller 계층에 리턴
 
-#### 5️⃣ Dao
+#### 6️⃣ Dao
 - 쿼리 수행 
     - JPA (@Query) 활용 : 주로 Native Query(SQL) 혹은 UnNative Query(jpql)을 활용해 DB 쿼리 로직 수행 
     - Join, SubQuery, group_concat, IFNULL, FORMAT, Concat 등의 Mysql 문법 활용
-- 결과 응답
-    - 주로 DTO 객체, Entity, void 등의 형식으로 Service 계층에 응답
+- 결과 리턴
+    - 주로 DTO 객체, Entity, void 등의 형식으로 Service 계층에 리턴
+
+#### 🔁 Scheduler
+- 스프링 스케줄러 동작 : 매일 자정 모든 사용자의 개인정보 처리방침 동의 시기를 DB에서 확인하여 가입 일에서 1년이 지난 사용자의 동의 상태를 만료
+
 
 </br>
 
@@ -104,7 +114,7 @@
 ## 🔎 핵심 기능 및 담당 기능
 
 >인스타그램 서비스의 핵심기능은 피드 작성과 조회입니다.  
->서비스의 세부적인 기능은 [API 명세서](https://www.notion.so/API-1d94156d9f984832ba21b023aa5716f1) 를 참고해 주시면 감사합니다.   
+>서비스의 세부적인 기능은 [API 명세서](추가 예정) 를 참고해 주시면 감사합니다.   
 - 구현한 기능  
   - API  (도메인별 분류)
     - 사용자 : 회원가입 API, 로그인 API, 카카오 회원가입∘로그인 API, 프로필 조회∘수정 API, 회원퇴 API, 개인정보 처리방침 재동의 API
@@ -121,7 +131,7 @@
 
 ## 🌟 핵심 트러블 슈팅
 <details>
-<summary> (삭제예정) 도메인 서버 등록시 반영시간 관련 이슈 </summary>
+<summary> 1. 도메인 서버 등록시 반영시간 관련 이슈 </summary>
 <div markdown="1">
 
 - **Issue** :  도메인(https://in-stagram.site)을 구입 후 EC2의 공인 IP를 연결해 주었는데, 서버가 응답하지 않습니다.
@@ -132,7 +142,7 @@
 </details>
 
 <details>
-<summary> 1. 스웨거 UI에 반영할 오류코드 설명 관련 이슈 </summary>
+<summary> 2. 스웨거 UI에 반영할 오류코드 설명 관련 이슈 </summary>
 <div markdown="1">
 
 - **Issue & Problem** : Status Code가 200일때 정상응답과 에러응답 설명을 같이 표기해야 하기 때문에 스웨거로 클라이언트와 협업시 불편을 겪을것을 예상되었습니다. 
@@ -144,7 +154,7 @@
 
 
 <details>
-<summary>  2. @Query (JPQL) 사용시 이슈 </summary>
+<summary>  3. @Query (JPQL) 사용시 이슈 </summary>
 <div markdown="1">
 
 - **Issue** : JPQL에서 group_concat()과 Select() 서브 쿼리문을 사용시 오류 발생 
@@ -155,106 +165,11 @@
 </details>
 
 
-
 <details>
-<summary>  (삭제 예정) 페이징 기능 구현시 SQL문 문법 오류  </summary>
+<summary> 4. PathVariable 변수들의 유효성 검사 코드가 반복되는 이슈 </summary>
 <div markdown="1">
 
-- **Issue** : 아래의 페이징 쿼리 실행시 "Could not locate named parameter [size]" 오류 발생
-    
-- **Problem** : @Query(Native SQL)로 쿼리문 작성시 마지막에 입력받은 size 변수를 매핑하는 과정에서 세미콜론(;)으로 인해 오류가 발생하였습니다.
-    ```sql
-        @Query(value="select u.idx writerIdx,\n" +
-                "       u.nick_name writerNickName,\n" +
-                "       u.image image,\n" +
-                "       p.idx postIdx,\n" +
-                "       p.content postContent,\n" +
-                "       case when timestampdiff(second , p.updated_at, current_timestamp) <60\n" +
-                "           then concat(timestampdiff(second, p.updated_at, current_timestamp),'초 전')\n" +
-                "\n" +
-                "           when timestampdiff(minute , p.updated_at, current_timestamp) <60\n" +
-                "           then concat(timestampdiff(minute, p.updated_at, current_timestamp),'분 전')\n" +
-                "\n" +
-                "           when timestampdiff(hour , p.updated_at, current_timestamp) <24\n" +
-                "           then concat(timestampdiff(hour, p.updated_at, current_timestamp),'시간 전')\n" +
-                "\n" +
-                "           when timestampdiff(day , p.updated_at, current_timestamp) < 30\n" +
-                "           then concat(timestampdiff(day, p.updated_at, current_timestamp),'일 전')\n" +
-                "\n" +
-                "           when timestampdiff(month , p.updated_at, current_timestamp) < 12\n" +
-                "           then concat(timestampdiff(month, p.updated_at, current_timestamp),'개월 전')\n" +
-                "\n" +
-                "           else concat(timestampdiff(year , p.updated_at, current_timestamp), '년 전')\n" +
-                "       end postCreatedDate,\n" +
-                "       group_concat(pi.idx) postImageIdx,\n" +
-                "       group_concat(pi.image) postimage,\n" +
-                "       group_concat(pi.image_number) postImageNumber\n" +
-                "\n" +
-                "from (select idx, content, updated_at ,user_idx from post where status ='ACTIVE') p\n" +
-                "    join (select idx, image,image_number, post_idx from post_image where status ='ACTIVE') pi\n" +
-                "    on p.idx = pi.post_idx\n" +
-                "    join (select idx, nick_name, image from user where status ='ACTIVE') u\n" +
-                "    on p.user_idx = u.idx\n" +
-                "group by p.idx having p.idx < :pageIndex\n" +
-                "order by p.idx DESC limit :size;", nativeQuery = true)   //size 바로 뒤의 세미콜론으로 인해 쿼리문 오류발생
-        List<GetPostsRes> getPosts(@Param("pageIndex") Long pageIndex, @Param("size") int size);
-    ```        
-- **Solution** : 세미콜론(;)을 제거하면 해결이 되지만, jpa에서 Pageable 인터페이스를 지원해 주기 때문에 이를 활용해 페이징 기능을 구현하였습니다. (쿼리문 마지막에 limit offset(pageIndex*size), size 형식으로 pageIndex와 size가 자동 매핑됩니다.)
-    ```sql
-        @Query(value="select u.idx writerIdx,\n" +
-                "       u.nick_name writerNickName,\n" +
-                "       u.image writerImage,\n" +
-                "       p.idx postIdx,\n" +
-                "       p.content postContent,\n" +
-                "       case when timestampdiff(second , p.updated_at, current_timestamp) <60\n" +
-                "           then concat(timestampdiff(second, p.updated_at, current_timestamp),'초 전')\n" +
-                "\n" +
-                "           when timestampdiff(minute , p.updated_at, current_timestamp) <60\n" +
-                "           then concat(timestampdiff(minute, p.updated_at, current_timestamp),'분 전')\n" +
-                "\n" +
-                "           when timestampdiff(hour , p.updated_at, current_timestamp) <24\n" +
-                "           then concat(timestampdiff(hour, p.updated_at, current_timestamp),'시간 전')\n" +
-                "\n" +
-                "           when timestampdiff(day , p.updated_at, current_timestamp) < 30\n" +
-                "           then concat(timestampdiff(day, p.updated_at, current_timestamp),'일 전')\n" +
-                "\n" +
-                "           when timestampdiff(month , p.updated_at, current_timestamp) < 12\n" +
-                "           then concat(timestampdiff(month, p.updated_at, current_timestamp),'개월 전')\n" +
-                "\n" +
-                "           else concat(timestampdiff(year , p.updated_at, current_timestamp), '년 전')\n" +
-                "       end postCreatedDate,\n" +
-                "       group_concat(pi.idx) postImageIdx,\n" +
-                "       group_concat(pi.image) postimage,\n" +
-                "       group_concat(pi.image_number) postImageNumber,\n" +
-                "       CONCAT(IFNULL(FORMAT(pl.postLikeCount,0),0),'개') as postLikeCount,\n" +
-                "       CONCAT(IFNULL(FORMAT(c.commentCount,0),0),'개') as commentCount,\n" +
-                "       IFNULL(pl2.likeClickStatus,'INACTIVE') as likeClickStatus\n" +
-                "\n" +
-                "from (select idx, content, updated_at ,user_idx from post where status ='ACTIVE') p\n" +
-                "    left join (select idx, image,image_number, post_idx from post_image where status ='ACTIVE') pi\n" +
-                "    on p.idx = pi.post_idx\n" +
-                "    join (select idx, nick_name, image from user where status ='ACTIVE') u\n" +
-                "    on p.user_idx = u.idx\n" +
-                "    left join (select post_idx, count(post_idx) as postLikeCount from post_like where status = 'ACTIVE' group by post_idx) pl\n" +
-                "    on p.idx = pl.post_idx\n" +
-                "    left join(select post_idx, count(post_idx) as commentCount from comment where status='ACTIVE' group by post_idx) c\n" +
-                "    on p.idx = c.post_idx\n" +
-                "    left join (select post_idx, 'ACTIVE' as likeClickStatus from post_like where user_idx = :userIdx) pl2\n" +
-                "    on p.idx = pl2.post_idx\n" +
-                "group by p.idx\n" +
-                "order by p.idx DESC", nativeQuery = true)
-        List<GetPostsRes> getPosts(Pageable pageable, @Param("userIdx") Long userIdx);
-    ```    
-</div>
-</details>
-
-
-
-<details>
-<summary> 3. PathVariable 변수들의 유효성 검사 코드 길이 이슈 </summary>
-<div markdown="1">
-
-- **Issue** : 사용자 인증시 필요한 userIdx와 기타 Idx 필드에 대한 타입 오류를 검사하는 코드 길이가 길어지는 문제가 발생했습니다.   
+- **Issue & Problem** : 사용자 인증시 필요한 userIdx와 기타 Idx 필드에 대한 타입 오류 검사시 if문 코드가 반복되는 이슈가 발생했습니다.     
     ```java
     @Component
     public class LoginCheckInterceptor implements HandlerInterceptor {
@@ -267,8 +182,10 @@
                 } catch (Exception exception){
                     throw new BasicException(REQ_ERROR_INVALID_USERIDX);  //userIdx 형식 오류"
                 }
-            }              
-            ................ if(pathVariables.get(idx) 로직 반복 (생략) ..............                                                                            
+            }     									      
+            .........................................................................		
+            ................ if(pathVariables.get(idx) {  } 로직 반복 (생략) ........    
+	        .........................................................................   													
             if(pathVariables.get("followeeIdx") != null) {
                 try {
                     Long.valueOf(pathVariables.get("followeeIdx"));
@@ -279,8 +196,7 @@
         }
     }         
     ```                         
-- **Problem** : 유지보수 측면에서 다중 if문에 대한 리팩토링이 필요할 것으로 생각했습니다.
-- **Solution** : 기존의 중첩되는 if문 코드를 간결하게 리팩토링 하였습니다.   
+- **Solution** : 기존의 반복되는 if문 코드를 간결하게 리팩토링 하였습니다.   
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (idx 변수 값들은 ArrayList\<String\>로 공통 처리하고, idx 변수에 따라 달라지는 Enum 상수  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; REQ_ERROR_INVALID_IDX의 status, code, message 필드 값은 setter()를 활용해 유동적으로 변경되도록  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 구현하였습니다.)   
@@ -326,7 +242,7 @@
   
   
 <details>
-<summary>  4. 회원탈퇴 API의 응답 속도가 26초 가량 걸리는 이슈 발생 </summary>
+<summary>  5. 회원탈퇴 API의 응답 속도가 26초 가량 걸리는 이슈 </summary>
 <div markdown="1">
 
 - **Issue** : 회원탈퇴시 User 테이블과 연관된 다수의 테이블의 레코드를 변경하는 Update 쿼리문이 실행되어 응답시간이 약 26초가 걸리는 이슈 발생  
@@ -464,18 +380,18 @@
 ## ❕ 회고 / 느낀점
 - 외주를 할수 있는 역량이 되는지 실력을 확인함과 동시에 CTO님께 피드백을 받아볼수 있는 좋은 기회여서 이 챌린지에 참여하게 되었습니다.
 - 개발가이드와 화면설계서의 요구사항을 토대로 기능을 하나씩 구현해 나감으로써 성취감을 느낄수 있었습니다.
-- 기존에는 API 명세서로 구글 스프레드시트를 활용했었기에, 이번에는 Swegger UI를 연동하여 회원가입 API에 적용했으나, 오류 정보를 설명하는 부분에서 클라이언트와의 협업시 용이하지 못하다는 판단이 들어 노션으로 대체하게 되었는데, 다음에는 Swegger를 모든 API에 적용해 보고 싶습니다. 추가적으로 postman으로 API 명세서를 만드는것도 고려해 보겠습니다. 
+- 기존에는 API 명세서로 구글 스프레드시트를 활용했었기 때문에 이번에는 노션으로 API 명세서를 만들어 보았으나, 유지보수 측면에서 코드를 변경하면 노션 페이지를 계속 수정해야 하는 번거로움이 발생하여 Swegger UI를 도입하였는데, 다음 프로젝트 때에는 postman으로 API 명세서를 만드는것도 시도해 보고 싶습니다.
 - 대부분의 API에 적용되는 사용자 인가절차를 인터셉터에서 공통로직으로 처리하도록 구현한 것과 스케줄러를 통해 개인정보처리방침의 동의상태 일자를 일 단위로 확인해 가입일을 기준으로 1년마다 갱신하는 로직을 구현해본것이 기억에 남습니다.    
                 
                 
 </br>
 
 ## 👩‍💻 리팩토링 계획
-- [x] 회원탈퇴시 User 테이블 이외의 연관된 다수의 테이블에서 Update 쿼리문이 실행되어 응답시간이 약 10초가 걸리는 이슈 해결  
+- [x] 회원탈퇴시 User 테이블 이외의 연관된 다수의 테이블에서 Update 쿼리문이 실행되어 응답시간이 약 26초가 걸리는 이슈 해결  
       =>엔티티 객체의 delete엔티티() 메서드를 통해 회원탈퇴 로직을 구현함으로써 기존의 과다한 조인 전략으로 성능이 좋지 않았던 SQL문을 제거
 - [x] @Pathvariable로 입력받는 모든 경로 변수(idx)에 유효성 검사 적용 (ex, 입력값 필터링) 
 - [x] Docker를 이용해 Spring Boot 애플리케이션 배포
-- [ ] 모든 API에 Swagger 적용
+- [x] 모든 API에 Swagger 적용
 - [ ] JPQL(@Query) 코드를 Query DSL 코드로 리팩토링  
 - [ ] 테스트 코드 도입
 - [ ] 프론트엔드 개발자와 협업하여 API 연결 및 이슈 처리
