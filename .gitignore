@@ -70,6 +70,12 @@ src/main/java/com/instagram/global/util/Security/Secret.java
 Dockerfile
 
 
+#Except file
+src/main/java/com/instagram/test/
+
+
+
+
 
 
 
