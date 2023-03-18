@@ -33,7 +33,7 @@ class PostDaoTest {
 
         //given
         User userCreation = userDao.save(User.builder()
-                .phone("01011345678")
+                .phone("01000000000")
                 .name("그릿지11")
                 .password("asdf1134")
                 .birthDay(new Date())
