@@ -69,24 +69,23 @@ public interface PostDao extends JpaRepository<Post, Long> {
     List<GetPostsRes> getPosts(Pageable pageable, @Param("userIdx") Long userIdx);
 
 
-    /* 10. 특정 게시글 조회 API */
-    @Query(value="select u.idx userIdx,\n" +
-            "       u.nick_name userNickName,\n" +
-            "       u.image userimage,\n" +
-            "       p.idx postIdx,\n" +
-            "       p.content postContent,\n" +
-            "       group_concat(pi.idx) postImageIdx,\n" +
-            "       group_concat(pi.image) postimage,\n" +
-            "       group_concat(pi.image_number) postImageNumber\n" +
-            "\n" +
-            "from (select idx, content ,user_idx from post where status ='ACTIVE') p\n" +
-            "    left join (select idx, image,image_number, post_idx from post_image where status ='ACTIVE') pi\n" +
-            "    on p.idx = pi.post_idx\n" +
-            "    join (select idx, nick_name, image from user where status ='ACTIVE') u\n" +
-            "    on p.user_idx = u.idx\n" +
-            "where p.idx = :postIdx", nativeQuery = true)
-    GetPostRes getPost(@Param("postIdx") Long postIdx);
 
+    /* 10. 특정 게시글 조회 API */
+    @Query(value="select new com.instagram.domain.post.dto.GetPostRes(u.idx as userIdx,\n" +
+            "       u.nickName as userNickName,\n" +
+            "       u.image as userimage,\n" +
+            "       p.idx as postIdx,\n" +
+            "       p.content as postContent,\n" +
+            "       group_concat(pi.idx) as postImageIdx,\n" +
+            "       group_concat(pi.image) as postimage,\n" +
+            "       group_concat(pi.imageNumber) as postImageNumber)\n" +
+            "from Post p \n" +
+            "join p.postImages pi  " +
+            "   on p.status='ACTIVE' and pi.status='ACTIVE' \n" +
+            "join p.user u " +
+            "   on u.status='ACTIVE' \n" +
+            "where p.idx = :postIdx ", nativeQuery = false)
+    GetPostRes getPost(@Param("postIdx") Long postIdx);
 
 
 
