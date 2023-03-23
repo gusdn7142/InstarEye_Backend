@@ -52,8 +52,8 @@
 ### 1. 전체 서비스 구조  
 ![image](https://user-images.githubusercontent.com/62496215/216818418-188a1226-8b2a-44fb-a539-674895a96f8b.png)
 
-### 2. 서버 동작 흐름 (변경 예정)  
-![그림2](https://user-images.githubusercontent.com/62496215/183283787-7269efa6-aba1-455a-8945-315955fe3928.png)
+### 2. 서버 동작 흐름 
+![그림1](https://user-images.githubusercontent.com/62496215/227151222-2e2f9868-8f0f-41fc-9f35-95638b24c187.png)
 #### 1️⃣ Client
 - https://in-stagram.site/ 주소를 가진 Server에 resource 요청
 - HTTP 메서드 활용 : Post, Patch, Get   
@@ -112,7 +112,6 @@
 
 
 ## 🔎 핵심 기능 및 담당 기능
-
 >인스타그램 서비스의 핵심기능은 피드 작성과 조회입니다.  
 >구현한 핵심 기능은 이 [페이지](https://fir-lancer-6bb.notion.site/258e95f01ee24f11a18382fb2fb54076)를 참고해 주시면 감사합니다.   
 
