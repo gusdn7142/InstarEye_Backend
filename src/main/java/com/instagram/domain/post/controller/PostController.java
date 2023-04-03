@@ -131,6 +131,7 @@ public class PostController {
      * [PATCH] /posts/:userIdx/:postIdx
      * @return BaseResponse<String>
      */
+    @CacheEvict(value = "postCache", key = "#postIdx")    //key = "#postIdx")
     @ApiOperation(value = "게시글 수정 API", notes = "URL : https://in-stagram.site/posts/:userIdx/:postIdx")
     @PatchMapping("/{userIdx}/{postIdx}")
     public BasicResponse<String> modifyPost(@ApiParam(value = "사용자 인덱스", example = "1", required = true) @PathVariable("userIdx") Long userIdx,

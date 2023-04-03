@@ -16,7 +16,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -44,6 +50,41 @@ class PostControllerTest {
     private User userCreation;
     private Post postCreation;
     private PostImage postImageCreation;
+
+
+    @Test
+    @DisplayName("modifyPost() 메서드 테스트")
+    void modifyPostAndDeletePostCache(){
+        //given
+        Long userIdx = userCreation.getIdx();                                                  //변경할 userIdx
+        Long postIdx = postCreation.getIdx();                                                  //변경할 postIdx
+        String content = "안녕하세요. 그릿지 11999입니다.";                                     //변경할 게시글 내용 입력
+
+        String filename = Secret.AWS_S3_CONNECT_URL+"post1234.png";
+        String fileContent = "post1234 file";                                                 //변경할 게시글 내용 입력
+        MultipartFile multipartFile = toMultipartFile(filename, fileContent);                 //String 타입 파일을 MultipartFile 타입으로 변환
+        List<MultipartFile> multipartFiles = Arrays.asList(multipartFile);                    //변경할 이미지 파일들
+        List<Integer> imageNumberlist = Arrays.asList(1);                                     //변경할 이미지 번호
+        postController.getPost(userIdx, postIdx);      //postIdx 이름의 캐시 생성
+
+        //when
+        BasicResponse<String> response = postController.modifyPost(userIdx, postIdx, content, multipartFiles, imageNumberlist);       //게시글 수정 후 캐시값 갱신
+
+        //then
+        assertThat(response.getResult()).isEqualTo("게시글 수정 성공");                           //게시글 정보 수정 성공 확인
+        assertThatThrownBy(() -> {
+            BasicResponse<GetPostRes> cacheResponse = (BasicResponse<GetPostRes>) cacheManager        //캐시 값이 null인지 확인
+                    .getCache("postCache")
+                    .get(postIdx)
+                    .get();
+        }).isInstanceOf(NullPointerException.class);
+    }
+
+    //String 타입을 MultipartFile 타입으로 변환
+    public static MultipartFile toMultipartFile(String filename, String content) {
+        byte[] contentBytes = content.getBytes();          //content를 String 타입에서 Byte[] 타입으로 변환
+        return new MockMultipartFile(filename, filename, MediaType.IMAGE_PNG_VALUE, contentBytes);  //MockMultipartFile 객체 생성
+    }
 
 
     @Test
