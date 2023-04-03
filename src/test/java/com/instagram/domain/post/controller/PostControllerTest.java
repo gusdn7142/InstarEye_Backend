@@ -47,6 +47,28 @@ class PostControllerTest {
 
 
     @Test
+    @DisplayName("deletePost() 메서드 테스트")
+    void deletePostAndPostCache() {
+        //given
+        Long userIdx = userCreation.getIdx();
+        Long postIdx = postCreation.getIdx();
+        postController.getPost(userIdx, postIdx);   //새로운 캐시 생성
+
+        //when
+        BasicResponse<String> response = postController.deletePost(userIdx, postIdx);   //postIdx를 기준으로 게시글 정보와 캐시 정보 삭제
+
+        //then
+        assertThat(response.getResult()).isEqualTo("게시글 정보 삭제");  //게시글 정보 삭제유무 확인
+        assertThatThrownBy(() -> {
+            BasicResponse<GetPostRes> cacheResponse = (BasicResponse<GetPostRes>) cacheManager  //캐시 값이 null인지 확인회
+                    .getCache("postCache")
+                    .get(postIdx)
+                    .get();
+        }).isInstanceOf(NullPointerException.class);
+    }
+
+
+    @Test
     @DisplayName("getPost() 메서드 테스트")
     void getPostAndPostCache() {
         //given

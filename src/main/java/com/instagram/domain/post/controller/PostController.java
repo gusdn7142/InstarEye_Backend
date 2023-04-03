@@ -8,6 +8,7 @@ import com.instagram.global.error.BasicException;
 import com.instagram.global.error.BasicResponse;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -193,6 +194,7 @@ public class PostController {
      * [PATCH] /posts/:userIdx/:postIdx/status
      * @return BaseResponse<String>>
      */
+    @CacheEvict(value = "postCache", key = "#postIdx")
     @ApiOperation(value = "게시글 삭제 API", notes = "URL : https://in-stagram.site/posts/:userIdx/:postIdx/status")
     @PatchMapping("/{userIdx}/{postIdx}/status")
     public BasicResponse<String> deletePost(@ApiParam(value = "사용자 인덱스", example = "1", required = true) @PathVariable("userIdx") Long userIdx,
