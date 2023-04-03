@@ -8,6 +8,7 @@ import com.instagram.global.error.BasicException;
 import com.instagram.global.error.BasicResponse;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -213,6 +214,7 @@ public class PostController {
      * [GET] /posts/:userId/:postId
      * @return BaseResponse<GetPostRes>
      */
+    @Cacheable(value = "postCache", key = "#postIdx")
     @ApiOperation(value = "특정 게시글 조회 API", notes = "URL : https://in-stagram.site/posts/:userIdx/:postIdx/status")
     @GetMapping("/{userIdx}/{postIdx}")
     public BasicResponse<GetPostRes> getPost(@ApiParam(value = "사용자 인덱스", example = "1", required = true) @PathVariable("userIdx") Long userIdx,
