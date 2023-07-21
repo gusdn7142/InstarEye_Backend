@@ -236,5 +236,4 @@ $ java -jar build/libs/Instagram_Clone_Server-0.0.1-SNAPSHOT.jar
 
 </br>
 
-## 👩‍💻 리팩토링 계획 (보류) 
   
