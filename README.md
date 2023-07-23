@@ -159,7 +159,7 @@
 - [단방향 암호화로 패스워드 외부 노출 방지](https://fir-lancer-6bb.notion.site/d95eacc9e93f49f986b25f631d0e1e0b?pvs=4)
 - [룰 기반 파일 업로드 실행](https://fir-lancer-6bb.notion.site/ea82b12388cd4f778b2de9865ef00d6f?pvs=4)
 - [페이징을 통해 사용자 경험 개선](https://fir-lancer-6bb.notion.site/080672fffcb6411d8a109617b7c98632?pvs=4)
-- [네이티브 SQL을 JPQL로 리팩토링하여 쿼리 실행시간 5.82% 개선](https://fir-lancer-6bb.notion.site/SQL-JPQL-5-82-f772f7c588014901b9dc411e8b04ba97?pvs=4)
+- [네이티브 SQL을 리팩토링하여 쿼리 실행시간 5.82% 개선](https://fir-lancer-6bb.notion.site/SQL-JPQL-5-82-f772f7c588014901b9dc411e8b04ba97?pvs=4)
 - [캐시 도입으로 응답시간 45.78% 개선](https://fir-lancer-6bb.notion.site/32-84-963baf0d6a6449d1b8814b834acd4308?pvs=4)
 - [슬로우 쿼리를 JPA 메서드로 리팩토링하여 쿼리 실행 시간 96.91% 개선](https://fir-lancer-6bb.notion.site/JPA-96-91-c7534e8b5e87495295290f69a65bfd84?pvs=4)
 
