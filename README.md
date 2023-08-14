@@ -8,7 +8,7 @@
 </br>
 <!--  -->
 
-## 💁‍♂️ Wiki  (보류)
+## 💁‍♂️ Wiki 
 - ✍ [프로젝트 전체 업무 관리](https://fir-lancer-6bb.notion.site/b3c9db9b528e4c1880a6d398ce62e023?pvs=4)
 - 📰 [API 명세서](https://fir-lancer-6bb.notion.site/API-1d94156d9f984832ba21b023aa5716f1)
 
