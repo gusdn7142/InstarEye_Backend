@@ -149,7 +149,7 @@
 
 ## 👨🏻‍🏫 성과
 
-####  1인 백엔드 개발로 설계부터 기능 구현까지 주도적으로 진행
+####  1인 백엔드 개발로 설계부터 기능 구현까지 진행  
 - [개발환경 구축](https://fir-lancer-6bb.notion.site/11b2576fc1e348eaac5ef508ff5f8e1f?pvs=4)
 
 #### 사용자별 게시글 관리 Rest API 서버 설계 및 개발 & 개선
@@ -158,30 +158,29 @@
 - [도메인형으로 패키지 구조 설계](https://fir-lancer-6bb.notion.site/132ff3e479994de9a89685a716d3e33d?pvs=4)
 - [단방향 암호화로 패스워드 외부 노출 방지](https://fir-lancer-6bb.notion.site/d95eacc9e93f49f986b25f631d0e1e0b?pvs=4)
 - [룰 기반 파일 업로드 실행](https://fir-lancer-6bb.notion.site/ea82b12388cd4f778b2de9865ef00d6f?pvs=4)
-- [페이징을 통해 사용자 경험 개선](https://fir-lancer-6bb.notion.site/080672fffcb6411d8a109617b7c98632?pvs=4)
-- [네이티브 SQL을 리팩토링하여 쿼리 실행시간 5.82% 개선](https://fir-lancer-6bb.notion.site/SQL-JPQL-5-82-f772f7c588014901b9dc411e8b04ba97?pvs=4)
-- [캐시 도입으로 응답시간 45.78% 개선](https://fir-lancer-6bb.notion.site/32-84-963baf0d6a6449d1b8814b834acd4308?pvs=4)
-- [슬로우 쿼리를 JPA 메서드로 리팩토링하여 쿼리 실행 시간 96.91% 개선](https://fir-lancer-6bb.notion.site/JPA-96-91-c7534e8b5e87495295290f69a65bfd84?pvs=4)
+- [페이징을 통해 API의 응답시간 개선](https://fir-lancer-6bb.notion.site/080672fffcb6411d8a109617b7c98632?pvs=4)
+- [캐시 도입으로 응답시간 개선](https://fir-lancer-6bb.notion.site/32-84-963baf0d6a6449d1b8814b834acd4308?pvs=4)
+- [슬로우 쿼리를 JPA 메서드로 리팩토링하여 쿼리 실행 시간 99.73% 개선  ](https://fir-lancer-6bb.notion.site/JPA-96-91-c7534e8b5e87495295290f69a65bfd84?pvs=4)
 
-#### 인터셉터를 이용해 API 요청에 대한 사용자 인증 및 인가 로직 구현
-- [인터셉터에서 JWT 토큰으로 API 접근을 검증 후 허가되지 않은 사용자 접근 차단](https://fir-lancer-6bb.notion.site/JWT-API-164759876b8042eba10e4835fe3fe987?pvs=4)  
+#### 사용자 인가 로직 구현                 
+- [권한 검증이 필요한 API 호출시 스프링 인터셉터에서 JWT를 통해 사용자 권한 검증](https://fir-lancer-6bb.notion.site/JWT-API-164759876b8042eba10e4835fe3fe987?pvs=4)  
 
 #### 스케줄러를 이용해 개인정보 수집 동의를 1년 주기로 만료 및 갱신
-- [스프링 스케줄러로 매일 자정에 작업을 예약하여 개인정보 수집 동의 시기가 1년이 지난 사용자의 로그인 제한](https://fir-lancer-6bb.notion.site/1-29b752ee20bc45228f68fe3227ffaf81?pvs=4)
+- [스프링 스케줄러로 매일 자정에 작업을 예약하여 개인정보 수집 동의 시기가 1년이 지난 사용자의 동의상태 만료 및 갱신](https://fir-lancer-6bb.notion.site/1-29b752ee20bc45228f68fe3227ffaf81?pvs=4)
 
 #### 예외 처리 프로세스 설계 및 구현
 - [시퀀스 다이어그램으로 백엔드 로직을 시각화해 단계별로 필요한 예외 처리 로직 설계](https://fir-lancer-6bb.notion.site/d1ae0524506f4f4780495b73679bc597?pvs=4)
 - [예외 상황별 에러 코드와 에러 메시지 로직 구현](https://fir-lancer-6bb.notion.site/776cc2d85efb4880a1cf5b5f8b33b689?pvs=4)
 
 #### 트랜잭션 롤백 프로세스 설계 및 구현
-- [트랜잭션 실패 시의 롤백 프로세스 설계 및 구현](https://fir-lancer-6bb.notion.site/fc6074bc4ff44834b7a022cb04a9a6f8?pvs=4)
+- [트랜잭션 실패시의 단계별 롤백 프로세스 설계](https://fir-lancer-6bb.notion.site/fc6074bc4ff44834b7a022cb04a9a6f8?pvs=4)
 
-#### 인프라 구축 및 고도화
+#### 인프라 구축 
 - [웹 서버와 DB 서버 구축, 도메인과 HTTPS 적용](https://fir-lancer-6bb.notion.site/DB-HTTPS-c068bdd0b4534b05b4e6f94e6537cb0a?pvs=4)
 - [도커 이미지로 AWS EC2에 API 배포](https://fir-lancer-6bb.notion.site/AWS-EC2-API-a05588b829af48b698a270257a537ce8?pvs=4)
 
 #### 체계적인 업무 프로세스 정립
-- [노션으로 일자별 프로젝트 업무와 이슈를 관리](https://fir-lancer-6bb.notion.site/b3c9db9b528e4c1880a6d398ce62e023?pvs=4)
+- [노션으로 일자별 프로젝트 업무와 이슈 관리](https://fir-lancer-6bb.notion.site/b3c9db9b528e4c1880a6d398ce62e023?pvs=4)
 - [노션으로 작성한 API 명세서를 Swagger로 자동화](https://fir-lancer-6bb.notion.site/API-Swagger-064802576f504d11a00cf0a19611957a?pvs=4)
 
 
